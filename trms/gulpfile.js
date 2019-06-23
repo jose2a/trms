@@ -29,7 +29,7 @@ gulp.task('copy:js', () => {
 });
 
 gulp.task('copy:img', function() {
-	   gulp.src(`${paths.nodeModules}admin-lte/dist/img/**/*.{png,gif,jpg}`)
+	   gulp.src(`${paths.nodeModules}admin-lte/dist/img/*.{png,gif,jpg}`)
 	   .pipe(gulp.dest(`${paths.imgsDest}`));
 });
 
