@@ -10,21 +10,23 @@ const paths = {
 
 gulp.task('copy:css', () => {
     const cssToCopy = [
-        `${paths.nodeModules}admin-lte/dist/css/AdminLTE.min.css`
+        `${paths.nodeModules}admin-lte/dist/css/AdminLTE.min.css`,
+        `${paths.nodeModules}admin-lte/dist/css/skins/_all-skins.min.css`,
+        `${paths.nodeModules}bootstrap/dist/css/bootstrap.min.css`
     ];
 
-    return gulp.src(cssToCopy)   
-        .pipe(concat('vendor.css'))
+    return gulp.src(cssToCopy)
         .pipe(gulp.dest(`${paths.stylesDest}`));
 });
 
 gulp.task('copy:js', () => {
     const javascriptToCopy = [
-        `${paths.nodeModules}admin-lte/dist/js/adminlte.min.js`
+        `${paths.nodeModules}admin-lte/dist/js/adminlte.min.js`,
+        `${paths.nodeModules}bootstrap/dist/js/bootstrap.min.js`,
+        `${paths.nodeModules}jquery/dist/jquery.min.js`
     ];
 
     return gulp.src(javascriptToCopy)
-        .pipe(concat('vendor.js'))
         .pipe(gulp.dest(`${paths.scriptsDest}`));
 });
 
