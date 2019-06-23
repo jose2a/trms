@@ -28,9 +28,11 @@ gulp.task('copy:js', () => {
         .pipe(gulp.dest(`${paths.scriptsDest}`));
 });
 
-gulp.task('copy:img', function() {
-	   gulp.src(`${paths.nodeModules}admin-lte/dist/img/*.{png,gif,jpg}`)
+gulp.task('copy:img', done => {
+	   gulp.src(`${paths.nodeModules}admin-lte/dist/img/**/*.{png,gif,jpg}`)
 	   .pipe(gulp.dest(`${paths.imgsDest}`));
+	   
+	   done();
 });
 
 gulp.task('default', gulp.parallel('copy:css', 'copy:js', 'copy:img'))
