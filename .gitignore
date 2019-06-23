@@ -64,3 +64,6 @@ hs_err_pid*
 
 #properties files
 **/*.properties
+
+#node_modules directory
+node_modules/

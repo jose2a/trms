@@ -1,0 +1,17 @@
+{
+  "name": "trms",
+  "version": "1.0.0",
+  "description": "Tuition Reimbursement Management System",
+  "main": "index.js",
+  "scripts": {
+    "build": "gulp"
+  },
+  "keywords": [
+    "trms"
+  ],
+  "author": "Jose Arriaga",
+  "license": "ISC",
+  "dependencies": {
+    "admin-lte": "^2.4.12"
+  }
+}
