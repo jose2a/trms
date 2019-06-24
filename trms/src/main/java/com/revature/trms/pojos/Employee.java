@@ -6,6 +6,7 @@ public class Employee {
 	private String password;
 	private String firstName;
 	private String lastName;
+	private int supervisorId;
 
 	public Employee() {
 		super();
@@ -17,6 +18,11 @@ public class Employee {
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
+	}
+
+	public Employee(String username, String password, String firstName, String lastName, int supervisorId) {
+		this(username, password, firstName, lastName);
+		this.supervisorId = supervisorId;
 	}
 
 	public int getEmployeeId() {
@@ -57,6 +63,14 @@ public class Employee {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public int getSupervisorId() {
+		return supervisorId;
+	}
+
+	public void setSupervisorId(int supervisorId) {
+		this.supervisorId = supervisorId;
 	}
 
 	@Override

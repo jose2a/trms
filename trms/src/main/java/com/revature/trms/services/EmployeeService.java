@@ -12,6 +12,8 @@ public interface EmployeeService {
 	public boolean deleteEmployee(int employeeId);
 
 	public Employee getEmployeeById(int employeeId);
+	
+	public Employee getEmployeeByUsername(String username);
 
 	public Employee loginEmployee(String username, String password);
 
