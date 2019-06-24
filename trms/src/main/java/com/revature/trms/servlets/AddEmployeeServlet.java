@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.services.EmployeeService;
 import com.revature.trms.services.EmployeeServiceImpl;
 import com.revature.trms.utilities.LogUtilities;
@@ -32,6 +33,9 @@ public class AddEmployeeServlet extends HttpServlet {
 			throws ServletException, IOException {
 		request.setAttribute("pageHeader", "Employee");
 		request.setAttribute("pageSubHeader", "Add employee");
+		
+		request.setAttribute("employeeTypes", EmployeeType.values());
+		
 		request.getRequestDispatcher("addEmployee.jsp").forward(request, response);
 	}
 
