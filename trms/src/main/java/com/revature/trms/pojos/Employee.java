@@ -1,12 +1,12 @@
 package com.revature.trms.pojos;
 
 public class Employee {
-	private int employeeId;
+	private Integer employeeId;
 	private String username;
 	private String password;
 	private String firstName;
 	private String lastName;
-	private int supervisorId;
+	private Integer supervisorId;
 
 	public Employee() {
 		super();
@@ -25,11 +25,11 @@ public class Employee {
 		this.supervisorId = supervisorId;
 	}
 
-	public int getEmployeeId() {
+	public Integer getEmployeeId() {
 		return employeeId;
 	}
 
-	public void setEmployeeId(int employeeId) {
+	public void setEmployeeId(Integer employeeId) {
 		this.employeeId = employeeId;
 	}
 
@@ -65,11 +65,11 @@ public class Employee {
 		this.lastName = lastName;
 	}
 
-	public int getSupervisorId() {
+	public Integer getSupervisorId() {
 		return supervisorId;
 	}
 
-	public void setSupervisorId(int supervisorId) {
+	public void setSupervisorId(Integer supervisorId) {
 		this.supervisorId = supervisorId;
 	}
 

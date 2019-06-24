@@ -2,6 +2,7 @@ package com.revature.trms.daos;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.revature.trms.pojos.Employee;
@@ -16,19 +17,18 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		PreparedStatement stmt = null; // Creates the prepared statement from the query
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
-			String sql = "INSERT INTO Employee (username, password, firstName, lastName, idSupervisor) "
-					+ "VALUES(?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO employee(username, password, first_name, last_name) "
+					+ "VALUES (?, ?, ?, ?);";
 			stmt = conn.prepareStatement(sql);
 
 			stmt.setString(1, employee.getUsername());
 			stmt.setString(2, employee.getPassword());
 			stmt.setString(3, employee.getFirstName());
 			stmt.setString(4, employee.getLastName());
-			stmt.setInt(5, employee.getSupervisorId());
 
 			if (stmt.executeUpdate() != 0)
 				return true;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			LogUtilities.error("Error adding the employee." + e.getMessage());
 		}
 

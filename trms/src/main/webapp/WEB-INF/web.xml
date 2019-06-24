@@ -19,4 +19,14 @@
     <servlet-name>AdminLteTestServlet</servlet-name>
     <url-pattern>/AdminLteTestServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AddEmployeeServlet</display-name>
+    <servlet-name>AddEmployeeServlet</servlet-name>
+    <servlet-class>com.revature.trms.servlets.AddEmployeeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddEmployeeServlet</servlet-name>
+    <url-pattern>/admin/AddEmployee</url-pattern>
+  </servlet-mapping>
 </web-app>
