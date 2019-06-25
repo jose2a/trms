@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.services.EmployeeService;
@@ -33,9 +34,9 @@ public class AddEmployeeServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		setPageAttributes(request);
-		
+
 		request.getRequestDispatcher("addEmployee.jsp").forward(request, response);
 	}
 
@@ -45,12 +46,12 @@ public class AddEmployeeServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		String username = request.getParameter("username");
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String password = request.getParameter("password");
-		int supervisorId = Integer.parseInt(request.getParameter("supervisorid"));
+		String supervisorId = request.getParameter("supervisorid");
 
 		String[] employeeTypes = request.getParameterValues("employeeTypes");
 		List<Integer> employeeTypeIds = new ArrayList<>();
@@ -58,26 +59,34 @@ public class AddEmployeeServlet extends HttpServlet {
 		if (employeeTypes != null) {
 			for (String empType : employeeTypes) {
 				LogUtilities.trace("Assigning project type " + empType + " to employe.");
-				
+
 				employeeTypeIds.add(Integer.parseInt(empType));
 			}
 		}
 
 		Employee employee = new Employee(username, password, firstName, lastName);
-		employee.setSupervisorId(supervisorId);
+		employee.setSupervisorId(Integer.parseInt(supervisorId));
 		employee.setEmployeeTypes(employeeTypeIds);
 
-		boolean isAdded = employeeService.addEmployee(employee);
+		boolean isAdded = false;
+
+		try {
+			isAdded = employeeService.addEmployee(employee);
+
+		} catch (PojoValidationException pve) {
+			request.setAttribute("valErrors", pve.getErrors());
+			isAdded = false;
+		}
 
 		if (isAdded) {
 			LogUtilities.trace("Employee added successfully. Redirecting to employees list.");
-		} else {
-			LogUtilities.trace("Employee not added.");
-
-			setPageAttributes(request);
-			request.getRequestDispatcher("addEmployee.jsp").forward(request, response);
+			response.sendRedirect("index.jsp");
 		}
+		
+		LogUtilities.trace("Employee not added. Errors");
 
+		setPageAttributes(request);
+		request.getRequestDispatcher("addEmployee.jsp").forward(request, response);
 	}
 
 	private void setPageAttributes(HttpServletRequest request) {

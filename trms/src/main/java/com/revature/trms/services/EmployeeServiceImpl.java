@@ -4,11 +4,12 @@ import java.util.List;
 
 import com.revature.trms.daos.EmployeeDAO;
 import com.revature.trms.daos.EmployeeTypeDAO;
+import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.utilities.DAOUtilities;
 
-public class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl extends BaseService implements EmployeeService {
 
 	private EmployeeDAO employeeDao;
 	private EmployeeTypeDAO employeeTypeDao;
@@ -19,17 +20,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public boolean addEmployee(Employee employee) {
-		if (!employee.getEmployeeTypes().contains(EmployeeType.Associate.getValue())) {
-			employee.addEmployeeTypeId(EmployeeType.Associate.getValue());
+	public boolean addEmployee(Employee employee) throws PojoValidationException {
+		validateEmployee(employee);
+
+		if (pojoValExcep.getErrors().size() > 0) {
+			throw pojoValExcep;
 		}
+
+		setDefaultEmployeeType(employee);
 
 		boolean empAdded = employeeDao.addEmployee(employee);
 
 		if (empAdded) {
 			return employeeTypeDao.addEmployeeTypesToEmployee(employee.getEmployeeId(), employee.getEmployeeTypes());
 		}
-		
+
 		return false;
 	}
 
@@ -74,4 +79,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return employeeDao.getAllSupervisors();
 	}
 
+	private void setDefaultEmployeeType(Employee employee) {
+		if (!employee.getEmployeeTypes().contains(EmployeeType.Associate.getValue())) {
+			employee.addEmployeeTypeId(EmployeeType.Associate.getValue());
+		}
+	}
 }

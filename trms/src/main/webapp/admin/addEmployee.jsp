@@ -13,6 +13,13 @@
 				<h3 class="box-title">Employee Info</h3>
 			</div>
 			<div class="box-body">
+				
+				<ul>
+				<c:forEach var="error" items="${valErrors }">
+				<li class="text-red">${error }</li>
+				</c:forEach>
+				</ul>
+			
 				<input type="hidden" name="employeeId" value="${param.employeeId}" />
 
 
