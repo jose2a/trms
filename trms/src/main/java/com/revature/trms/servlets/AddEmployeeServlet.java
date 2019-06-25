@@ -47,12 +47,14 @@ public class AddEmployeeServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// Getting parameters from the request
 		String username = request.getParameter("username");
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String password = request.getParameter("password");
 		String supervisorId = request.getParameter("supervisorid");
 
+		// Parsing employeetype ids from string to integers
 		String[] employeeTypes = request.getParameterValues("employeeTypes");
 		List<Integer> employeeTypeIds = new ArrayList<>();
 
@@ -64,6 +66,7 @@ public class AddEmployeeServlet extends HttpServlet {
 			}
 		}
 
+		// Cresting new employee
 		Employee employee = new Employee(username, password, firstName, lastName);
 		employee.setSupervisorId(Integer.parseInt(supervisorId));
 		employee.setEmployeeTypes(employeeTypeIds);
@@ -74,6 +77,7 @@ public class AddEmployeeServlet extends HttpServlet {
 			isAdded = employeeService.addEmployee(employee);
 
 		} catch (PojoValidationException pve) {
+			// If we have validation errors, we show them to the user
 			request.setAttribute("valErrors", pve.getErrors());
 			isAdded = false;
 		}
@@ -83,13 +87,14 @@ public class AddEmployeeServlet extends HttpServlet {
 			response.sendRedirect("index.jsp");
 		} else {
 
-			LogUtilities.trace("Employee not added. Errors");
+			LogUtilities.trace("Employee not added.");
 
 			setPageAttributes(request);
 			request.getRequestDispatcher("addEmployee.jsp").forward(request, response);
 		}
 	}
 
+	// Initializing list values
 	private void setPageAttributes(HttpServletRequest request) {
 		request.setAttribute("pageHeader", "Employee");
 		request.setAttribute("pageSubHeader", "Add employee");

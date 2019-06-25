@@ -12,7 +12,9 @@
   "author": "Jose Arriaga",
   "license": "ISC",
   "dependencies": {
-    "admin-lte": "^2.4.12"
+    "admin-lte": "^2.4.12",
+    "datatables.net": "^1.10.19",
+    "datatables.net-bs": "^1.10.19"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
