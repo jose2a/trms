@@ -14,7 +14,8 @@
   "dependencies": {
     "admin-lte": "^2.4.12",
     "datatables.net": "^1.10.19",
-    "datatables.net-bs": "^1.10.19"
+    "datatables.net-bs": "^1.10.19",
+    "toastr": "^2.1.4"
   },
   "devDependencies": {
     "gulp": "^4.0.2",

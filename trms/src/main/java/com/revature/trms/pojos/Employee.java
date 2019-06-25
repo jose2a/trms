@@ -9,6 +9,7 @@ public class Employee {
 	private String password;
 	private String firstName;
 	private String lastName;
+	private double avaliableReimbursementAmount;
 	private Integer supervisorId;
 	private List<EmployeeType> employeeTypes;
 
@@ -68,6 +69,14 @@ public class Employee {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public double getAvaliableReimbursementAmount() {
+		return avaliableReimbursementAmount;
+	}
+
+	public void setAvaliableReimbursementAmount(double avaliableReimbursementAmount) {
+		this.avaliableReimbursementAmount = avaliableReimbursementAmount;
 	}
 
 	public Integer getSupervisorId() {

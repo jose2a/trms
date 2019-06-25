@@ -1,3 +1,5 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 </div>
 <!-- /.content-wrapper -->
 <footer class="main-footer">
@@ -24,5 +26,22 @@
 <!-- AdminLTE App -->
 <script
 	src="${pageContext.request.contextPath}/resources/js/adminlte.min.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/toastr.min.js"></script>
+
+<c:choose>
+	<c:when test="${not empty message}">
+
+		<script>
+			window.onload = function() {
+				toastr.${messageType}('${message}');
+			}
+		</script>
+		<%
+			session.setAttribute("message", null);
+			session.setAttribute("messageType", null);
+		%>
+	</c:when>
+</c:choose>
 </body>
 </html>

@@ -84,10 +84,17 @@ public class AddEmployeeServlet extends HttpServlet {
 
 		if (isAdded) {
 			LogUtilities.trace("Employee added successfully. Redirecting to employees list.");
+			
+			request.getSession().setAttribute("message", "Employee added successfully.");
+			request.getSession().setAttribute("messageType", "success");
+			
 			response.sendRedirect(request.getContextPath() + "/admin/ListEmployee");
 		} else {
 
 			LogUtilities.trace("Employee not added.");
+			
+			request.getSession().setAttribute("message", "Employee was not added.");
+			request.getSession().setAttribute("messageType", "error");
 
 			setPageAttributes(request);
 			request.getRequestDispatcher("addEmployee.jsp").forward(request, response);

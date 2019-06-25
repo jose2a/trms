@@ -2,7 +2,7 @@
 <jsp:include page="../header.jsp" />
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+	
 <!-- Main content -->
 <section class="content">
 

@@ -32,6 +32,7 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 			throw pojoValidationException;
 		}
 
+		employee.setAvaliableReimbursementAmount(1000);
 		setDefaultEmployeeType(employee);
 
 		boolean empAdded = employeeDao.addEmployee(employee);
@@ -96,7 +97,7 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 
 	@Override
 	public Employee getEmployeeByUsername(String username) throws PojoValidationException {
-		validateEmployeeUsername(username); // Validate username
+		validateEmployeeUsername(username, true); // Validate username
 		checkValidationResults(); // Check validation status
 
 		Employee employee = employeeDao.getEmployeeByUsername(username);
@@ -110,7 +111,7 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 
 	@Override
 	public Employee loginEmployee(String username, String password) throws PojoValidationException {
-		validateEmployeeUsername(username);
+		validateEmployeeUsername(username, true);
 		validateEmployeePassword(password);
 		checkValidationResults(); // Check validation status
 

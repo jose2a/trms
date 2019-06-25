@@ -5,12 +5,20 @@ import com.revature.trms.pojos.Employee;
 
 public abstract class BaseService {
 
-	protected PojoValidationException pojoValidationException;
+	protected PojoValidationException pojoValidationException = new PojoValidationException();
 
-	private void initPojoValidationException() {
-		if (pojoValidationException == null) {
-			pojoValidationException = new PojoValidationException();
-		}
+//	private void initPojoValidationException(boolean clean) {
+//		if (pojoValidationException == null) {
+//			pojoValidationException = new PojoValidationException();
+//		}
+//		
+//		if (clean) {
+//			pojoValidationException.getErrors().clear();
+//		}
+//	}
+
+	private void cleanValidationResults() {
+		pojoValidationException.getErrors().clear();
 	}
 
 	protected void checkValidationResults() throws PojoValidationException {
@@ -20,7 +28,7 @@ public abstract class BaseService {
 	}
 
 	protected void validateEmployee(Employee employee) {
-		initPojoValidationException();
+		cleanValidationResults();
 
 		validateEmployeeUsername(employee.getUsername());
 
@@ -39,19 +47,27 @@ public abstract class BaseService {
 	}
 
 	protected void validateEmployeeUsername(String username) {
-		initPojoValidationException();
 
 		if (username == null || username.isEmpty()) {
 			pojoValidationException.addError("Username should not be empty.");
 		}
 	}
 
+	protected void validateEmployeeUsername(String username, boolean clean) {
+		cleanValidationResults();
+		validateEmployeeUsername(username);
+	}
+
 	protected void validateEmployeePassword(String password) {
-		initPojoValidationException();
 
 		if (password == null || password.isEmpty()) {
 			pojoValidationException.addError("Password should not be empty.");
 		}
+	}
+	
+	protected void validateEmployeePassword(String password, boolean clean) {
+		cleanValidationResults();
+		validateEmployeePassword(password);
 	}
 
 }

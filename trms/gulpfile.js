@@ -13,7 +13,8 @@ gulp.task('copy:css', () => {
         `${paths.nodeModules}admin-lte/dist/css/AdminLTE.min.css`,
         `${paths.nodeModules}admin-lte/dist/css/skins/_all-skins.min.css`,
         `${paths.nodeModules}bootstrap/dist/css/bootstrap.min.css`,
-        `${paths.nodeModules}datatables.net-bs/css/dataTables.bootstrap.min.css`
+        `${paths.nodeModules}datatables.net-bs/css/dataTables.bootstrap.min.css`,
+        `${paths.nodeModules}toastr/build/toastr.min.css`
     ];
 
     return gulp.src(cssToCopy)
@@ -26,7 +27,8 @@ gulp.task('copy:js', () => {
         `${paths.nodeModules}bootstrap/dist/js/bootstrap.min.js`,
         `${paths.nodeModules}jquery/dist/jquery.min.js`,
         `${paths.nodeModules}datatables.net/js/jquery.dataTables.min.js`,
-        `${paths.nodeModules}datatables.net-bs/js/dataTables.bootstrap.min.js`
+        `${paths.nodeModules}datatables.net-bs/js/dataTables.bootstrap.min.js`,
+        `${paths.nodeModules}toastr/build/toastr.min.js`
     ];
 
     return gulp.src(javascriptToCopy)
