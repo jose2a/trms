@@ -29,4 +29,14 @@
     <servlet-name>AddEmployeeServlet</servlet-name>
     <url-pattern>/admin/AddEmployee</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ListEmployeeServlet</display-name>
+    <servlet-name>ListEmployeeServlet</servlet-name>
+    <servlet-class>com.revature.trms.servlets.ListEmployeeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ListEmployeeServlet</servlet-name>
+    <url-pattern>/admin/ListEmployee</url-pattern>
+  </servlet-mapping>
 </web-app>

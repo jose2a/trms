@@ -62,11 +62,12 @@
 			</div>
 
 			<div class="box-footer">
-				<a href="#" class="btn btn-default">Cancel</a>
+				<a href="${pageContext.request.contextPath}/admin/ListEmployee" class="btn btn-default">Cancel</a>
 				<button class="btn btn-primary" type="submit">Add Employee</button>
 			</div>
 		</div>
 	</form>
+	
 </section>
 <!-- /.content -->
 

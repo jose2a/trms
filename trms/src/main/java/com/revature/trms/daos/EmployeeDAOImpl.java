@@ -227,8 +227,6 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id FROM employee";
 
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, EmployeeType.Manager.getValue());
-			ps.setInt(2, EmployeeType.Head_Department.getValue());
 
 			rs = ps.executeQuery();
 
@@ -237,8 +235,6 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 				ModelMapperUtilities.mapRsToEmployee(rs, employee);
 
 				employees.add(employee);
-
-				LogUtilities.trace(employee.getFirstName());
 			}
 
 		} catch (SQLException e) {

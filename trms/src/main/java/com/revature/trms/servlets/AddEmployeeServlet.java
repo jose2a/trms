@@ -84,7 +84,7 @@ public class AddEmployeeServlet extends HttpServlet {
 
 		if (isAdded) {
 			LogUtilities.trace("Employee added successfully. Redirecting to employees list.");
-			response.sendRedirect("index.jsp");
+			response.sendRedirect(request.getContextPath() + "/admin/ListEmployee");
 		} else {
 
 			LogUtilities.trace("Employee not added.");
