@@ -13,6 +13,10 @@ public enum EmployeeType {
 		return value;
 	}
 
+	public String getText() {
+		return String.join(" ", name().toString().split("_"));
+	}
+
 	private EmployeeType(int value) {
 		this.value = value;
 	}

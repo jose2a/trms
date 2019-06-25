@@ -9,9 +9,6 @@
 	<form action="AddEmployee" method="post">
 		<div class="box box-primary">
 
-			<div class="box-header with-border">
-				<h3 class="box-title">Employee Info</h3>
-			</div>
 			<div class="box-body">
 				
 				<ul>
@@ -56,7 +53,7 @@
 						size="5" class="form-control">
 
 						<c:forEach var="empType" items="${employeeTypeList}">
-							<option value="${empType.value}">${empType }</option>
+							<option value="${empType.value}">${empType.text }</option>
 						</c:forEach>
 
 					</select>
