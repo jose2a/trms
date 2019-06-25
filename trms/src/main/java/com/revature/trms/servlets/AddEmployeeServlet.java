@@ -56,20 +56,20 @@ public class AddEmployeeServlet extends HttpServlet {
 
 		// Parsing employeetype ids from string to integers
 		String[] employeeTypes = request.getParameterValues("employeeTypes");
-		List<Integer> employeeTypeIds = new ArrayList<>();
+		List<EmployeeType> employeeType = new ArrayList<>();
 
 		if (employeeTypes != null) {
 			for (String empType : employeeTypes) {
 				LogUtilities.trace("Assigning project type " + empType + " to employe.");
 
-				employeeTypeIds.add(Integer.parseInt(empType));
+				employeeType.add(EmployeeType.valueOf(Integer.parseInt(empType)));
 			}
 		}
 
 		// Cresting new employee
 		Employee employee = new Employee(username, password, firstName, lastName);
 		employee.setSupervisorId(Integer.parseInt(supervisorId));
-		employee.setEmployeeTypes(employeeTypeIds);
+		employee.setEmployeeTypes(employeeType);
 
 		boolean isAdded = false;
 

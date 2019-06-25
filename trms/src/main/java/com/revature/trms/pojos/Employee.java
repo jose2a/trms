@@ -10,7 +10,7 @@ public class Employee {
 	private String firstName;
 	private String lastName;
 	private Integer supervisorId;
-	private List<Integer> employeeTypes;
+	private List<EmployeeType> employeeTypes;
 
 	public Employee() {
 		super();
@@ -78,16 +78,16 @@ public class Employee {
 		this.supervisorId = supervisorId;
 	}
 
-	public List<Integer> getEmployeeTypes() {
+	public List<EmployeeType> getEmployeeTypes() {
 		return employeeTypes;
 	}
 
-	public void setEmployeeTypes(List<Integer> employeeTypes) {
+	public void setEmployeeTypes(List<EmployeeType> employeeTypes) {
 		this.employeeTypes = employeeTypes;
 	}
-	
-	public void addEmployeeTypeId(Integer employeeTypeId) {
-		employeeTypes.add(employeeTypeId);
+
+	public void addEmployeeTypeId(EmployeeType employeeType) {
+		employeeTypes.add(employeeType);
 	}
 
 	@Override

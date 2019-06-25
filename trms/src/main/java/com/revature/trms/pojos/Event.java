@@ -15,6 +15,7 @@ public class Event {
 	private String workJustification;
 	private int workTimeMissed;
 	private boolean requiredPresentation;
+	private int gradeCutoffId;
 
 	// Used for business logic
 	private double projectedAmountReimbused;
@@ -37,7 +38,7 @@ public class Event {
 	}
 
 	public Event(LocalDate dateSubmitted, LocalTime timeSubmitted, String location, String description, double cost,
-			String workJustification, int workTimeMissed, boolean requiredPresentation) {
+			String workJustification, int workTimeMissed, boolean requiredPresentation, int gradeCutoffId) {
 		super();
 		this.dateSubmitted = dateSubmitted;
 		this.timeSubmitted = timeSubmitted;
@@ -47,6 +48,7 @@ public class Event {
 		this.workJustification = workJustification;
 		this.workTimeMissed = workTimeMissed;
 		this.requiredPresentation = requiredPresentation;
+		this.gradeCutoffId = gradeCutoffId;
 	}
 
 	public int getEventId() {
@@ -119,6 +121,14 @@ public class Event {
 
 	public void setRequiredPresentation(boolean requiredPresentation) {
 		this.requiredPresentation = requiredPresentation;
+	}
+
+	public int getGradeCutoffId() {
+		return gradeCutoffId;
+	}
+
+	public void setGradeCutoffId(int gradeCutoffId) {
+		this.gradeCutoffId = gradeCutoffId;
 	}
 
 	public double getProjectedAmountReimbused() {

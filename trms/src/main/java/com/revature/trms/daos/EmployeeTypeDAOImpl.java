@@ -7,13 +7,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.utilities.ConnectionUtilities;
 import com.revature.trms.utilities.LogUtilities;
 
 public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 
 	@Override
-	public boolean addEmployeeTypesToEmployee(int employeeId, List<Integer> employeeTypeIds) {
+	public boolean addEmployeeTypesToEmployee(int employeeId, List<EmployeeType> employeeType) {
 		LogUtilities.trace("Adding roles to employee. " + employeeId);
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
@@ -22,17 +23,17 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 
 			String sql = "INSERT INTO employee_employee_type(employee_id, employee_type_id) VALUES (?, ?)";
 
-			for (Integer typeId : employeeTypeIds) {
+			for (EmployeeType type : employeeType) {
 
 				ps = conn.prepareStatement(sql);
 
 				ps.setInt(1, employeeId);
-				ps.setInt(2, typeId);
+				ps.setInt(2, type.getValue());
 
 				if (ps.executeUpdate() == 0)
 					return false;
 
-				LogUtilities.trace("Role " + typeId + " added to employee.");
+				LogUtilities.trace("Role " + type.getValue() + " added to employee.");
 			}
 		} catch (SQLException e) {
 			LogUtilities.error("Error adding role to employee." + e.getMessage());
@@ -73,10 +74,10 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 	}
 
 	@Override
-	public List<Integer> getEmployeeTypesForEmployee(int employeeId) {
+	public List<EmployeeType> getEmployeeTypesForEmployee(int employeeId) {
 		LogUtilities.trace("Get roles for employee " + employeeId);
 
-		List<Integer> empTypes = new ArrayList<>();
+		List<EmployeeType> empTypes = new ArrayList<>();
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null; // Queries the database
@@ -90,7 +91,7 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				empTypes.add(rs.getInt("employee_type_id"));
+				empTypes.add(EmployeeType.valueOf(rs.getInt("employee_type_id")));
 			}
 
 		} catch (SQLException e) {

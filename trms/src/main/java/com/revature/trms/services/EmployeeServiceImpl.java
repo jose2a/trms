@@ -134,8 +134,8 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 	}
 
 	private void setDefaultEmployeeType(Employee employee) {
-		if (!employee.getEmployeeTypes().contains(EmployeeType.Associate.getValue())) {
-			employee.addEmployeeTypeId(EmployeeType.Associate.getValue());
+		if (!employee.getEmployeeTypes().contains(EmployeeType.Associate)) {
+			employee.addEmployeeTypeId(EmployeeType.Associate);
 		}
 	}
 }
