@@ -23,8 +23,8 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 	public boolean addEmployee(Employee employee) throws PojoValidationException {
 		validateEmployee(employee);
 
-		if (pojoValExcep.getErrors().size() > 0) {
-			throw pojoValExcep;
+		if (pojoValidationException.getErrors().size() > 0) {
+			throw pojoValidationException;
 		}
 
 		setDefaultEmployeeType(employee);

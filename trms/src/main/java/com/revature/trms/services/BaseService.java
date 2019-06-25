@@ -5,30 +5,30 @@ import com.revature.trms.pojos.Employee;
 
 public abstract class BaseService {
 
-	protected PojoValidationException pojoValExcep;
+	protected PojoValidationException pojoValidationException;
 
 	protected void validateEmployee(Employee employee) {
-		pojoValExcep = new PojoValidationException();
+		pojoValidationException = new PojoValidationException();
 
 		validateEmployeeUsername(employee);
 
-		if (employee.getFirstName() == null && employee.getFirstName().isEmpty()) {
-			pojoValExcep.addError("First Name should not be empty.");
+		if (employee.getFirstName() == null || employee.getFirstName().isEmpty()) {
+			pojoValidationException.addError("First Name should not be empty.");
 		}
 
-		if (employee.getLastName() == null && employee.getLastName().isEmpty()) {
-			pojoValExcep.addError("Last Name should not be empty.");
+		if (employee.getLastName() == null || employee.getLastName().isEmpty()) {
+			pojoValidationException.addError("Last Name should not be empty.");
 		}
 
 		if (employee.getSupervisorId() == null) {
-			pojoValExcep.addError("Supervisor should be selected.");
+			pojoValidationException.addError("Supervisor should be selected.");
 		}
 
 	}
 
 	protected void validateEmployeeUsername(Employee employee) {
 		if (employee.getUsername() == null || employee.getUsername().isEmpty()) {
-			pojoValExcep.addError("Username should not be empty.");
+			pojoValidationException.addError("Username should not be empty.");
 		}
 	}
 
