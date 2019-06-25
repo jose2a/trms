@@ -7,10 +7,22 @@ public abstract class BaseService {
 
 	protected PojoValidationException pojoValidationException;
 
-	protected void validateEmployee(Employee employee) {
-		pojoValidationException = new PojoValidationException();
+	private void initPojoValidationException() {
+		if (pojoValidationException == null) {
+			pojoValidationException = new PojoValidationException();
+		}
+	}
 
-		validateEmployeeUsername(employee);
+	protected void checkValidationResults() throws PojoValidationException {
+		if (pojoValidationException.getErrors().size() > 0) {
+			throw pojoValidationException;
+		}
+	}
+
+	protected void validateEmployee(Employee employee) {
+		initPojoValidationException();
+
+		validateEmployeeUsername(employee.getUsername());
 
 		if (employee.getFirstName() == null || employee.getFirstName().isEmpty()) {
 			pojoValidationException.addError("First Name should not be empty.");
@@ -26,9 +38,19 @@ public abstract class BaseService {
 
 	}
 
-	protected void validateEmployeeUsername(Employee employee) {
-		if (employee.getUsername() == null || employee.getUsername().isEmpty()) {
+	protected void validateEmployeeUsername(String username) {
+		initPojoValidationException();
+
+		if (username == null || username.isEmpty()) {
 			pojoValidationException.addError("Username should not be empty.");
+		}
+	}
+
+	protected void validateEmployeePassword(String password) {
+		initPojoValidationException();
+
+		if (password == null || password.isEmpty()) {
+			pojoValidationException.addError("Password should not be empty.");
 		}
 	}
 
