@@ -18,4 +18,6 @@ public interface EmployeeService {
 	public Employee loginEmployee(String username, String password);
 
 	public List<Employee> getAllEmployees();
+	
+	public List<Employee> getAllSupervisors();
 }

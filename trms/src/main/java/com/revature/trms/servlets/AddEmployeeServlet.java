@@ -1,6 +1,8 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,10 +33,8 @@ public class AddEmployeeServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.setAttribute("pageHeader", "Employee");
-		request.setAttribute("pageSubHeader", "Add employee");
 		
-		request.setAttribute("employeeTypes", EmployeeType.values());
+		setPageAttributes(request);
 		
 		request.getRequestDispatcher("addEmployee.jsp").forward(request, response);
 	}
@@ -45,22 +45,47 @@ public class AddEmployeeServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		String username = request.getParameter("username");
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String password = request.getParameter("password");
+		int supervisorId = Integer.parseInt(request.getParameter("supervisorid"));
+
+		String[] employeeTypes = request.getParameterValues("employeeTypes");
+		List<Integer> employeeTypeIds = new ArrayList<>();
+
+		if (employeeTypes != null) {
+			for (String empType : employeeTypes) {
+				LogUtilities.trace("Assigning project type " + empType + " to employe.");
+				
+				employeeTypeIds.add(Integer.parseInt(empType));
+			}
+		}
 
 		Employee employee = new Employee(username, password, firstName, lastName);
+		employee.setSupervisorId(supervisorId);
+		employee.setEmployeeTypes(employeeTypeIds);
 
 		boolean isAdded = employeeService.addEmployee(employee);
 
-		if (!isAdded) {
-			LogUtilities.trace("Employee not added.");
-			request.getRequestDispatcher("addEmployee.jsp").forward(request, response);
+		if (isAdded) {
+			LogUtilities.trace("Employee added successfully. Redirecting to employees list.");
 		} else {
-			LogUtilities.trace("Employee added successfully.");
+			LogUtilities.trace("Employee not added.");
+
+			setPageAttributes(request);
+			request.getRequestDispatcher("addEmployee.jsp").forward(request, response);
 		}
 
+	}
+
+	private void setPageAttributes(HttpServletRequest request) {
+		request.setAttribute("pageHeader", "Employee");
+		request.setAttribute("pageSubHeader", "Add employee");
+
+		request.setAttribute("supervisors", employeeService.getAllSupervisors());
+		request.setAttribute("employeeTypeList", EmployeeType.values());
 	}
 
 }

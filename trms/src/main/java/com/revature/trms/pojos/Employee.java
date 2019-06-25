@@ -1,5 +1,8 @@
 package com.revature.trms.pojos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Employee {
 	private Integer employeeId;
 	private String username;
@@ -7,13 +10,15 @@ public class Employee {
 	private String firstName;
 	private String lastName;
 	private Integer supervisorId;
+	private List<Integer> employeeTypes;
 
 	public Employee() {
 		super();
+		employeeTypes = new ArrayList<>();
 	}
 
 	public Employee(String username, String password, String firstName, String lastName) {
-		super();
+		this();
 		this.username = username;
 		this.password = password;
 		this.firstName = firstName;
@@ -71,6 +76,18 @@ public class Employee {
 
 	public void setSupervisorId(Integer supervisorId) {
 		this.supervisorId = supervisorId;
+	}
+
+	public List<Integer> getEmployeeTypes() {
+		return employeeTypes;
+	}
+
+	public void setEmployeeTypes(List<Integer> employeeTypes) {
+		this.employeeTypes = employeeTypes;
+	}
+	
+	public void addEmployeeTypeId(Integer employeeTypeId) {
+		employeeTypes.add(employeeTypeId);
 	}
 
 	@Override
