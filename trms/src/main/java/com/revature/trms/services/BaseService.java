@@ -5,28 +5,23 @@ import com.revature.trms.pojos.Employee;
 
 public abstract class BaseService {
 
+	// Saves validation errors in a list inside the exception
+	// so that we can throw after validating everything we need
 	protected PojoValidationException pojoValidationException = new PojoValidationException();
 
-//	private void initPojoValidationException(boolean clean) {
-//		if (pojoValidationException == null) {
-//			pojoValidationException = new PojoValidationException();
-//		}
-//		
-//		if (clean) {
-//			pojoValidationException.getErrors().clear();
-//		}
-//	}
-
+	// Clean validation errors from the exception
 	private void cleanValidationResults() {
 		pojoValidationException.getErrors().clear();
 	}
 
+	// Check if we have validation errors, if we have them we throw them
 	protected void checkValidationResults() throws PojoValidationException {
 		if (pojoValidationException.getErrors().size() > 0) {
 			throw pojoValidationException;
 		}
 	}
 
+	// Validating employee
 	protected void validateEmployee(Employee employee) {
 		cleanValidationResults();
 
@@ -40,12 +35,23 @@ public abstract class BaseService {
 			pojoValidationException.addError("Last Name should not be empty.");
 		}
 
-		if (employee.getSupervisorId() == null) {
-			pojoValidationException.addError("Supervisor should be selected.");
-		}
+		validateSupervisorId(employee.getSupervisorId());
 
 	}
 
+	// Validating supervisor id
+	protected void validateSupervisorId(Integer supervisorId) {
+		if (supervisorId == null) {
+			pojoValidationException.addError("Supervisor should be selected.");
+		}
+	}
+
+	protected void validateSupervisorId(Integer supervisorId, boolean clean) {
+		cleanValidationResults();
+		validateSupervisorId(supervisorId);
+	}
+
+	// Validating employee username
 	protected void validateEmployeeUsername(String username) {
 
 		if (username == null || username.isEmpty()) {
@@ -58,13 +64,14 @@ public abstract class BaseService {
 		validateEmployeeUsername(username);
 	}
 
+	// Validating employee password
 	protected void validateEmployeePassword(String password) {
 
 		if (password == null || password.isEmpty()) {
 			pojoValidationException.addError("Password should not be empty.");
 		}
 	}
-	
+
 	protected void validateEmployeePassword(String password, boolean clean) {
 		cleanValidationResults();
 		validateEmployeePassword(password);

@@ -15,12 +15,16 @@ public interface EmployeeService {
 	public boolean deleteEmployee(int employeeId) throws NotFoundRecordException;
 
 	public Employee getEmployeeById(int employeeId);
-	
+
 	public Employee getEmployeeByUsername(String username) throws PojoValidationException;
 
 	public Employee loginEmployee(String username, String password) throws PojoValidationException;
 
 	public List<Employee> getAllEmployees();
-	
+
 	public List<Employee> getAllSupervisors();
+
+	public List<Employee> getEmployeesUnderSupervisorId(Integer supervisorId) throws PojoValidationException;
+
+	public List<Integer> getEmployeesIdsUnderSupervisorId(Integer supervisorId) throws PojoValidationException;
 }

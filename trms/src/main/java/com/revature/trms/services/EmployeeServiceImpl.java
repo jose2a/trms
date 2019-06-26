@@ -24,13 +24,10 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 
 	@Override
 	public boolean addEmployee(Employee employee) throws PojoValidationException {
-		validateEmployee(employee);
+		validateEmployee(employee); // validating
+		checkValidationResults(); // check validation results
 
-		if (pojoValidationException.getErrors().size() > 0) {
-			LogUtilities.trace("Add employee. Validation errors.");
-
-			throw pojoValidationException;
-		}
+		LogUtilities.trace("Not validation errors while adding a new employee.");
 
 		employee.setAvaliableReimbursementAmount(1000);
 		setDefaultEmployeeType(employee);
@@ -54,17 +51,16 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 			throw new PreexistingRecordException("An employee with the same username was already added to the system.");
 		}
 
-		validateEmployee(employee);
+		validateEmployee(employee); // validating employee
+		checkValidationResults(); // check validation results
 
-		if (pojoValidationException.getErrors().size() > 0) {
-			LogUtilities.trace("Validation errors while updating the employee");
-
-			throw pojoValidationException;
-		}
+		LogUtilities.trace("Not Validation errors while updating the employee");
 
 		boolean empUpdated = employeeDao.updateEmployee(employee);
 
 		if (empUpdated) {
+			LogUtilities.trace("Employee updated.");
+
 			employeeTypeDao.removeEmployeeTypesFromEmployee(employee.getEmployeeId());
 			return employeeTypeDao.addEmployeeTypesToEmployee(employee.getEmployeeId(), employee.getEmployeeTypes());
 		}
@@ -89,6 +85,8 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 		Employee employee = employeeDao.getEmployeeById(employeeId);
 
 		if (employee != null) { // Loading employees types if the employee was found
+			LogUtilities.trace("Employee found. Loading employee types");
+
 			employee.setEmployeeTypes(employeeTypeDao.getEmployeeTypesForEmployee(employeeId));
 		}
 
@@ -103,6 +101,8 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 		Employee employee = employeeDao.getEmployeeByUsername(username);
 
 		if (employee != null) { // Loading employees types if the employee was found
+			LogUtilities.trace("Employee found. Loading employee types.");
+
 			employee.setEmployeeTypes(employeeTypeDao.getEmployeeTypesForEmployee(employee.getEmployeeId()));
 		}
 
@@ -113,27 +113,55 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 	public Employee loginEmployee(String username, String password) throws PojoValidationException {
 		validateEmployeeUsername(username, true);
 		validateEmployeePassword(password);
-		checkValidationResults(); // Check validation status
+		checkValidationResults(); // Check validation results
 
 		Employee employee = employeeDao.getEmployeeByUsernameAndPassword(username, password);
-		
+
 		if (employee != null) { // Loading employees types if the employee was found
+			LogUtilities.trace("Employee found. Getting employee types.");
+
 			employee.setEmployeeTypes(employeeTypeDao.getEmployeeTypesForEmployee(employee.getEmployeeId()));
 		}
-		
+
 		return null;
 	}
 
 	@Override
 	public List<Employee> getAllEmployees() {
+		LogUtilities.trace("Getting all the employees");
+
 		return employeeDao.getAllEmployees();
 	}
 
 	@Override
 	public List<Employee> getAllSupervisors() {
+		LogUtilities.trace("Getting all the supervisors");
+
 		return employeeDao.getAllSupervisors();
 	}
 
+	@Override
+	public List<Employee> getEmployeesUnderSupervisorId(Integer supervisorId) throws PojoValidationException {
+		LogUtilities.trace("Getting all employees for this supervisor " + supervisorId);
+
+		validateSupervisorId(supervisorId, true);
+		checkValidationResults(); // check validation results
+
+		return employeeDao.getEmployeesUnderSupervisorId(supervisorId);
+	}
+
+	@Override
+	public List<Integer> getEmployeesIdsUnderSupervisorId(Integer supervisorId) throws PojoValidationException {
+		LogUtilities.trace("Getting employee ids for this supervisor " + supervisorId);
+
+		validateSupervisorId(supervisorId, true);
+		checkValidationResults(); // check validation results
+
+		return employeeDao.getEmployeesIdsUnderSupervisorId(supervisorId);
+
+	}
+
+	// Setting associate as a default employee type
 	private void setDefaultEmployeeType(Employee employee) {
 		if (!employee.getEmployeeTypes().contains(EmployeeType.Associate)) {
 			employee.addEmployeeTypeId(EmployeeType.Associate);
