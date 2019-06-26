@@ -353,4 +353,10 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 		return employeeIds;
 	}
 
+	@Override
+	public Employee getEmployeeSupervisor(Integer employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

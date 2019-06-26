@@ -16,6 +16,8 @@ public interface EmployeeDAO {
 	public Employee getEmployeeByUsername(String username);
 
 	public Employee getEmployeeByUsernameAndPassword(String username, String password);
+	
+	public Employee getEmployeeSupervisor(Integer employeeId);
 
 	public List<Employee> getAllEmployees();
 	
