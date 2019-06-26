@@ -2,7 +2,7 @@ package com.revature.trms.pojos;
 
 public class InformationRequired {
 
-	private int stageId;
+	private int eventId;
 	private int employeeId;
 
 	private String information;
@@ -11,19 +11,19 @@ public class InformationRequired {
 		super();
 	}
 
-	public InformationRequired(int stageId, int employeeId, String information) {
+	public InformationRequired(int eventId, int employeeId, String information) {
 		super();
-		this.stageId = stageId;
+		this.eventId = eventId;
 		this.employeeId = employeeId;
 		this.information = information;
 	}
 
-	public int getStageId() {
-		return stageId;
+	public int getEventId() {
+		return eventId;
 	}
 
-	public void setStageId(int stageId) {
-		this.stageId = stageId;
+	public void setEventId(int eventId) {
+		this.eventId = eventId;
 	}
 
 	public int getEmployeeId() {
@@ -48,7 +48,7 @@ public class InformationRequired {
 		int result = 1;
 		result = prime * result + employeeId;
 		result = prime * result + ((information == null) ? 0 : information.hashCode());
-		result = prime * result + stageId;
+		result = prime * result + eventId;
 		return result;
 	}
 
@@ -68,14 +68,14 @@ public class InformationRequired {
 				return false;
 		} else if (!information.equals(other.information))
 			return false;
-		if (stageId != other.stageId)
+		if (eventId != other.eventId)
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "InformationRequired [stageId=" + stageId + ", employeeId=" + employeeId + ", information=" + information
+		return "InformationRequired [stageId=" + eventId + ", employeeId=" + employeeId + ", information=" + information
 				+ "]";
 	}
 

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Event {
+	
 	private int eventId;
 
 	// Required information from employee
@@ -31,7 +32,12 @@ public class Event {
 	private int employeeId;
 	private int eventTypeId;
 	private int gradingFormatId;
-	private EventStatus eventStatus;
+	
+	private EventStatus dsEventStatus;
+	private EventStatus hdEventStatus;
+	private EventStatus bencoEventStatus;
+	
+	private ApprovalStage approvalStage;
 
 	public Event() {
 		super();
@@ -203,12 +209,38 @@ public class Event {
 		this.gradingFormatId = gradingFormatId;
 	}
 
-	public EventStatus getEventStatus() {
-		return eventStatus;
+	
+
+	public EventStatus getDsEventStatus() {
+		return dsEventStatus;
 	}
 
-	public void setEventStatus(EventStatus eventStatus) {
-		this.eventStatus = eventStatus;
+	public void setDsEventStatus(EventStatus dsEventStatus) {
+		this.dsEventStatus = dsEventStatus;
+	}
+
+	public EventStatus getHdEventStatus() {
+		return hdEventStatus;
+	}
+
+	public void setHdEventStatus(EventStatus hdEventStatus) {
+		this.hdEventStatus = hdEventStatus;
+	}
+
+	public EventStatus getBencoEventStatus() {
+		return bencoEventStatus;
+	}
+
+	public void setBencoEventStatus(EventStatus bencoEventStatus) {
+		this.bencoEventStatus = bencoEventStatus;
+	}
+
+	public ApprovalStage getApprovalStage() {
+		return approvalStage;
+	}
+
+	public void setApprovalStage(ApprovalStage approvalStage) {
+		this.approvalStage = approvalStage;
 	}
 
 	@Override
@@ -288,10 +320,13 @@ public class Event {
 		return "Event [eventId=" + eventId + ", dateSubmitted=" + dateSubmitted + ", timeSubmitted=" + timeSubmitted
 				+ ", location=" + location + ", description=" + description + ", cost=" + cost + ", workJustification="
 				+ workJustification + ", workTimeMissed=" + workTimeMissed + ", requiredPresentation="
-				+ requiredPresentation + ", projectedAmountReimbused=" + projectedAmountReimbused
-				+ ", acceptedAmountReimbursed=" + acceptedAmountReimbursed + ", isUrgent=" + isUrgent
-				+ ", exceedsAvaliableFunds=" + exceedsAvaliableFunds + ", employeeId=" + employeeId + ", eventTypeId="
-				+ eventTypeId + ", gradingFormatId=" + gradingFormatId + ", eventStatus=" + eventStatus + "]";
+				+ requiredPresentation + ", gradeCutoffId=" + gradeCutoffId + ", projectedAmountReimbused="
+				+ projectedAmountReimbused + ", acceptedAmountReimbursed=" + acceptedAmountReimbursed + ", isUrgent="
+				+ isUrgent + ", exceedsAvaliableFunds=" + exceedsAvaliableFunds + ", passingGradeProvided="
+				+ passingGradeProvided + ", successfulPresentationProvided=" + successfulPresentationProvided
+				+ ", employeeId=" + employeeId + ", eventTypeId=" + eventTypeId + ", gradingFormatId=" + gradingFormatId
+				+ ", dsEventStatus=" + dsEventStatus + ", hdEventStatus=" + hdEventStatus + ", bencoEventStatus="
+				+ bencoEventStatus + ", approvalStage=" + approvalStage + "]";
 	}
 
 }

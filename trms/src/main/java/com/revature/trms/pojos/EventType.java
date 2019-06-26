@@ -3,6 +3,7 @@ package com.revature.trms.pojos;
 public class EventType {
 
 	private int eventTypeId;
+	
 	private String name;
 	private int reimburseCoverage;
 

@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Employee {
+	
 	private Integer employeeId;
+	
 	private String username;
 	private String password;
 	private String firstName;
 	private String lastName;
 	private double avaliableReimbursementAmount;
+	
 	private Integer supervisorId;
+	
 	private List<EmployeeType> employeeTypes;
 
 	public Employee() {

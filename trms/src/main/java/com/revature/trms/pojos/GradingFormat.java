@@ -3,6 +3,7 @@ package com.revature.trms.pojos;
 public class GradingFormat {
 
 	private int gradingFormatId;
+	
 	private String name;
 
 	public GradingFormat() {

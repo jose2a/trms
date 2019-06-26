@@ -2,25 +2,26 @@ package com.revature.trms.pojos;
 
 public class ReasonExceeding {
 
-	private int reasonExceedingId;
+	private int eventId;
+	
 	private String reason;
 
 	public ReasonExceeding() {
 		super();
 	}
 
-	public ReasonExceeding(int reasonExceedingId, String reason) {
+	public ReasonExceeding(int eventId, String reason) {
 		super();
-		this.reasonExceedingId = reasonExceedingId;
+		this.eventId = eventId;
 		this.reason = reason;
 	}
 
-	public int getReasonExceedingId() {
-		return reasonExceedingId;
+	public int getEventId() {
+		return eventId;
 	}
 
-	public void setReasonExceedingId(int reasonExceedingId) {
-		this.reasonExceedingId = reasonExceedingId;
+	public void setEventId(int eventId) {
+		this.eventId = eventId;
 	}
 
 	public String getReason() {
@@ -36,7 +37,7 @@ public class ReasonExceeding {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((reason == null) ? 0 : reason.hashCode());
-		result = prime * result + reasonExceedingId;
+		result = prime * result + eventId;
 		return result;
 	}
 
@@ -54,16 +55,14 @@ public class ReasonExceeding {
 				return false;
 		} else if (!reason.equals(other.reason))
 			return false;
-		if (reasonExceedingId != other.reasonExceedingId)
+		if (eventId != other.eventId)
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "ReasonExceeding [reasonExceedingId=" + reasonExceedingId + ", reason=" + reason + "]";
+		return "ReasonExceeding [eventId=" + eventId + ", reason=" + reason + "]";
 	}
-
-	
 
 }

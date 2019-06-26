@@ -2,25 +2,26 @@ package com.revature.trms.pojos;
 
 public class ReasonDenied {
 
-	private int reasonDeniedId;
+	private int eventId;
+	
 	private String reason;
 
 	public ReasonDenied() {
 		super();
 	}
 
-	public ReasonDenied(int reasonDeniedId, String reason) {
+	public ReasonDenied(int eventId, String reason) {
 		super();
-		this.reasonDeniedId = reasonDeniedId;
+		this.eventId = eventId;
 		this.reason = reason;
 	}
 
-	public int getReasonDeniedId() {
-		return reasonDeniedId;
+	public int getEventId() {
+		return eventId;
 	}
 
-	public void setReasonDeniedId(int reasonDeniedId) {
-		this.reasonDeniedId = reasonDeniedId;
+	public void setEventId(int eventId) {
+		this.eventId = eventId;
 	}
 
 	public String getReason() {
@@ -36,7 +37,7 @@ public class ReasonDenied {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((reason == null) ? 0 : reason.hashCode());
-		result = prime * result + reasonDeniedId;
+		result = prime * result + eventId;
 		return result;
 	}
 
@@ -54,14 +55,14 @@ public class ReasonDenied {
 				return false;
 		} else if (!reason.equals(other.reason))
 			return false;
-		if (reasonDeniedId != other.reasonDeniedId)
+		if (eventId != other.eventId)
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "ReasonDenied [reasonDeniedId=" + reasonDeniedId + ", reason=" + reason + "]";
+		return "ReasonDenied [eventId=" + eventId + ", reason=" + reason + "]";
 	}
 
 }

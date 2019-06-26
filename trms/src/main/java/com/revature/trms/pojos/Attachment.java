@@ -6,11 +6,13 @@ import java.util.Arrays;
 public class Attachment {
 
 	private int attachmentId;
+	
 	private String fileName;
 	private LocalDate dateSubmitted;
 	private boolean isApprovalDoc;
 	private byte[] fileContent;
 	private ApprovalStage approvalStage;
+	
 	private int eventId;
 
 	public Attachment() {

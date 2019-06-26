@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum EmployeeType {
-	Associate(1), Manager(2), Head_Department(3), Benefits_Coordinator(4);
+	Associate(1), Manager(2), Head_Department(3), Benefits_Coordinator(4), Administrator(5);
 
 	private int value;
 	private static Map<Integer, EmployeeType> map = new HashMap<>();
