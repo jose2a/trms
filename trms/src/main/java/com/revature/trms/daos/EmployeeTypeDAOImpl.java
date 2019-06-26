@@ -95,7 +95,7 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 			}
 
 		} catch (SQLException e) {
-
+			LogUtilities.error("Error getting roles for employee." + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}
