@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.revature.trms.pojos.ApprovalStage;
 import com.revature.trms.pojos.Event;
-import com.revature.trms.pojos.EventStageStatus;
 import com.revature.trms.pojos.EventStatus;
 
 public interface EventDAO {
@@ -17,6 +16,6 @@ public interface EventDAO {
 	
 	public List<Event> getEventsEmployeeIdAndEventStatus(int employeeId, EventStatus eventStatus, ApprovalStage approvalStage);
 	public List<Event> getEventsByEventStatus(EventStatus eventStatus);
-	public List<Event> getEventsByApprovalStageAndEventStageStatus(ApprovalStage approvalStage, EventStageStatus eventStageStatus);
+//	public List<Event> getEventsByApprovalStageAndEventStageStatus(ApprovalStage approvalStage, EventStageStatus eventStageStatus);
 
 }

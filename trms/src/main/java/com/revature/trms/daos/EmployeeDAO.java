@@ -20,5 +20,9 @@ public interface EmployeeDAO {
 	public List<Employee> getAllEmployees();
 	
 	public List<Employee> getAllSupervisors();
+	
+	public List<Employee> getEmployeesUnderSupervisorId(int supervisorId);
+	
+	public List<Integer> getEmployeesIdsUnderSupervisorId(int supervisorId);
 
 }

@@ -272,8 +272,6 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 				ModelMapperUtilities.mapRsToEmployee(rs, employee);
 
 				supervisors.add(employee);
-
-				LogUtilities.trace(employee.getFirstName());
 			}
 
 		} catch (SQLException e) {
@@ -283,6 +281,76 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 		}
 
 		return supervisors;
+	}
+	
+	@Override
+	public List<Employee> getEmployeesUnderSupervisorId(int supervisorId) {
+		LogUtilities.trace("Getting employees under supervisor with id " + supervisorId);
+
+		List<Employee> employees = new ArrayList<>();
+
+		PreparedStatement ps = null; // Creates the prepared statement from the query
+		ResultSet rs = null; // Queries the database
+
+		try (Connection conn = ConnectionUtilities.getConnection();) {
+
+			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id "
+					+ "FROM employee e "
+					+ "WHERE e.supervisor_id = ?";
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, supervisorId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				Employee employee = new Employee();
+				ModelMapperUtilities.mapRsToEmployee(rs, employee);
+
+				employees.add(employee);
+			}
+
+		} catch (SQLException e) {
+			LogUtilities.error("Error getting employees under supervisor." + e.getMessage());
+		} finally {
+			closeResources(rs, ps, null);
+		}
+
+		return employees;
+	}
+	
+	@Override
+	public List<Integer> getEmployeesIdsUnderSupervisorId(int supervisorId) {
+		LogUtilities.trace("Getting employees ids that are under supervisor. Id " + supervisorId);
+
+		List<Integer> employeeIds = new ArrayList<>();
+
+		PreparedStatement ps = null; // Creates the prepared statement from the query
+		ResultSet rs = null; // Queries the database
+
+		try (Connection conn = ConnectionUtilities.getConnection();) {
+
+			String sql = "SELECT employee_id "
+					+ "FROM employee e "
+					+ "WHERE e.supervisor_id=?";
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, supervisorId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				employeeIds.add(rs.getInt("employee_id"));
+			}
+
+		} catch (SQLException e) {
+			LogUtilities.error("Error getting employees ids that are under supervisor." + e.getMessage());
+		} finally {
+			closeResources(rs, ps, null);
+		}
+
+		return employeeIds;
 	}
 
 }
