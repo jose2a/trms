@@ -25,9 +25,6 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			+ "required_presentation, grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, "
 			+ "canceled_by_employee FROM event";
 
-	private String sqlForEventStatus = selectQuery
-			+ " WHERE ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=? ";
-
 	@Override
 	public boolean addEvent(Event event) {
 		LogUtilities.trace("Inserting event.");
@@ -209,12 +206,12 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=?)" 
-			+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=? AND"
-			+ " required_presentation = true AND presentation_succ = ?)";
+			String sql = " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=?)"
+					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=? AND"
+					+ " required_presentation = true AND presentation_succ = ?)";
 
 			ps = conn.prepareStatement(sql);
-			
+
 			ps.setInt(1, EventStatus.Pending.getValue());
 			ps.setInt(2, EventStatus.Pending.getValue());
 			ps.setInt(3, EventStatus.Pending.getValue());
@@ -225,7 +222,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 			rs = ps.executeQuery();
 
-			if (rs.next()) {
+			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
 			}
@@ -250,16 +247,17 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = sqlForEventStatus;
+			String sql = " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=?)";
 
 			ps = conn.prepareStatement(sql);
+
 			ps.setInt(1, EventStatus.Approved.getValue());
 			ps.setInt(2, EventStatus.Pending.getValue());
 			ps.setInt(3, EventStatus.Pending.getValue());
 
 			rs = ps.executeQuery();
 
-			if (rs.next()) {
+			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
 			}
@@ -284,16 +282,23 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = sqlForEventStatus + " OR is ";
+			String sql = " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=?)"
+					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=? AND"
+					+ " required_presentation = false AND passing_grade = ?)";
 
 			ps = conn.prepareStatement(sql);
+
 			ps.setInt(1, EventStatus.Approved.getValue());
 			ps.setInt(2, EventStatus.Approved.getValue());
 			ps.setInt(3, EventStatus.Pending.getValue());
+			ps.setInt(4, EventStatus.Approved.getValue());
+			ps.setInt(5, EventStatus.Approved.getValue());
+			ps.setInt(6, EventStatus.Approved.getValue());
+			ps.setInt(7, EvaluationResult.Pending.getValue());
 
 			rs = ps.executeQuery();
 
-			if (rs.next()) {
+			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
 			}
@@ -306,23 +311,4 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		return events;
 	}
-
-	@Override
-	public List<Event> getUrgentEventsPendingOfDirectSupervisorApproval() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Event> getUrgentEventsPendingOfHeadDepartmentApproval() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Event> getUrgentEventsPendingOfBenefitsCoordinatorApproval() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

@@ -19,12 +19,5 @@ public interface EventDAO {
 	public List<Event> getEventsPendingOfHeadDepartmentApproval();
 
 	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval();
-	
-	public List<Event> getUrgentEventsPendingOfDirectSupervisorApproval();
-
-	public List<Event> getUrgentEventsPendingOfHeadDepartmentApproval();
-
-	public List<Event> getUrgentEventsPendingOfBenefitsCoordinatorApproval();
-
 
 }
