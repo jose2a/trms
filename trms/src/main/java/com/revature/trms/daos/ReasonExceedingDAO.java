@@ -1,6 +1,5 @@
 package com.revature.trms.daos;
 
-import com.revature.trms.pojos.ReasonDenied;
 import com.revature.trms.pojos.ReasonExceeding;
 
 public interface ReasonExceedingDAO {
@@ -9,5 +8,5 @@ public interface ReasonExceedingDAO {
 
 	public boolean updateReasonExceeding(ReasonExceeding reasonExceeding);
 
-	public ReasonDenied getReasonExceedingByEventId(Integer eventId);
+	public ReasonExceeding getReasonExceedingByEventId(Integer eventId);
 }

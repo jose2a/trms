@@ -10,6 +10,7 @@ import com.revature.trms.pojos.EventType;
 import com.revature.trms.pojos.GradingFormat;
 import com.revature.trms.pojos.InformationRequired;
 import com.revature.trms.pojos.ReasonDenied;
+import com.revature.trms.pojos.ReasonExceeding;
 
 public class ModelMapperUtilities {
 
@@ -61,5 +62,12 @@ public class ModelMapperUtilities {
 	public static void mapRsToReasonDenied(ResultSet rs, ReasonDenied reasonDenied) throws SQLException {
 		reasonDenied.setEventId(rs.getInt("event_id"));
 		reasonDenied.setReason(rs.getString("reason"));
+	}
+
+	// Mapping ResultSet to ReasonExceeding
+	public static void mapRsToReasonExceeding(ResultSet rs, ReasonExceeding reasonExceeding) throws SQLException {
+		reasonExceeding.setEventId(rs.getInt("event_id"));
+		reasonExceeding.setReason(rs.getString("reason"));
+
 	}
 }
