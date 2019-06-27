@@ -9,6 +9,7 @@ import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EventType;
 import com.revature.trms.pojos.GradingFormat;
 import com.revature.trms.pojos.InformationRequired;
+import com.revature.trms.pojos.ReasonDenied;
 
 public class ModelMapperUtilities {
 
@@ -47,11 +48,18 @@ public class ModelMapperUtilities {
 	}
 
 	// Mapping ResultSet to InformationRequired
-	public static void mapRsToInformationRequired(ResultSet rs, InformationRequired informationRequired) throws SQLException {
+	public static void mapRsToInformationRequired(ResultSet rs, InformationRequired informationRequired)
+			throws SQLException {
 		informationRequired.setEventId(rs.getInt("event_id"));
 		informationRequired.setEmployeeId(rs.getInt("employee_id"));
 		informationRequired.setInformation(rs.getString("information"));
 		informationRequired.setProvided(rs.getBoolean("provided"));
 		informationRequired.setRequiredBy(rs.getInt("required_by"));
+	}
+
+	// Mapping ResultSet to ReasonDenied
+	public static void mapRsToReasonDenied(ResultSet rs, ReasonDenied reasonDenied) throws SQLException {
+		reasonDenied.setEventId(rs.getInt("event_id"));
+		reasonDenied.setReason(rs.getString("reason"));
 	}
 }
