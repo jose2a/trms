@@ -6,7 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EmployeeType;
@@ -191,7 +194,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id FROM employee WHERE employee_id=? AND password=?";
+			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id FROM employee WHERE username=? AND password=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, username);
@@ -250,7 +253,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 	public List<Employee> getAllSupervisors() {
 		LogUtilities.trace("Getting employees that are supervisors.");
 
-		List<Employee> supervisors = new ArrayList<>();
+		Set<Employee> supervisors = new HashSet<>();
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null; // Queries the database
@@ -262,7 +265,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 					+ "WHERE et.employee_type_id IN (?, ?)";
 
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, EmployeeType.Manager.getValue());
+			ps.setInt(1, EmployeeType.Direct_Supervisor.getValue());
 			ps.setInt(2, EmployeeType.Head_Department.getValue());
 
 			rs = ps.executeQuery();
@@ -280,9 +283,9 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			closeResources(rs, ps, null);
 		}
 
-		return supervisors;
+		return supervisors.stream().collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public List<Employee> getEmployeesUnderSupervisorId(int supervisorId) {
 		LogUtilities.trace("Getting employees under supervisor with id " + supervisorId);
@@ -294,8 +297,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id "
-					+ "FROM employee e "
+			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id " + "FROM employee e "
 					+ "WHERE e.supervisor_id = ?";
 
 			ps = conn.prepareStatement(sql);
@@ -318,7 +320,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		return employees;
 	}
-	
+
 	@Override
 	public List<Integer> getEmployeesIdsUnderSupervisorId(int supervisorId) {
 		LogUtilities.trace("Getting employees ids that are under supervisor. Id " + supervisorId);
@@ -330,9 +332,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_id "
-					+ "FROM employee e "
-					+ "WHERE e.supervisor_id=?";
+			String sql = "SELECT employee_id " + "FROM employee e " + "WHERE e.supervisor_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, supervisorId);
@@ -355,8 +355,77 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public Employee getEmployeeSupervisor(Integer employeeId) {
-		// TODO Auto-generated method stub
-		return null;
+		LogUtilities.trace("Getting supervisor for employee with id " + employeeId);
+
+		Employee employee = null;
+
+		PreparedStatement ps = null; // Creates the prepared statement from the query
+		ResultSet rs = null; // Queries the database
+
+		try (Connection conn = ConnectionUtilities.getConnection();) {
+
+			String sql = "select e2.employee_id, e2.first_name, e2.last_name, e2.password, e2.supervisor_id "
+					+ "from employee e1 inner join employee e2 on e1.supervisor_id = e2.employee_id "
+					+ "where e1.employee_id = ?";
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, employeeId);
+
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				employee = new Employee();
+				ModelMapperUtilities.mapRsToEmployee(rs, employee);
+			}
+
+		} catch (SQLException e) {
+			LogUtilities.error("Error getting employee's supervisor. " + e.getMessage());
+		} finally {
+			closeResources(rs, ps, null);
+		}
+
+		return employee;
+	}
+
+	@Override
+	public List<Integer> getEmployeesUnderSupervisorIdList(List<Integer> employeeListIds) {
+		LogUtilities.trace("Getting employees ids that are under supervisor Id lists.");
+
+		List<Integer> employeeIds = new ArrayList<>();
+
+		PreparedStatement ps = null; // Creates the prepared statement from the query
+		ResultSet rs = null; // Queries the database
+
+		try (Connection conn = ConnectionUtilities.getConnection();) {
+
+			String placeHolder = getQuestionsMarksStringForSQLPlaceholder(employeeListIds.size());
+
+			String sql = "select e1.employee_id from employee e1 where e1.supervisor_id in (" + placeHolder + ")";
+
+			LogUtilities.trace("SQL: " + sql);
+
+			ps = conn.prepareStatement(sql);
+
+			int i = 0;
+
+			for (Integer empId : employeeListIds) {
+				ps.setInt(++i, empId);
+			}
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				employeeIds.add(rs.getInt("employee_id"));
+			}
+
+		} catch (SQLException e) {
+			LogUtilities.error("Error getting employees ids that are under supervisor list." + e.getMessage());
+		} finally {
+			closeResources(rs, ps, null);
+		}
+
+		return employeeIds;
 	}
 
 }

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Event {
-	
+
 	private int eventId;
 
 	// Required information from employee
@@ -23,6 +23,7 @@ public class Event {
 	private double acceptedAmountReimbursed;
 	private boolean isUrgent;
 	private boolean exceedsAvaliableFunds;
+	private boolean isCanceledByEmployee;
 
 	// DS, BenCo
 	private boolean passingGradeProvided;
@@ -32,11 +33,11 @@ public class Event {
 	private int employeeId;
 	private int eventTypeId;
 	private int gradingFormatId;
-	
+
 	private EventStatus dsEventStatus;
 	private EventStatus hdEventStatus;
 	private EventStatus bencoEventStatus;
-	
+
 	private ApprovalStage approvalStage;
 
 	public Event() {
@@ -169,6 +170,14 @@ public class Event {
 		this.exceedsAvaliableFunds = exceedsAvaliableFunds;
 	}
 
+	public boolean isCanceledByEmployee() {
+		return isCanceledByEmployee;
+	}
+
+	public void setCanceledByEmployee(boolean isCanceledByEmployee) {
+		this.isCanceledByEmployee = isCanceledByEmployee;
+	}
+
 	public boolean isPassingGradeProvided() {
 		return passingGradeProvided;
 	}
@@ -208,8 +217,6 @@ public class Event {
 	public void setGradingFormatId(int gradingFormatId) {
 		this.gradingFormatId = gradingFormatId;
 	}
-
-	
 
 	public EventStatus getDsEventStatus() {
 		return dsEventStatus;

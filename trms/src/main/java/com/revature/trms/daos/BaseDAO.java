@@ -29,4 +29,14 @@ public abstract class BaseDAO {
 		}
 	}
 
+	protected String getQuestionsMarksStringForSQLPlaceholder(int times) {
+		String[] arr = new String[times];
+
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = "?";
+		}
+
+		return String.join(",", arr);
+	}
+
 }
