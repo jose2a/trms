@@ -8,6 +8,7 @@ import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EventType;
 import com.revature.trms.pojos.GradingFormat;
+import com.revature.trms.pojos.InformationRequired;
 
 public class ModelMapperUtilities {
 
@@ -43,5 +44,14 @@ public class ModelMapperUtilities {
 		gradingFormat.setGradingFormatId(rs.getInt("grading_type_id"));
 		gradingFormat.setFromRange(rs.getString("from_range"));
 		gradingFormat.setToRange(rs.getString("to_range"));
+	}
+
+	// Mapping ResultSet to InformationRequired
+	public static void mapRsToInformationRequired(ResultSet rs, InformationRequired informationRequired) throws SQLException {
+		informationRequired.setEventId(rs.getInt("event_id"));
+		informationRequired.setEmployeeId(rs.getInt("employee_id"));
+		informationRequired.setInformation(rs.getString("information"));
+		informationRequired.setProvided(rs.getBoolean("provided"));
+		informationRequired.setRequiredBy(rs.getInt("required_by"));
 	}
 }
