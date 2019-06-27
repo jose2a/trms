@@ -6,7 +6,7 @@ import com.revature.trms.pojos.EventType;
 
 public interface EventTypeService {
 
-	public EventType getEventTypeById(int eventTypeId);
+	public EventType getEventTypeById(Integer eventTypeId);
 
 	public List<EventType> getAllEventType();
 }

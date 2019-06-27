@@ -69,7 +69,7 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 	}
 
 	@Override
-	public boolean deleteEmployee(int employeeId) throws NotFoundRecordException {
+	public boolean deleteEmployee(Integer employeeId) throws NotFoundRecordException {
 
 		if (employeeDao.getEmployeeById(employeeId) == null) {
 			LogUtilities.trace("Employee not found");
@@ -81,7 +81,7 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 	}
 
 	@Override
-	public Employee getEmployeeById(int employeeId) {
+	public Employee getEmployeeById(Integer employeeId) {
 		Employee employee = employeeDao.getEmployeeById(employeeId);
 
 		if (employee != null) { // Loading employees types if the employee was found
@@ -110,7 +110,7 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 	}
 
 	@Override
-	public Employee loginEmployee(String username, String password) throws PojoValidationException {
+	public Employee getEmployeeByUsernameAndPassword(String username, String password) throws PojoValidationException {
 		validateEmployeeUsername(username, true);
 		validateEmployeePassword(password);
 		checkValidationResults(); // Check validation results
@@ -166,5 +166,17 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 		if (!employee.getEmployeeTypes().contains(EmployeeType.Associate)) {
 			employee.addEmployeeTypeId(EmployeeType.Associate);
 		}
+	}
+
+	@Override
+	public Employee getEmployeeSupervisor(Integer employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Integer> getEmployeesUnderSupervisorIdList(List<Integer> employeeListIds) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

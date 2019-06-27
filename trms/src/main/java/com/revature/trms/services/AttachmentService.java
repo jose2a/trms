@@ -8,11 +8,9 @@ public interface AttachmentService {
 
 	public boolean addAttachment(Attachment attachment);
 
-	public boolean updateAttachment(Attachment attachment);
+	public boolean deleteAttachment(Integer attachmentId);
 
-	public boolean deleteAttachment(int attachmentId);
+	public Attachment getAttachmentById(Integer attachmentId);
 
-	public Attachment getAttachmentById(int attachmentId);
-
-	public List<Attachment> getAttachmentsByEventId(int eventId);
+	public List<Attachment> getAttachmentsByEventId(Integer eventId);
 }

@@ -1,6 +1,5 @@
 package com.revature.trms.services;
 
-import com.revature.trms.pojos.ReasonDenied;
 import com.revature.trms.pojos.ReasonExceeding;
 
 public interface ReasonExceedingService {
@@ -9,6 +8,6 @@ public interface ReasonExceedingService {
 
 	public boolean updateReasonExceeding(ReasonExceeding reasonExceeding);
 
-	public ReasonDenied getReasonExceedingByEventId(Integer eventId);
+	public ReasonExceeding getReasonExceedingByEventId(Integer eventId);
 	
 }

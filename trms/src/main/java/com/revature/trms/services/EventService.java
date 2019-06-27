@@ -10,13 +10,19 @@ public interface EventService {
 
 	public boolean updateEvent(Event event);
 
-	public boolean deleteEvent(int eventId);
+	public boolean deleteEvent(Integer eventId);
 
-	public Event getEventById(int eventId);
+	public Event getEventById(Integer eventId);
 
-	public List<Event> getEventsForDirectSupervisor(Integer employeeId);
+	public List<Event> getEventsPendingOfDirectSupervisorApproval();
 
-	public List<Event> getEventsForHeadDepartment(Integer employeeId);
+	public List<Event> getEventsPendingOfHeadDepartmentApproval();
 
-	public List<Event> getEventsForBenefitsCoordinator(Integer employeeId);
+	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval();
+	
+	public List<Event> getUrgentEventsPendingOfDirectSupervisorApproval();
+
+	public List<Event> getUrgentEventsPendingOfHeadDepartmentApproval();
+
+	public List<Event> getUrgentEventsPendingOfBenefitsCoordinatorApproval();
 }

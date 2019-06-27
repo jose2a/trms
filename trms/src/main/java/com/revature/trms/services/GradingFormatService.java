@@ -6,8 +6,10 @@ import com.revature.trms.pojos.GradingFormat;
 
 public interface GradingFormatService {
 	
-	public GradingFormat getGradingFormatById(Integer gradingFormatId);
+	public boolean addGradingFormat(GradingFormat gradingFormat);
 
-	public List<GradingFormat> getAllGradingFormat();
+	public GradingFormat getGradingFormatById(Integer gradingFormatId);
+	
+	public List<GradingFormat> getAllGradingFormats();
 
 }
