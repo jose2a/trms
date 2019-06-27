@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import com.revature.trms.pojos.ApprovalStage;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.EvaluationResult;
+import com.revature.trms.pojos.Event;
+import com.revature.trms.pojos.EventStatus;
 import com.revature.trms.pojos.EventType;
 import com.revature.trms.pojos.GradingFormat;
 import com.revature.trms.pojos.InformationRequired;
@@ -69,5 +72,32 @@ public class ModelMapperUtilities {
 		reasonExceeding.setEventId(rs.getInt("event_id"));
 		reasonExceeding.setReason(rs.getString("reason"));
 
+	}
+
+	// Mapping ResultSet to Event
+	public static void mapRsToEvent(ResultSet rs, Event event) throws SQLException {
+		event.setEventId(rs.getInt("event_id"));
+		event.setDateOfEvent(rs.getDate("date_of_event").toLocalDate());
+		event.setTimeOfEvent(rs.getTime("time_of_event").toLocalTime());
+		event.setLocation(rs.getString("location"));
+		event.setDescription(rs.getString("description"));
+		event.setCost(rs.getDouble("cost"));
+		event.setWorkJustification(rs.getString("work_justification"));
+		event.setWorkTimeMissed(rs.getInt("work_time_miss"));
+		event.setPassingGradeProvided(EvaluationResult.valueOf(rs.getInt("passing_grade")));
+		event.setSuccessfulPresentationProvided(EvaluationResult.valueOf(rs.getInt("presentations_succ")));
+		event.setProjectedAmountReimbused(rs.getDouble("projected_amt_reimbursed"));
+		event.setAcceptedAmountReimbursed(rs.getDouble("accepted_amt_reimbursed"));
+		event.setUrgent(rs.getBoolean("urgent"));
+		event.setExceedsAvaliableFunds(rs.getBoolean("exceeds_aval_funds"));
+		event.setEventTypeId(rs.getInt("event_type_id"));
+		event.setGradingFormatId(rs.getInt("grading_format_id"));
+		event.setEmployeeId(rs.getInt("employee_id"));
+		event.setRequiredPresentation(rs.getBoolean("required_presentation"));
+		event.setGradeCutoff(rs.getString("grade_cutoff"));
+		event.setDsEventStatus(EventStatus.valueOf(rs.getInt("ds_event_status_id")));
+		event.setHdEventStatus(EventStatus.valueOf(rs.getInt("ds_event_status_id")));
+		event.setBencoEventStatus(EventStatus.valueOf(rs.getInt("benco_event_status_id")));
+		event.setCanceledByEmployee(rs.getBoolean("canceled_by_employee"));
 	}
 }

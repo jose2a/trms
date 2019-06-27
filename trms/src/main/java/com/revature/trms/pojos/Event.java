@@ -5,18 +5,18 @@ import java.time.LocalTime;
 
 public class Event {
 
-	private int eventId;
+	private Integer eventId;
 
 	// Required information from employee
-	private LocalDate dateSubmitted;
-	private LocalTime timeSubmitted;
+	private LocalDate dateOfEvent;
+	private LocalTime timeOfEvent;
 	private String location;
 	private String description;
 	private double cost;
 	private String workJustification;
 	private int workTimeMissed;
 	private boolean requiredPresentation;
-	private int gradeCutoffId;
+	private String gradeCutoff;
 
 	// Used for business logic
 	private double projectedAmountReimbused;
@@ -26,8 +26,8 @@ public class Event {
 	private boolean isCanceledByEmployee;
 
 	// DS, BenCo
-	private boolean passingGradeProvided;
-	private boolean successfulPresentationProvided;
+	private EvaluationResult passingGradeProvided;
+	private EvaluationResult successfulPresentationProvided;
 
 	// Relationship fields
 	private int employeeId;
@@ -44,42 +44,42 @@ public class Event {
 		super();
 	}
 
-	public Event(LocalDate dateSubmitted, LocalTime timeSubmitted, String location, String description, double cost,
-			String workJustification, int workTimeMissed, boolean requiredPresentation, int gradeCutoffId) {
+	public Event(LocalDate dateOfEvent, LocalTime timeOfEvent, String location, String description, double cost,
+			String workJustification, int workTimeMissed, boolean requiredPresentation, String gradeCutoff) {
 		super();
-		this.dateSubmitted = dateSubmitted;
-		this.timeSubmitted = timeSubmitted;
+		this.dateOfEvent = dateOfEvent;
+		this.timeOfEvent = timeOfEvent;
 		this.location = location;
 		this.description = description;
 		this.cost = cost;
 		this.workJustification = workJustification;
 		this.workTimeMissed = workTimeMissed;
 		this.requiredPresentation = requiredPresentation;
-		this.gradeCutoffId = gradeCutoffId;
+		this.gradeCutoff = gradeCutoff;
 	}
 
-	public int getEventId() {
+	public Integer getEventId() {
 		return eventId;
 	}
 
-	public void setEventId(int eventId) {
+	public void setEventId(Integer eventId) {
 		this.eventId = eventId;
 	}
 
-	public LocalDate getDateSubmitted() {
-		return dateSubmitted;
+	public LocalDate getDateOfEvent() {
+		return dateOfEvent;
 	}
 
-	public void setDateSubmitted(LocalDate dateSubmitted) {
-		this.dateSubmitted = dateSubmitted;
+	public void setDateOfEvent(LocalDate dateOfEvent) {
+		this.dateOfEvent = dateOfEvent;
 	}
 
-	public LocalTime getTimeSubmitted() {
-		return timeSubmitted;
+	public LocalTime getTimeOfEvent() {
+		return timeOfEvent;
 	}
 
-	public void setTimeSubmitted(LocalTime timeSubmitted) {
-		this.timeSubmitted = timeSubmitted;
+	public void setTimeOfEvent(LocalTime timeOfEvent) {
+		this.timeOfEvent = timeOfEvent;
 	}
 
 	public String getLocation() {
@@ -130,12 +130,12 @@ public class Event {
 		this.requiredPresentation = requiredPresentation;
 	}
 
-	public int getGradeCutoffId() {
-		return gradeCutoffId;
+	public String getGradeCutoff() {
+		return gradeCutoff;
 	}
 
-	public void setGradeCutoffId(int gradeCutoffId) {
-		this.gradeCutoffId = gradeCutoffId;
+	public void setGradeCutoff(String gradeCutoff) {
+		this.gradeCutoff = gradeCutoff;
 	}
 
 	public double getProjectedAmountReimbused() {
@@ -178,19 +178,19 @@ public class Event {
 		this.isCanceledByEmployee = isCanceledByEmployee;
 	}
 
-	public boolean isPassingGradeProvided() {
+	public EvaluationResult getPassingGradeProvided() {
 		return passingGradeProvided;
 	}
 
-	public void setPassingGradeProvided(boolean passingGradeProvided) {
+	public void setPassingGradeProvided(EvaluationResult passingGradeProvided) {
 		this.passingGradeProvided = passingGradeProvided;
 	}
 
-	public boolean isSuccessfulPresentationProvided() {
+	public EvaluationResult getSuccessfulPresentationProvided() {
 		return successfulPresentationProvided;
 	}
 
-	public void setSuccessfulPresentationProvided(boolean successfulPresentationProvided) {
+	public void setSuccessfulPresentationProvided(EvaluationResult successfulPresentationProvided) {
 		this.successfulPresentationProvided = successfulPresentationProvided;
 	}
 
@@ -255,17 +255,32 @@ public class Event {
 		final int prime = 31;
 		int result = 1;
 		long temp;
+		temp = Double.doubleToLongBits(acceptedAmountReimbursed);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((approvalStage == null) ? 0 : approvalStage.hashCode());
+		result = prime * result + ((bencoEventStatus == null) ? 0 : bencoEventStatus.hashCode());
 		temp = Double.doubleToLongBits(cost);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((dateSubmitted == null) ? 0 : dateSubmitted.hashCode());
+		result = prime * result + ((dateOfEvent == null) ? 0 : dateOfEvent.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((dsEventStatus == null) ? 0 : dsEventStatus.hashCode());
 		result = prime * result + employeeId;
-		result = prime * result + eventId;
+		result = prime * result + ((eventId == null) ? 0 : eventId.hashCode());
 		result = prime * result + eventTypeId;
+		result = prime * result + (exceedsAvaliableFunds ? 1231 : 1237);
+		result = prime * result + ((gradeCutoff == null) ? 0 : gradeCutoff.hashCode());
 		result = prime * result + gradingFormatId;
+		result = prime * result + ((hdEventStatus == null) ? 0 : hdEventStatus.hashCode());
+		result = prime * result + (isCanceledByEmployee ? 1231 : 1237);
+		result = prime * result + (isUrgent ? 1231 : 1237);
 		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((passingGradeProvided == null) ? 0 : passingGradeProvided.hashCode());
+		temp = Double.doubleToLongBits(projectedAmountReimbused);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + (requiredPresentation ? 1231 : 1237);
-		result = prime * result + ((timeSubmitted == null) ? 0 : timeSubmitted.hashCode());
+		result = prime * result
+				+ ((successfulPresentationProvided == null) ? 0 : successfulPresentationProvided.hashCode());
+		result = prime * result + ((timeOfEvent == null) ? 0 : timeOfEvent.hashCode());
 		result = prime * result + ((workJustification == null) ? 0 : workJustification.hashCode());
 		result = prime * result + workTimeMissed;
 		return result;
@@ -280,37 +295,69 @@ public class Event {
 		if (getClass() != obj.getClass())
 			return false;
 		Event other = (Event) obj;
+		if (Double.doubleToLongBits(acceptedAmountReimbursed) != Double
+				.doubleToLongBits(other.acceptedAmountReimbursed))
+			return false;
+		if (approvalStage != other.approvalStage)
+			return false;
+		if (bencoEventStatus != other.bencoEventStatus)
+			return false;
 		if (Double.doubleToLongBits(cost) != Double.doubleToLongBits(other.cost))
 			return false;
-		if (dateSubmitted == null) {
-			if (other.dateSubmitted != null)
+		if (dateOfEvent == null) {
+			if (other.dateOfEvent != null)
 				return false;
-		} else if (!dateSubmitted.equals(other.dateSubmitted))
+		} else if (!dateOfEvent.equals(other.dateOfEvent))
 			return false;
 		if (description == null) {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
+		if (dsEventStatus != other.dsEventStatus)
+			return false;
 		if (employeeId != other.employeeId)
 			return false;
-		if (eventId != other.eventId)
+		if (eventId == null) {
+			if (other.eventId != null)
+				return false;
+		} else if (!eventId.equals(other.eventId))
 			return false;
 		if (eventTypeId != other.eventTypeId)
 			return false;
+		if (exceedsAvaliableFunds != other.exceedsAvaliableFunds)
+			return false;
+		if (gradeCutoff == null) {
+			if (other.gradeCutoff != null)
+				return false;
+		} else if (!gradeCutoff.equals(other.gradeCutoff))
+			return false;
 		if (gradingFormatId != other.gradingFormatId)
+			return false;
+		if (hdEventStatus != other.hdEventStatus)
+			return false;
+		if (isCanceledByEmployee != other.isCanceledByEmployee)
+			return false;
+		if (isUrgent != other.isUrgent)
 			return false;
 		if (location == null) {
 			if (other.location != null)
 				return false;
 		} else if (!location.equals(other.location))
 			return false;
+		if (passingGradeProvided != other.passingGradeProvided)
+			return false;
+		if (Double.doubleToLongBits(projectedAmountReimbused) != Double
+				.doubleToLongBits(other.projectedAmountReimbused))
+			return false;
 		if (requiredPresentation != other.requiredPresentation)
 			return false;
-		if (timeSubmitted == null) {
-			if (other.timeSubmitted != null)
+		if (successfulPresentationProvided != other.successfulPresentationProvided)
+			return false;
+		if (timeOfEvent == null) {
+			if (other.timeOfEvent != null)
 				return false;
-		} else if (!timeSubmitted.equals(other.timeSubmitted))
+		} else if (!timeOfEvent.equals(other.timeOfEvent))
 			return false;
 		if (workJustification == null) {
 			if (other.workJustification != null)
@@ -324,16 +371,17 @@ public class Event {
 
 	@Override
 	public String toString() {
-		return "Event [eventId=" + eventId + ", dateSubmitted=" + dateSubmitted + ", timeSubmitted=" + timeSubmitted
+		return "Event [eventId=" + eventId + ", dateOfEvent=" + dateOfEvent + ", timeOfEvent=" + timeOfEvent
 				+ ", location=" + location + ", description=" + description + ", cost=" + cost + ", workJustification="
 				+ workJustification + ", workTimeMissed=" + workTimeMissed + ", requiredPresentation="
-				+ requiredPresentation + ", gradeCutoffId=" + gradeCutoffId + ", projectedAmountReimbused="
+				+ requiredPresentation + ", gradeCutoff=" + gradeCutoff + ", projectedAmountReimbused="
 				+ projectedAmountReimbused + ", acceptedAmountReimbursed=" + acceptedAmountReimbursed + ", isUrgent="
-				+ isUrgent + ", exceedsAvaliableFunds=" + exceedsAvaliableFunds + ", passingGradeProvided="
-				+ passingGradeProvided + ", successfulPresentationProvided=" + successfulPresentationProvided
-				+ ", employeeId=" + employeeId + ", eventTypeId=" + eventTypeId + ", gradingFormatId=" + gradingFormatId
-				+ ", dsEventStatus=" + dsEventStatus + ", hdEventStatus=" + hdEventStatus + ", bencoEventStatus="
-				+ bencoEventStatus + ", approvalStage=" + approvalStage + "]";
+				+ isUrgent + ", exceedsAvaliableFunds=" + exceedsAvaliableFunds + ", isCanceledByEmployee="
+				+ isCanceledByEmployee + ", passingGradeProvided=" + passingGradeProvided
+				+ ", successfulPresentationProvided=" + successfulPresentationProvided + ", employeeId=" + employeeId
+				+ ", eventTypeId=" + eventTypeId + ", gradingFormatId=" + gradingFormatId + ", dsEventStatus="
+				+ dsEventStatus + ", hdEventStatus=" + hdEventStatus + ", bencoEventStatus=" + bencoEventStatus
+				+ ", approvalStage=" + approvalStage + "]";
 	}
 
 }
