@@ -8,8 +8,6 @@ public interface AttachmentDAO {
 
 	public boolean addAttachment(Attachment attachment);
 
-	public boolean updateAttachment(Attachment attachment);
-
 	public boolean deleteAttachment(int attachmentId);
 
 	public Attachment getAttachmentById(int attachmentId);
