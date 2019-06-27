@@ -3,16 +3,18 @@ package com.revature.trms.pojos;
 public class GradingFormat {
 
 	private int gradingFormatId;
-	
-	private String name;
+
+	private String fromRange;
+	private String toRange;
 
 	public GradingFormat() {
 		super();
 	}
 
-	public GradingFormat(String name) {
+	public GradingFormat(String fromRange, String toRange) {
 		super();
-		this.name = name;
+		this.fromRange = fromRange;
+		this.toRange = toRange;
 	}
 
 	public int getGradingFormatId() {
@@ -23,20 +25,29 @@ public class GradingFormat {
 		this.gradingFormatId = gradingFormatId;
 	}
 
-	public String getName() {
-		return name;
+	public String getFromRange() {
+		return fromRange;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFromRange(String fromRange) {
+		this.fromRange = fromRange;
+	}
+
+	public String getToRange() {
+		return toRange;
+	}
+
+	public void setToRange(String toRange) {
+		this.toRange = toRange;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((fromRange == null) ? 0 : fromRange.hashCode());
 		result = prime * result + gradingFormatId;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((toRange == null) ? 0 : toRange.hashCode());
 		return result;
 	}
 
@@ -49,19 +60,25 @@ public class GradingFormat {
 		if (getClass() != obj.getClass())
 			return false;
 		GradingFormat other = (GradingFormat) obj;
+		if (fromRange == null) {
+			if (other.fromRange != null)
+				return false;
+		} else if (!fromRange.equals(other.fromRange))
+			return false;
 		if (gradingFormatId != other.gradingFormatId)
 			return false;
-		if (name == null) {
-			if (other.name != null)
+		if (toRange == null) {
+			if (other.toRange != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!toRange.equals(other.toRange))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "GradingFormat [gradingFormatId=" + gradingFormatId + ", name=" + name + "]";
+		return "GradingFormat [gradingFormatId=" + gradingFormatId + ", fromRange=" + fromRange + ", toRange=" + toRange
+				+ "]";
 	}
 
 }

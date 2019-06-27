@@ -7,6 +7,7 @@ import com.revature.trms.pojos.ApprovalStage;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EventType;
+import com.revature.trms.pojos.GradingFormat;
 
 public class ModelMapperUtilities {
 
@@ -35,5 +36,12 @@ public class ModelMapperUtilities {
 		eventType.setEventTypeId(rs.getInt("event_type_id"));
 		eventType.setName(rs.getString("name"));
 		eventType.setReimburseCoverage(rs.getInt("reimburse_coverage"));
+	}
+
+	// Mapping ResultSet to GradingFormat
+	public static void mapRsToGradingFormat(ResultSet rs, GradingFormat gradingFormat) throws SQLException {
+		gradingFormat.setGradingFormatId(rs.getInt("grading_type_id"));
+		gradingFormat.setFromRange(rs.getString("from_range"));
+		gradingFormat.setToRange(rs.getString("to_range"));
 	}
 }

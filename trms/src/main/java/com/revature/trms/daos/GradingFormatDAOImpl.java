@@ -1,0 +1,118 @@
+package com.revature.trms.daos;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.revature.trms.pojos.GradingFormat;
+import com.revature.trms.utilities.ConnectionUtilities;
+import com.revature.trms.utilities.LogUtilities;
+import com.revature.trms.utilities.ModelMapperUtilities;
+
+public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
+
+	@Override
+	public boolean addGradingFormat(GradingFormat gradingFormat) {
+		LogUtilities.trace("Inserting grading format.");
+
+		PreparedStatement ps = null; // Creates the prepared statement from the query
+		ResultSet rs = null;
+
+		try (Connection conn = ConnectionUtilities.getConnection();) {
+			String sql = "INSERT INTO grading_format (from_range, to_range) VALUES(?, ?)";
+
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+			ps.setString(1, gradingFormat.getFromRange());
+			ps.setString(2, gradingFormat.getToRange());
+
+			if (ps.executeUpdate() != 0) {
+				rs = ps.getGeneratedKeys();
+
+				if (rs.next()) {
+					LogUtilities.trace("Getting id for grading.");
+
+					gradingFormat.setGradingFormatId(rs.getInt(1));
+				}
+
+				LogUtilities.trace("Grading format inserted Id: " + gradingFormat.getGradingFormatId());
+				return true;
+			}
+		} catch (SQLException e) {
+			LogUtilities.error("Error adding grading fortmat." + e.getMessage());
+		} finally {
+			closeResources(rs, ps, null);
+		}
+
+		return false;
+	}
+
+	@Override
+	public GradingFormat getGradingFormatById(Integer gradingFormatId) {
+		LogUtilities.trace("Getting grading format by gradingFormatId " + gradingFormatId);
+
+		GradingFormat gradingFormat = null;
+
+		PreparedStatement ps = null; // Creates the prepared statement from the query
+		ResultSet rs = null; // Queries the database
+
+		try (Connection conn = ConnectionUtilities.getConnection();) {
+
+			String sql = "SELECT grading_type_id, from_range, to_range FROM grading_format WHERE grading_format_id = ?";
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, gradingFormatId);
+
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				gradingFormat = new GradingFormat();
+				ModelMapperUtilities.mapRsToGradingFormat(rs, gradingFormat);
+			}
+
+		} catch (SQLException e) {
+			LogUtilities.error("Error getting grading Format by id." + e.getMessage());
+		} finally {
+			closeResources(rs, ps, null);
+		}
+
+		return gradingFormat;
+	}
+
+	@Override
+	public List<GradingFormat> getAllGradingFormats() {
+		LogUtilities.trace("Getting all grading formats.");
+
+		List<GradingFormat> gradingFormats = new ArrayList<>();
+
+		PreparedStatement ps = null; // Creates the prepared statement from the query
+		ResultSet rs = null; // Queries the database
+
+		try (Connection conn = ConnectionUtilities.getConnection();) {
+
+			String sql = "SELECT grading_type_id, from_range, to_range FROM grading_format";
+
+			ps = conn.prepareStatement(sql);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				GradingFormat gradingFormat = new GradingFormat();
+				ModelMapperUtilities.mapRsToGradingFormat(rs, gradingFormat);
+
+				gradingFormats.add(gradingFormat);
+			}
+		} catch (SQLException e) {
+			LogUtilities.error("Error getting grading formats." + e.getMessage());
+		} finally {
+			closeResources(rs, ps, null);
+		}
+
+		return gradingFormats;
+	}
+
+}
