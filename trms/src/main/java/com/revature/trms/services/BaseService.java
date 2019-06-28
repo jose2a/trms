@@ -4,6 +4,7 @@ import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.GradingFormat;
+import com.revature.trms.pojos.InformationRequired;
 
 public abstract class BaseService {
 
@@ -182,6 +183,14 @@ public abstract class BaseService {
 		
 		if (gradingFormat.getToRange().equals("") || gradingFormat.getToRange().isEmpty()) {
 			pojoValidationException.addError("To should not be empty.");
+		}
+	}
+	
+	protected void validateInformationRequired(InformationRequired informationRequired) {
+		cleanValidationResults();
+		
+		if(informationRequired.getInformation().equals("") || informationRequired.getInformation().isEmpty()) {
+			pojoValidationException.addError("Please provide the information.");
 		}
 	}
 

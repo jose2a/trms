@@ -2,18 +2,18 @@ package com.revature.trms.pojos;
 
 public class InformationRequired {
 
-	private int eventId;
-	private int employeeId;
+	private Integer eventId;
+	private Integer employeeId;
 
 	private String information;
 	private boolean provided;
-	private int requiredBy;
+	private Integer requiredBy;
 
 	public InformationRequired() {
 		super();
 	}
 
-	public InformationRequired(int eventId, int employeeId, String information, boolean provided, int requiredBy) {
+	public InformationRequired(Integer eventId, Integer employeeId, String information, boolean provided, Integer requiredBy) {
 		super();
 		this.eventId = eventId;
 		this.employeeId = employeeId;
@@ -22,19 +22,19 @@ public class InformationRequired {
 		this.requiredBy = requiredBy;
 	}
 
-	public int getEventId() {
+	public Integer getEventId() {
 		return eventId;
 	}
 
-	public void setEventId(int eventId) {
+	public void setEventId(Integer eventId) {
 		this.eventId = eventId;
 	}
 
-	public int getEmployeeId() {
+	public Integer getEmployeeId() {
 		return employeeId;
 	}
 
-	public void setEmployeeId(int employeeId) {
+	public void setEmployeeId(Integer employeeId) {
 		this.employeeId = employeeId;
 	}
 
@@ -54,11 +54,11 @@ public class InformationRequired {
 		this.provided = provided;
 	}
 
-	public int getRequiredBy() {
+	public Integer getRequiredBy() {
 		return requiredBy;
 	}
 
-	public void setRequiredBy(int requiredBy) {
+	public void setRequiredBy(Integer requiredBy) {
 		this.requiredBy = requiredBy;
 	}
 
