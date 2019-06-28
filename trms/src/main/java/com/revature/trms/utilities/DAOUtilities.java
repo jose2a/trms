@@ -89,7 +89,7 @@ public class DAOUtilities {
 	 * Creates a new instance of ReasonExceeding.
 	 * @return ReasonExceeding
 	 */
-	public static ReasonExceedingDAO getReasonExceeding() {
+	public static ReasonExceedingDAO getReasonExceedingDAO() {
 		return new ReasonExceedingDAOImpl();
 	}
 

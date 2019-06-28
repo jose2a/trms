@@ -10,6 +10,12 @@ import com.revature.trms.services.EventTypeService;
 import com.revature.trms.services.EventTypeServiceImpl;
 import com.revature.trms.services.GradingFormatService;
 import com.revature.trms.services.GradingFormatServiceImpl;
+import com.revature.trms.services.InformationRequiredService;
+import com.revature.trms.services.InformationRequiredServiceImpl;
+import com.revature.trms.services.ReasonDeniedService;
+import com.revature.trms.services.ReasonDeniedServiceImpl;
+import com.revature.trms.services.ReasonExceedingService;
+import com.revature.trms.services.ReasonExceedingServiceImpl;
 
 public class ServiceUtilities {
 
@@ -41,7 +47,7 @@ public class ServiceUtilities {
 	}
 
 	/**
-	 * Cresting a new instance of EventTypeService.
+	 * Creating a new instance of EventTypeService.
 	 * 
 	 * @return EventTypeService
 	 */
@@ -50,11 +56,38 @@ public class ServiceUtilities {
 	}
 
 	/**
-	 * Cresting a new instance of GradingFormatService.
+	 * Creating a new instance of GradingFormatService.
 	 * 
 	 * @return GradingFormatService
 	 */
 	public static GradingFormatService getGradingFormatService() {
 		return new GradingFormatServiceImpl();
+	}
+
+	/**
+	 * Creating a new instance of InformationRequiredService.
+	 * 
+	 * @return InformationRequiredService
+	 */
+	public static InformationRequiredService getInformationRequiredService() {
+		return new InformationRequiredServiceImpl();
+	}
+
+	/**
+	 * Creating a new instance of ReasonDeniedService.
+	 * 
+	 * @return ReasonDeniedService
+	 */
+	public static ReasonDeniedService getReasonDeniedService() {
+		return new ReasonDeniedServiceImpl();
+	}
+
+	/**
+	 * Creating a new instance of ReasonExceedingService.
+	 * 
+	 * @return ReasonExceedingService
+	 */
+	public static ReasonExceedingService getReasonExceedingService() {
+		return new ReasonExceedingServiceImpl();
 	}
 }
