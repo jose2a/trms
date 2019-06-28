@@ -202,6 +202,10 @@ public abstract class BaseService {
 		}
 	}
 
+	/**
+	 * Validating reason denied properties.
+	 * @param reasonDenied The reason denied
+	 */
 	protected void validateReasonDenied(ReasonDenied reasonDenied) {
 		cleanValidationResults();
 
@@ -210,6 +214,10 @@ public abstract class BaseService {
 		}
 	}
 	
+	/**
+	 * Validating reason exceeding properties.
+	 * @param reasonExceeding The reason exceeding
+	 */
 	protected void validateReasonExceeding(ReasonExceeding reasonExceeding) {
 		cleanValidationResults();
 
