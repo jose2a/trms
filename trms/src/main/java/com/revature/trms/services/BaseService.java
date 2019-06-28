@@ -3,6 +3,7 @@ package com.revature.trms.services;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.GradingFormat;
 
 public abstract class BaseService {
 
@@ -166,6 +167,22 @@ public abstract class BaseService {
 		cleanValidationResults();
 
 		validateAttachmentId(attachmentId);
+	}
+	
+	/**
+	 * Validating grade format properties. 
+	 * @param gradingFormat The grading format
+	 */
+	protected void validateGradingFormat(GradingFormat gradingFormat) {
+		cleanValidationResults();
+		
+		if (gradingFormat.getFromRange().equals("") || gradingFormat.getFromRange().isEmpty()) {
+			pojoValidationException.addError("From should not be empty.");
+		}
+		
+		if (gradingFormat.getToRange().equals("") || gradingFormat.getToRange().isEmpty()) {
+			pojoValidationException.addError("To should not be empty.");
+		}
 	}
 
 }

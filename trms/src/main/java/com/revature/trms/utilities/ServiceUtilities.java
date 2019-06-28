@@ -6,6 +6,10 @@ import com.revature.trms.services.EmployeeService;
 import com.revature.trms.services.EmployeeServiceImpl;
 import com.revature.trms.services.EmployeeTypeService;
 import com.revature.trms.services.EmployeeTypeServiceImpl;
+import com.revature.trms.services.EventTypeService;
+import com.revature.trms.services.EventTypeServiceImpl;
+import com.revature.trms.services.GradingFormatService;
+import com.revature.trms.services.GradingFormatServiceImpl;
 
 public class ServiceUtilities {
 
@@ -36,4 +40,21 @@ public class ServiceUtilities {
 		return new EmployeeTypeServiceImpl();
 	}
 
+	/**
+	 * Cresting a new instance of EventTypeService.
+	 * 
+	 * @return EventTypeService
+	 */
+	public static EventTypeService getEventTypeService() {
+		return new EventTypeServiceImpl();
+	}
+
+	/**
+	 * Cresting a new instance of GradingFormatService.
+	 * 
+	 * @return GradingFormatService
+	 */
+	public static GradingFormatService getGradingFormatService() {
+		return new GradingFormatServiceImpl();
+	}
 }
