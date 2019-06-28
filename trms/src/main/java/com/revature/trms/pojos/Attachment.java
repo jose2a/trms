@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class Attachment {
 
-	private int attachmentId;
+	private Integer attachmentId;
 	
 	private String fileName;
 	private LocalDate dateSubmitted;
@@ -13,7 +13,7 @@ public class Attachment {
 	private byte[] fileContent;
 	private ApprovalStage approvalStage;
 	
-	private int eventId;
+	private Integer eventId;
 
 	public Attachment() {
 		super();
@@ -30,11 +30,11 @@ public class Attachment {
 		this.eventId = eventId;
 	}
 
-	public int getAttachmentId() {
+	public Integer getAttachmentId() {
 		return attachmentId;
 	}
 
-	public void setAttachmentId(int attachmentId) {
+	public void setAttachmentId(Integer attachmentId) {
 		this.attachmentId = attachmentId;
 	}
 
@@ -78,11 +78,11 @@ public class Attachment {
 		this.approvalStage = approvalStage;
 	}
 
-	public int getEventId() {
+	public Integer getEventId() {
 		return eventId;
 	}
 
-	public void setEventId(int eventId) {
+	public void setEventId(Integer eventId) {
 		this.eventId = eventId;
 	}
 

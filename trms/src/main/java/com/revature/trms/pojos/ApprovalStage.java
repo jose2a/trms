@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum ApprovalStage {
-	Direct_Supervisor_Approval(1), Department_Head_Approval(2), Benefits_Coordinator_Approval(3);
+	Direct_Supervisor_Approval(1), Department_Head_Approval(2);
 	
 	private int value;
 	private static Map<Integer, ApprovalStage> map = new HashMap<>();
