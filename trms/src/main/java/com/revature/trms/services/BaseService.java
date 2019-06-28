@@ -5,6 +5,8 @@ import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.GradingFormat;
 import com.revature.trms.pojos.InformationRequired;
+import com.revature.trms.pojos.ReasonDenied;
+import com.revature.trms.pojos.ReasonExceeding;
 
 public abstract class BaseService {
 
@@ -169,28 +171,50 @@ public abstract class BaseService {
 
 		validateAttachmentId(attachmentId);
 	}
-	
+
 	/**
-	 * Validating grade format properties. 
+	 * Validating grade format properties.
+	 * 
 	 * @param gradingFormat The grading format
 	 */
 	protected void validateGradingFormat(GradingFormat gradingFormat) {
 		cleanValidationResults();
-		
+
 		if (gradingFormat.getFromRange().equals("") || gradingFormat.getFromRange().isEmpty()) {
 			pojoValidationException.addError("From should not be empty.");
 		}
-		
+
 		if (gradingFormat.getToRange().equals("") || gradingFormat.getToRange().isEmpty()) {
 			pojoValidationException.addError("To should not be empty.");
 		}
 	}
-	
+
+	/**
+	 * Validating information required properties.
+	 * 
+	 * @param informationRequired The information required
+	 */
 	protected void validateInformationRequired(InformationRequired informationRequired) {
 		cleanValidationResults();
-		
-		if(informationRequired.getInformation().equals("") || informationRequired.getInformation().isEmpty()) {
+
+		if (informationRequired.getInformation().equals("") || informationRequired.getInformation().isEmpty()) {
 			pojoValidationException.addError("Please provide the information.");
+		}
+	}
+
+	protected void validateReasonDenied(ReasonDenied reasonDenied) {
+		cleanValidationResults();
+
+		if (reasonDenied.getReason().equals("") || reasonDenied.getReason().isEmpty()) {
+			pojoValidationException.addError("Please provide the reason why this request was denied.");
+		}
+	}
+	
+	protected void validateReasonExceeding(ReasonExceeding reasonExceeding) {
+		cleanValidationResults();
+
+		if (reasonExceeding.getReason().equals("") || reasonExceeding.getReason().isEmpty()) {
+			pojoValidationException.addError("Please provide the reason why the amount for this request was exceeding.");
 		}
 	}
 

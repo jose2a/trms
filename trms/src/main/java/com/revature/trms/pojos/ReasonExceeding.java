@@ -2,7 +2,7 @@ package com.revature.trms.pojos;
 
 public class ReasonExceeding {
 
-	private int eventId;
+	private Integer eventId;
 	
 	private String reason;
 
@@ -10,17 +10,17 @@ public class ReasonExceeding {
 		super();
 	}
 
-	public ReasonExceeding(int eventId, String reason) {
+	public ReasonExceeding(Integer eventId, String reason) {
 		super();
 		this.eventId = eventId;
 		this.reason = reason;
 	}
 
-	public int getEventId() {
+	public Integer getEventId() {
 		return eventId;
 	}
 
-	public void setEventId(int eventId) {
+	public void setEventId(Integer eventId) {
 		this.eventId = eventId;
 	}
 
