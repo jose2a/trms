@@ -62,7 +62,7 @@ public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT grading_type_id, from_range, to_range FROM grading_format WHERE grading_format_id = ?";
+			String sql = "SELECT grading_format_id, from_range, to_range FROM grading_format WHERE grading_format_id = ?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, gradingFormatId);
@@ -94,7 +94,7 @@ public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT grading_type_id, from_range, to_range FROM grading_format";
+			String sql = "SELECT grading_format_id, from_range, to_range FROM grading_format";
 
 			ps = conn.prepareStatement(sql);
 

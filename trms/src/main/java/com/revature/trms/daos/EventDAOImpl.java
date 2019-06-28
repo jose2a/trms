@@ -34,8 +34,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 			String sql = "INSERT INTO event"
-					+ "(date_of_event, time_of_event, location, description, cost, work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, required_presentation, grade_cutoff_id, ds_event_status_id, hd_event_status_id, benco_event_status_id, canceled_by_employee)"
-					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" + "";
+					+ "(date_of_event, time_of_event, location, description, cost, work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, required_presentation, grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, canceled_by_employee)"
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
@@ -206,9 +206,11 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=?)"
-					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=? AND"
+			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)"
+					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=? AND"
 					+ " required_presentation = true AND presentation_succ = ?)";
+			
+			LogUtilities.trace(sql);
 
 			ps = conn.prepareStatement(sql);
 
@@ -225,6 +227,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
+				
+				events.add(event);
 			}
 
 		} catch (SQLException e) {
@@ -247,7 +251,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=?)";
+			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)";
 
 			ps = conn.prepareStatement(sql);
 
@@ -260,6 +264,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
+				
+				events.add(event);
 			}
 
 		} catch (SQLException e) {
@@ -282,8 +288,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=?)"
-					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_stastus_id=? AND"
+			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)"
+					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=? AND"
 					+ " required_presentation = false AND passing_grade = ?)";
 
 			ps = conn.prepareStatement(sql);
@@ -301,6 +307,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
+				
+				events.add(event);
 			}
 
 		} catch (SQLException e) {

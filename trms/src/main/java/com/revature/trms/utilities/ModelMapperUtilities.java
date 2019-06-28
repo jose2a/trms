@@ -46,7 +46,7 @@ public class ModelMapperUtilities {
 
 	// Mapping ResultSet to GradingFormat
 	public static void mapRsToGradingFormat(ResultSet rs, GradingFormat gradingFormat) throws SQLException {
-		gradingFormat.setGradingFormatId(rs.getInt("grading_type_id"));
+		gradingFormat.setGradingFormatId(rs.getInt("grading_format_id"));
 		gradingFormat.setFromRange(rs.getString("from_range"));
 		gradingFormat.setToRange(rs.getString("to_range"));
 	}
@@ -85,7 +85,7 @@ public class ModelMapperUtilities {
 		event.setWorkJustification(rs.getString("work_justification"));
 		event.setWorkTimeMissed(rs.getInt("work_time_miss"));
 		event.setPassingGradeProvided(EvaluationResult.valueOf(rs.getInt("passing_grade")));
-		event.setSuccessfulPresentationProvided(EvaluationResult.valueOf(rs.getInt("presentations_succ")));
+		event.setSuccessfulPresentationProvided(EvaluationResult.valueOf(rs.getInt("presentation_succ")));
 		event.setProjectedAmountReimbused(rs.getDouble("projected_amt_reimbursed"));
 		event.setAcceptedAmountReimbursed(rs.getDouble("accepted_amt_reimbursed"));
 		event.setUrgent(rs.getBoolean("urgent"));
@@ -96,7 +96,7 @@ public class ModelMapperUtilities {
 		event.setRequiredPresentation(rs.getBoolean("required_presentation"));
 		event.setGradeCutoff(rs.getString("grade_cutoff"));
 		event.setDsEventStatus(EventStatus.valueOf(rs.getInt("ds_event_status_id")));
-		event.setHdEventStatus(EventStatus.valueOf(rs.getInt("ds_event_status_id")));
+		event.setHdEventStatus(EventStatus.valueOf(rs.getInt("hd_event_status_id")));
 		event.setBencoEventStatus(EventStatus.valueOf(rs.getInt("benco_event_status_id")));
 		event.setCanceledByEmployee(rs.getBoolean("canceled_by_employee"));
 	}
