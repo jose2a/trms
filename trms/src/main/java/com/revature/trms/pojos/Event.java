@@ -17,6 +17,7 @@ public class Event {
 	private int workTimeMissed;
 	private boolean requiredPresentation;
 	private String gradeCutoff;
+	private String finalGrade;
 
 	// Used for business logic
 	private double projectedAmountReimbused;
@@ -136,6 +137,14 @@ public class Event {
 
 	public void setGradeCutoff(String gradeCutoff) {
 		this.gradeCutoff = gradeCutoff;
+	}
+
+	public String getFinalGrade() {
+		return finalGrade;
+	}
+
+	public void setFinalGrade(String finalGrade) {
+		this.finalGrade = finalGrade;
 	}
 
 	public double getProjectedAmountReimbused() {

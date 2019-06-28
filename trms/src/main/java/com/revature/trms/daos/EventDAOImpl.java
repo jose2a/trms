@@ -22,7 +22,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 	private String selectQuery = "SELECT event_id, date_of_event, time_of_event, location, description, cost, "
 			+ "work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, "
 			+ "accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, "
-			+ "required_presentation, grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, "
+			+ "required_presentation, grade_cutoff, final_grade, ds_event_status_id, hd_event_status_id, benco_event_status_id, "
 			+ "canceled_by_employee FROM event";
 
 	@Override
@@ -34,8 +34,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 			String sql = "INSERT INTO event"
-					+ "(date_of_event, time_of_event, location, description, cost, work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, required_presentation, grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, canceled_by_employee)"
-					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "(date_of_event, time_of_event, location, description, cost, work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, required_presentation, grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, canceled_by_employee, final_grade)"
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
@@ -61,6 +61,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			ps.setInt(20, event.getHdEventStatus().getValue()); // hd_event_status_id
 			ps.setInt(21, event.getBencoEventStatus().getValue()); // benco_event_status_id
 			ps.setBoolean(22, event.isCanceledByEmployee()); // canceled_by_employee
+			ps.setString(23, event.getFinalGrade()); // final_grade
 
 			if (ps.executeUpdate() != 0) {
 				rs = ps.getGeneratedKeys();
@@ -94,7 +95,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 					+ "work_time_miss=?, passing_grade=?, presentation_succ=?, projected_amt_reimbursed=?, accepted_amt_reimbursed=?, "
 					+ "urgent=?, exceeds_aval_funds=?, event_type_id=?, grading_format_id=?, employee_id=?, required_presentation=?, "
 					+ "grade_cutoff=?, ds_event_status_id=?, hd_event_status_id=?, benco_event_status_id=?, "
-					+ "canceled_by_employee=? WHERE event_id=?";
+					+ "canceled_by_employee=?, final_grade=? WHERE event_id=?";
 
 			ps = conn.prepareStatement(sql);
 
@@ -120,7 +121,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			ps.setInt(20, event.getHdEventStatus().getValue()); // hd_event_status_id
 			ps.setInt(21, event.getBencoEventStatus().getValue()); // benco_event_status_id
 			ps.setBoolean(22, event.isCanceledByEmployee()); // canceled_by_employee
-			ps.setInt(23, event.getEventId()); // event_id
+			ps.setString(23, event.getFinalGrade()); // final_grade
+			ps.setInt(24, event.getEventId()); // event_id
 
 			if (ps.executeUpdate() != 0) {
 				LogUtilities.trace("Event updated.");
@@ -290,7 +292,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)"
 					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=? AND"
-					+ " required_presentation = false AND passing_grade = ?)";
+					+ " required_presentation = false AND passing_grade = ? AND final_grade != '')";
 
 			ps = conn.prepareStatement(sql);
 
