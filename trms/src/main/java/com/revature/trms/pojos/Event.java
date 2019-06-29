@@ -18,6 +18,7 @@ public class Event {
 	private boolean requiredPresentation;
 	private String gradeCutoff;
 	private String finalGrade;
+	private boolean presentationUploaded;
 
 	// Used for business logic
 	private double projectedAmountReimbused;
@@ -145,6 +146,14 @@ public class Event {
 
 	public void setFinalGrade(String finalGrade) {
 		this.finalGrade = finalGrade;
+	}
+
+	public boolean isPresentationUploaded() {
+		return presentationUploaded;
+	}
+
+	public void setPresentationUploaded(boolean presentationUploaded) {
+		this.presentationUploaded = presentationUploaded;
 	}
 
 	public double getProjectedAmountReimbused() {
@@ -277,6 +286,7 @@ public class Event {
 		result = prime * result + ((eventId == null) ? 0 : eventId.hashCode());
 		result = prime * result + eventTypeId;
 		result = prime * result + (exceedsAvaliableFunds ? 1231 : 1237);
+		result = prime * result + ((finalGrade == null) ? 0 : finalGrade.hashCode());
 		result = prime * result + ((gradeCutoff == null) ? 0 : gradeCutoff.hashCode());
 		result = prime * result + gradingFormatId;
 		result = prime * result + ((hdEventStatus == null) ? 0 : hdEventStatus.hashCode());
@@ -284,6 +294,7 @@ public class Event {
 		result = prime * result + (isUrgent ? 1231 : 1237);
 		result = prime * result + ((location == null) ? 0 : location.hashCode());
 		result = prime * result + ((passingGradeProvided == null) ? 0 : passingGradeProvided.hashCode());
+		result = prime * result + (presentationUploaded ? 1231 : 1237);
 		temp = Double.doubleToLongBits(projectedAmountReimbused);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + (requiredPresentation ? 1231 : 1237);
@@ -336,6 +347,11 @@ public class Event {
 			return false;
 		if (exceedsAvaliableFunds != other.exceedsAvaliableFunds)
 			return false;
+		if (finalGrade == null) {
+			if (other.finalGrade != null)
+				return false;
+		} else if (!finalGrade.equals(other.finalGrade))
+			return false;
 		if (gradeCutoff == null) {
 			if (other.gradeCutoff != null)
 				return false;
@@ -355,6 +371,8 @@ public class Event {
 		} else if (!location.equals(other.location))
 			return false;
 		if (passingGradeProvided != other.passingGradeProvided)
+			return false;
+		if (presentationUploaded != other.presentationUploaded)
 			return false;
 		if (Double.doubleToLongBits(projectedAmountReimbused) != Double
 				.doubleToLongBits(other.projectedAmountReimbused))
@@ -383,7 +401,8 @@ public class Event {
 		return "Event [eventId=" + eventId + ", dateOfEvent=" + dateOfEvent + ", timeOfEvent=" + timeOfEvent
 				+ ", location=" + location + ", description=" + description + ", cost=" + cost + ", workJustification="
 				+ workJustification + ", workTimeMissed=" + workTimeMissed + ", requiredPresentation="
-				+ requiredPresentation + ", gradeCutoff=" + gradeCutoff + ", projectedAmountReimbused="
+				+ requiredPresentation + ", gradeCutoff=" + gradeCutoff + ", finalGrade=" + finalGrade
+				+ ", presentationUploaded=" + presentationUploaded + ", projectedAmountReimbused="
 				+ projectedAmountReimbused + ", acceptedAmountReimbursed=" + acceptedAmountReimbursed + ", isUrgent="
 				+ isUrgent + ", exceedsAvaliableFunds=" + exceedsAvaliableFunds + ", isCanceledByEmployee="
 				+ isCanceledByEmployee + ", passingGradeProvided=" + passingGradeProvided

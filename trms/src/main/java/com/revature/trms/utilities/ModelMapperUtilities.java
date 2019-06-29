@@ -100,5 +100,6 @@ public class ModelMapperUtilities {
 		event.setBencoEventStatus(EventStatus.valueOf(rs.getInt("benco_event_status_id")));
 		event.setCanceledByEmployee(rs.getBoolean("canceled_by_employee"));
 		event.setFinalGrade(rs.getString("final_grade"));
+		event.setPresentationUploaded(rs.getBoolean("presentation_up"));
 	}
 }
