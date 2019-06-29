@@ -14,23 +14,23 @@ public interface EventService {
 
 	// Approve Tuition Reimbursement Form
 	// Approve Reimbursement by Direct Supervisor
-	public boolean approveTuitionReimbursementByDirectSupervisor(Integer eventId);
+	public boolean approveTuitionReimbursementByDirectSupervisor(Integer eventId, Integer supervisorId);
 
 	// Approve Reimbursement by Head Department
-	public boolean approveTuitionReimbursementByHeadDepartment(Integer eventId);
+	public boolean approveTuitionReimbursementByHeadDepartment(Integer eventId, Integer supervisorId);
 
 	// Approve Reimbursement by BenCo
-	public boolean approveTuitionReimbursementByBenCo(Integer eventId);
+	public boolean approveTuitionReimbursementByBenCo(Integer eventId, Integer supervisorId);
 
 	// Deny Tuition Reimbursement Form
 	// Deny Reimbursement by Direct Supervisor
-	public boolean denyTuitionReimbursementByDirectSupervisor(Integer eventId, String reason);
+	public boolean denyTuitionReimbursementByDirectSupervisor(Integer eventId, Integer supervisorId, String reason);
 
 	// Deny Reimbursement by HeadDepartment
-	public boolean denyTuitionReimbursementByHeadDepartmentr(Integer eventId, String reason);
+	public boolean denyTuitionReimbursementByHeadDepartment(Integer eventId, Integer supervisorId, String reason);
 
 	// Deny Reimbursement by BenCo
-	public boolean denyTuitionReimbursementByBenCo(Integer eventId, String reason);
+	public boolean denyTuitionReimbursementByBenCo(Integer eventId, Integer supervisorId, String reason);
 
 	public boolean requestAdditionalInformation(Integer fromEmployee, Integer toEmployee, String information);
 
@@ -44,15 +44,13 @@ public interface EventService {
 
 	public boolean confirmSuccessfulPresentation(Integer eventId);
 
-	public boolean awardAmount(Integer eventId);
-
 	public Event getEventById(Integer eventId);
 
-	public List<Event> getEventsPendingOfDirectSupervisorApproval();
+	public List<Event> getEventsPendingOfDirectSupervisorApproval(Integer employeeId) throws PojoValidationException;
 
-	public List<Event> getEventsPendingOfHeadDepartmentApproval();
+	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId) throws PojoValidationException;
 
-	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval();
+	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval(Integer employeeId) throws PojoValidationException;
 
 	public double getProjectedReimbursementForEvent(double cost, Integer eventTypeId);
 

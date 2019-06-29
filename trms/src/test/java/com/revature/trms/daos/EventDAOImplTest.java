@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Period;
 import java.util.List;
 
 import org.junit.Before;
@@ -83,8 +82,14 @@ public class EventDAOImplTest {
 	}
 
 	@Test
-	public void testGetEventById() {
+	public void getEventsNotDeniedByEmployeeAndYear() {
+		List<Event> events = eventDao.getEventsNotDeniedByEmployeeAndYear(25, 2019);
 
+		for (Event event : events) {
+			LogUtilities.trace(event.toString());
+		}
+
+		assertEquals(2, events.size());
 	}
 
 	@Test
@@ -92,18 +97,11 @@ public class EventDAOImplTest {
 		List<Event> events = eventDao.getEventsPendingOfDirectSupervisorApproval();
 
 		for (Event event : events) {
-			LocalDate now = LocalDate.now();
-		    LocalDate sixDaysBehind = event.getDateOfEvent();
-		    
-		    Period period = Period.between(now, sixDaysBehind);
-		    int diff = period.getDays();
-		    
-			LogUtilities.trace(">>>Diff " + diff);
-			
+
 			LogUtilities.trace(event.toString());
 		}
 
-		assertEquals(4, events.size());
+		assertEquals(1, events.size());
 	}
 
 	@Test
@@ -111,14 +109,6 @@ public class EventDAOImplTest {
 		List<Event> events = eventDao.getEventsPendingOfHeadDepartmentApproval();
 
 		for (Event event : events) {
-			LocalDate now = LocalDate.now();
-		    LocalDate sixDaysBehind = event.getDateOfEvent();
-		    
-		    Period period = Period.between(now, sixDaysBehind);
-		    int diff = period.getDays();
-		    
-			LogUtilities.trace(">>>Diff " + diff);
-			
 			LogUtilities.trace(event.toString());
 		}
 
@@ -130,14 +120,6 @@ public class EventDAOImplTest {
 		List<Event> events = eventDao.getEventsPendingOfBenefitsCoordinatorApproval();
 
 		for (Event event : events) {
-			LocalDate now = LocalDate.now();
-		    LocalDate sixDaysBehind = event.getDateOfEvent();
-		    
-		    Period period = Period.between(now, sixDaysBehind);
-		    int diff = period.getDays();
-		    
-			LogUtilities.trace(">>>Diff " + diff);
-			
 			LogUtilities.trace(event.toString());
 		}
 

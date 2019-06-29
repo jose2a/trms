@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,36 +35,16 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 			String sql = "INSERT INTO event"
-					+ "(date_of_event, time_of_event, location, description, cost, work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, required_presentation, grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, canceled_by_employee, final_grade, presentation_up, reimbursement_approved)"
+					+ "(date_of_event, time_of_event, location, description, cost, work_justification, work_time_miss,"
+					+ " passing_grade, presentation_succ, projected_amt_reimbursed, accepted_amt_reimbursed, urgent,"
+					+ " exceeds_aval_funds, event_type_id, grading_format_id, employee_id, required_presentation,"
+					+ " grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, canceled_by_employee,"
+					+ " final_grade, presentation_up, reimbursement_approved)"
 					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-			ps.setDate(1, Date.valueOf(event.getDateOfEvent())); // date_of_event
-			ps.setTime(2, Time.valueOf(event.getTimeOfEvent())); // time_of_event
-			ps.setString(3, event.getLocation()); // location
-			ps.setString(4, event.getDescription()); // description
-			ps.setDouble(5, event.getCost()); // cost
-			ps.setString(6, event.getWorkJustification()); // work_justification
-			ps.setInt(7, event.getWorkTimeMissed()); // work_time_miss
-			ps.setInt(8, event.getPassingGradeProvided().getValue()); // passing grade (benco)
-			ps.setInt(9, event.getSuccessfulPresentationProvided().getValue()); // presentations_succ (benco / DS)
-			ps.setDouble(10, event.getProjectedAmountReimbused()); // projected_amt_reimbursed
-			ps.setDouble(11, event.getAcceptedAmountReimbursed()); // accepted_amt_reimbursed
-			ps.setBoolean(12, event.isUrgent()); // urgent
-			ps.setBoolean(13, event.isExceedsAvaliableFunds()); // exceeds_aval_funds
-			ps.setInt(14, event.getEventTypeId());// event_type_id
-			ps.setInt(15, event.getGradingFormatId()); // grading_format_id
-			ps.setInt(16, event.getEmployeeId()); // employee_id
-			ps.setBoolean(17, event.isRequiredPresentation()); // required_presentation
-			ps.setString(18, event.getGradeCutoff()); // grade_cutoff
-			ps.setInt(19, event.getDsEventStatus().getValue()); // ds_event_status_id
-			ps.setInt(20, event.getHdEventStatus().getValue()); // hd_event_status_id
-			ps.setInt(21, event.getBencoEventStatus().getValue()); // benco_event_status_id
-			ps.setBoolean(22, event.isCanceledByEmployee()); // canceled_by_employee
-			ps.setString(23, event.getFinalGrade()); // final_grade
-			ps.setBoolean(24, event.isPresentationUploaded()); // presentation_up
-			ps.setInt(25, event.getReimbursementStatus().getValue()); // reimbursement_awarded
+			setEventToPreparedStatement(event, ps);
 
 			if (ps.executeUpdate() != 0) {
 				rs = ps.getGeneratedKeys();
@@ -101,31 +82,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 			ps = conn.prepareStatement(sql);
 
-			ps.setDate(1, Date.valueOf(event.getDateOfEvent())); // date_of_event
-			ps.setTime(2, Time.valueOf(event.getTimeOfEvent())); // time_of_event
-			ps.setString(3, event.getLocation()); // location
-			ps.setString(4, event.getDescription()); // description
-			ps.setDouble(5, event.getCost()); // cost
-			ps.setString(6, event.getWorkJustification()); // work_justification
-			ps.setInt(7, event.getWorkTimeMissed()); // work_time_miss
-			ps.setInt(8, event.getPassingGradeProvided().getValue()); // passing grade (benco)
-			ps.setInt(9, event.getSuccessfulPresentationProvided().getValue()); // presentations_succ (benco / DS)
-			ps.setDouble(10, event.getProjectedAmountReimbused()); // projected_amt_reimbursed
-			ps.setDouble(11, event.getAcceptedAmountReimbursed()); // accepted_amt_reimbursed
-			ps.setBoolean(12, event.isUrgent()); // urgent
-			ps.setBoolean(13, event.isExceedsAvaliableFunds()); // exceeds_aval_funds
-			ps.setInt(14, event.getEventTypeId());// event_type_id
-			ps.setInt(15, event.getGradingFormatId()); // grading_format_id
-			ps.setInt(16, event.getEmployeeId()); // employee_id
-			ps.setBoolean(17, event.isRequiredPresentation()); // required_presentation
-			ps.setString(18, event.getGradeCutoff()); // grade_cutoff
-			ps.setInt(19, event.getDsEventStatus().getValue()); // ds_event_status_id
-			ps.setInt(20, event.getHdEventStatus().getValue()); // hd_event_status_id
-			ps.setInt(21, event.getBencoEventStatus().getValue()); // benco_event_status_id
-			ps.setBoolean(22, event.isCanceledByEmployee()); // canceled_by_employee
-			ps.setString(23, event.getFinalGrade()); // final_grade
-			ps.setBoolean(24, event.isPresentationUploaded()); // presentation_up
-			ps.setInt(25, event.getReimbursementStatus().getValue()); // reimbursement_awarded
+			setEventToPreparedStatement(event, ps);
 			ps.setInt(26, event.getEventId()); // event_id
 
 			if (ps.executeUpdate() != 0) {
@@ -200,7 +157,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		return event;
 	}
-	
+
 	@Override
 	public List<Event> getEventsNotDeniedByEmployeeAndYear(Integer employeeId, int year) {
 		LogUtilities.trace("Getting events not denied by employee and year.");
@@ -213,28 +170,26 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
 			String sql = selectQuery + " WHERE employee_id = ? AND canceled_by_employee != true"
-					+ " AND date_of_event BETWEEN '?-01-01' AND '?-12-31'"
-					+ " AND (ds_event_status_id != ? AND hd_event_status_id != ? AND benco_event_status_id != ?)";
-			
-			// reimbuserment_approval_status
-			
+					+ " AND date_of_event BETWEEN ? AND ? AND reimbursement_awarded != ?";
+
 			LogUtilities.trace(sql);
 
 			ps = conn.prepareStatement(sql);
 
+			LocalDate startDate = LocalDate.of(year, 1, 1); // Beginning of the year
+			LocalDate endDate = LocalDate.of(year, 12, 31); // End of the year
+
 			ps.setInt(1, employeeId);
-			ps.setInt(2, year);
-			ps.setInt(3, year);
+			ps.setDate(2, Date.valueOf(startDate));
+			ps.setDate(3, Date.valueOf(endDate));
 			ps.setInt(4, EventStatus.Denied.getValue());
-			ps.setInt(5, EventStatus.Denied.getValue());
-			ps.setInt(6, EventStatus.Denied.getValue());
 
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
-				
+
 				events.add(event);
 			}
 
@@ -258,31 +213,23 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-//			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)"
-//					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=? AND"
-//					+ " required_presentation = true AND presentation_up = false AND presentation_succ = ?)";
-			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)"
-					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=? AND"
-					+ " required_presentation = true AND presentation_succ = ?)";
-			
+			String sql = selectQuery + " WHERE ds_event_status_id=? OR reimbursement_awarded=?"
+					+ " AND required_presentation = true AND presentation_succ = ?";
+
 			LogUtilities.trace(sql);
 
 			ps = conn.prepareStatement(sql);
 
 			ps.setInt(1, EventStatus.Pending.getValue());
-			ps.setInt(2, EventStatus.Pending.getValue());
-			ps.setInt(3, EventStatus.Pending.getValue());
-			ps.setInt(4, EventStatus.Approved.getValue());
-			ps.setInt(5, EventStatus.Approved.getValue());
-			ps.setInt(6, EventStatus.Approved.getValue());
-			ps.setInt(7, EvaluationResult.Pending.getValue());
+			ps.setInt(2, EventStatus.Approved.getValue());
+			ps.setInt(3, EvaluationResult.Pending.getValue());
 
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
-				
+
 				events.add(event);
 			}
 
@@ -306,7 +253,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)";
+			String sql = selectQuery
+					+ " WHERE ds_event_status_id=? AND hd_event_status_id=? AND reimbursement_awarded=?";
 
 			ps = conn.prepareStatement(sql);
 
@@ -319,7 +267,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
-				
+
 				events.add(event);
 			}
 
@@ -343,26 +291,25 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)"
-					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=? AND"
-					+ " required_presentation = false AND passing_grade = ? AND final_grade != '')";
+			String sql = selectQuery
+					+ " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)"
+					+ " OR (reimbursement_awarded=? AND required_presentation = false AND passing_grade = ?"
+					+ " AND final_grade != '')";
 
 			ps = conn.prepareStatement(sql);
 
 			ps.setInt(1, EventStatus.Approved.getValue());
 			ps.setInt(2, EventStatus.Approved.getValue());
 			ps.setInt(3, EventStatus.Pending.getValue());
-			ps.setInt(4, EventStatus.Approved.getValue());
-			ps.setInt(5, EventStatus.Approved.getValue());
-			ps.setInt(6, EventStatus.Approved.getValue());
-			ps.setInt(7, EvaluationResult.Pending.getValue());
+			ps.setInt(4, EventStatus.Pending.getValue());
+			ps.setInt(5, EvaluationResult.Pending.getValue());
 
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				Event event = new Event();
 				ModelMapperUtilities.mapRsToEvent(rs, event);
-				
+
 				events.add(event);
 			}
 
@@ -373,5 +320,33 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 		}
 
 		return events;
+	}
+
+	private void setEventToPreparedStatement(Event event, PreparedStatement ps) throws SQLException {
+		ps.setDate(1, Date.valueOf(event.getDateOfEvent())); // date_of_event
+		ps.setTime(2, Time.valueOf(event.getTimeOfEvent())); // time_of_event
+		ps.setString(3, event.getLocation()); // location
+		ps.setString(4, event.getDescription()); // description
+		ps.setDouble(5, event.getCost()); // cost
+		ps.setString(6, event.getWorkJustification()); // work_justification
+		ps.setInt(7, event.getWorkTimeMissed()); // work_time_miss
+		ps.setInt(8, event.getPassingGradeProvided().getValue()); // passing grade (benco)
+		ps.setInt(9, event.getSuccessfulPresentationProvided().getValue()); // presentations_succ (benco / DS)
+		ps.setDouble(10, event.getProjectedAmountReimbused()); // projected_amt_reimbursed
+		ps.setDouble(11, event.getAcceptedAmountReimbursed()); // accepted_amt_reimbursed
+		ps.setBoolean(12, event.isUrgent()); // urgent
+		ps.setBoolean(13, event.isExceedsAvaliableFunds()); // exceeds_aval_funds
+		ps.setInt(14, event.getEventTypeId());// event_type_id
+		ps.setInt(15, event.getGradingFormatId()); // grading_format_id
+		ps.setInt(16, event.getEmployeeId()); // employee_id
+		ps.setBoolean(17, event.isRequiredPresentation()); // required_presentation
+		ps.setString(18, event.getGradeCutoff()); // grade_cutoff
+		ps.setInt(19, event.getDsEventStatus().getValue()); // ds_event_status_id
+		ps.setInt(20, event.getHdEventStatus().getValue()); // hd_event_status_id
+		ps.setInt(21, event.getBencoEventStatus().getValue()); // benco_event_status_id
+		ps.setBoolean(22, event.isCanceledByEmployee()); // canceled_by_employee
+		ps.setString(23, event.getFinalGrade()); // final_grade
+		ps.setBoolean(24, event.isPresentationUploaded()); // presentation_up
+		ps.setInt(25, event.getReimbursementStatus().getValue()); // reimbursement_awarded
 	}
 }

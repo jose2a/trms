@@ -419,11 +419,6 @@ public class EventServiceImplTest {
 		assertTrue(EventStatus.Approved == event.getHdEventStatus());
 		assertTrue(EventStatus.Pending == event.getBencoEventStatus());
 	}
-	
-	@Test
-	public void testApproveTuitionReimbursementByDirectSupervisor() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	public void testApproveTuitionReimbursementByHeadDepartment() {

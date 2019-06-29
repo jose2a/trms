@@ -3,10 +3,12 @@ package com.revature.trms.services;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.Event;
 import com.revature.trms.pojos.GradingFormat;
 import com.revature.trms.pojos.InformationRequired;
 import com.revature.trms.pojos.ReasonDenied;
 import com.revature.trms.pojos.ReasonExceeding;
+import com.revature.trms.utilities.LogUtilities;
 
 public abstract class BaseService {
 
@@ -204,6 +206,7 @@ public abstract class BaseService {
 
 	/**
 	 * Validating reason denied properties.
+	 * 
 	 * @param reasonDenied The reason denied
 	 */
 	protected void validateReasonDenied(ReasonDenied reasonDenied) {
@@ -213,16 +216,75 @@ public abstract class BaseService {
 			pojoValidationException.addError("Please provide the reason why this request was denied.");
 		}
 	}
-	
+
 	/**
 	 * Validating reason exceeding properties.
+	 * 
 	 * @param reasonExceeding The reason exceeding
 	 */
 	protected void validateReasonExceeding(ReasonExceeding reasonExceeding) {
 		cleanValidationResults();
 
 		if (reasonExceeding.getReason().equals("") || reasonExceeding.getReason().isEmpty()) {
-			pojoValidationException.addError("Please provide the reason why the amount for this request was exceeding.");
+			pojoValidationException
+					.addError("Please provide the reason why the amount for this request was exceeding.");
+		}
+	}
+
+	/**
+	 * Validating the event.
+	 * 
+	 * @param event The event
+	 * @param daysBeforeStartOfEvent Days before the event
+	 * @param from Grade range (from)
+	 * @param to Grade range (to)
+	 */
+	protected void validateEvent(Event event, int daysBeforeStartOfEvent, String from, String to) {
+		if (event.getEmployeeId() == null) {
+			throw new IllegalArgumentException("EmployeeId should not be empty.");
+		}
+
+		if (event.getDateOfEvent() == null) {
+			pojoValidationException.addError("Date of the event is required.");
+		}
+
+		if (event.getTimeOfEvent() == null) {
+			pojoValidationException.addError("Time of the event is required.");
+		}
+
+		if (event.getLocation().equals("") || event.getLocation().isEmpty()) {
+			pojoValidationException.addError("Location of the event is required.");
+		}
+
+		if (event.getDescription().equals("") || event.getDescription().isEmpty()) {
+			pojoValidationException.addError("Description of the event is required.");
+		}
+
+		if (event.getCost() <= 0) {
+			pojoValidationException.addError("Cost of the event should be greater than 0.");
+		}
+
+		if (event.getGradingFormatId() == null) {
+			if (from.equals("") || from.isEmpty() || (to.equals("") || to.isEmpty())) {
+				LogUtilities.trace("The employee did not provide a gradding format or the grade for this event.");
+				pojoValidationException
+						.addError("You should select a grading format or enter a grading range [from - to].");
+			}
+		}
+
+		if (event.getEventTypeId() == null) {
+			pojoValidationException.addError("You should select the type of event.");
+		}
+
+		if (event.getWorkJustification().equals("") || event.getWorkJustification().isEmpty()) {
+			pojoValidationException.addError("Work-related justification is required.");
+		}
+
+		if (daysBeforeStartOfEvent < 7) {
+			LogUtilities.trace("Event is less than a week from begin.");
+
+			pojoValidationException.addError("Your request could not be proccessed.\n"
+					+ "You must complete the Tuition Reimbursement form one week prior to the start of the event.");
 		}
 	}
 
