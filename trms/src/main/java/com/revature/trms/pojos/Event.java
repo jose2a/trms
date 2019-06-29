@@ -12,42 +12,57 @@ public class Event {
 	private LocalTime timeOfEvent;
 	private String location;
 	private String description;
-	private double cost;
+	private Double cost;
 	private String workJustification;
-	private int workTimeMissed;
 	private boolean requiredPresentation;
 	private String gradeCutoff;
-	private String finalGrade;
-	private boolean presentationUploaded;
+
+	// User (optional)
+	private int workTimeMissed;
 
 	// Used for business logic
+	private String finalGrade;
+	private boolean presentationUploaded;
 	private double projectedAmountReimbused;
 	private double acceptedAmountReimbursed;
 	private boolean isUrgent;
 	private boolean exceedsAvaliableFunds;
 	private boolean isCanceledByEmployee;
 
+	private EventStatus reimbursementStatus;
+
 	// DS, BenCo
 	private EvaluationResult passingGradeProvided;
 	private EvaluationResult successfulPresentationProvided;
 
 	// Relationship fields
-	private int employeeId;
-	private int eventTypeId;
-	private int gradingFormatId;
+	private Integer employeeId;
+	private Integer eventTypeId;
+	private Integer gradingFormatId;
 
 	private EventStatus dsEventStatus;
 	private EventStatus hdEventStatus;
 	private EventStatus bencoEventStatus;
 
-	private ApprovalStage approvalStage;
-
 	public Event() {
 		super();
 	}
 
-	public Event(LocalDate dateOfEvent, LocalTime timeOfEvent, String location, String description, double cost,
-			String workJustification, int workTimeMissed, boolean requiredPresentation, String gradeCutoff) {
+	/**
+	 * Event Constructor.
+	 * 
+	 * @param dateOfEvent          Date when the event is taking place
+	 * @param timeOfEvent          Time of the event
+	 * @param location             Location of the event
+	 * @param description          Description of the event
+	 * @param cost                 Cost of the event
+	 * @param workJustification    Work-related justification
+	 * @param requiredPresentation This event required presentation
+	 * @param gradeCutoff          Grade which is the minimum required to pass the
+	 *                             event
+	 */
+	public Event(LocalDate dateOfEvent, LocalTime timeOfEvent, String location, String description, Double cost,
+			String workJustification, boolean requiredPresentation, String gradeCutoff) {
 		super();
 		this.dateOfEvent = dateOfEvent;
 		this.timeOfEvent = timeOfEvent;
@@ -55,39 +70,78 @@ public class Event {
 		this.description = description;
 		this.cost = cost;
 		this.workJustification = workJustification;
-		this.workTimeMissed = workTimeMissed;
 		this.requiredPresentation = requiredPresentation;
 		this.gradeCutoff = gradeCutoff;
 	}
 
+	/**
+	 * Getting id for the event.
+	 * 
+	 * @return The event id
+	 */
 	public Integer getEventId() {
 		return eventId;
 	}
 
+	/**
+	 * Setting id for the event.
+	 * 
+	 * @param eventId The event id
+	 */
 	public void setEventId(Integer eventId) {
 		this.eventId = eventId;
 	}
 
+	/**
+	 * Getting Date when the event is going to take place.
+	 * 
+	 * @return The date
+	 */
 	public LocalDate getDateOfEvent() {
 		return dateOfEvent;
 	}
 
+	/**
+	 * Setting Date when the event is going to take place.
+	 * 
+	 * @param dateOfEvent The date
+	 */
 	public void setDateOfEvent(LocalDate dateOfEvent) {
 		this.dateOfEvent = dateOfEvent;
 	}
 
+	/**
+	 * Getting Time of the event.
+	 * 
+	 * @return The time
+	 */
 	public LocalTime getTimeOfEvent() {
 		return timeOfEvent;
 	}
 
+	/**
+	 * Setting time of the event.
+	 * 
+	 * @param timeOfEvent The time
+	 */
 	public void setTimeOfEvent(LocalTime timeOfEvent) {
 		this.timeOfEvent = timeOfEvent;
 	}
 
+	/**
+	 * Getting location where the event is taking place.
+	 * 
+	 * @return The location
+	 */
 	public String getLocation() {
 		return location;
 	}
 
+	/**
+	 * Setting location where the event is taking place.
+	 * 
+	 * @param location The location
+	 */
 	public void setLocation(String location) {
 		this.location = location;
 	}
@@ -100,11 +154,11 @@ public class Event {
 		this.description = description;
 	}
 
-	public double getCost() {
+	public Double getCost() {
 		return cost;
 	}
 
-	public void setCost(double cost) {
+	public void setCost(Double cost) {
 		this.cost = cost;
 	}
 
@@ -124,115 +178,247 @@ public class Event {
 		this.workTimeMissed = workTimeMissed;
 	}
 
+	/**
+	 * Getting location where the event is taking place.
+	 * 
+	 * @return true/false
+	 */
 	public boolean isRequiredPresentation() {
 		return requiredPresentation;
 	}
 
+	/**
+	 * Getting location where the event is taking place.
+	 * 
+	 * @param requiredPresentation true/false
+	 */
 	public void setRequiredPresentation(boolean requiredPresentation) {
 		this.requiredPresentation = requiredPresentation;
 	}
 
+	/**
+	 * The minimum grade required to get the reimbursement.
+	 * 
+	 * @return minimum grade required
+	 */
 	public String getGradeCutoff() {
 		return gradeCutoff;
 	}
 
+	/**
+	 * The minimum grade required to get the reimbursement.
+	 * 
+	 * @param gradeCutoff minimum grade required
+	 */
 	public void setGradeCutoff(String gradeCutoff) {
 		this.gradeCutoff = gradeCutoff;
 	}
 
+	/**
+	 * The final grade obtained by the student after the event.
+	 * 
+	 * @return The final grade
+	 */
 	public String getFinalGrade() {
 		return finalGrade;
 	}
 
+	/**
+	 * The final grade obtained by the student after the event.
+	 * 
+	 * @param finalGrade The final grade
+	 */
 	public void setFinalGrade(String finalGrade) {
 		this.finalGrade = finalGrade;
 	}
 
+	/**
+	 * Tells if the presentation was uploaded, if a presentation was required for
+	 * the event.
+	 * 
+	 * @return Presentation uploaded
+	 */
 	public boolean isPresentationUploaded() {
 		return presentationUploaded;
 	}
 
+	/**
+	 * Tells if the presentation was uploaded, if a presentation was required for
+	 * the event.
+	 * 
+	 * @param presentationUploaded true/false
+	 */
 	public void setPresentationUploaded(boolean presentationUploaded) {
 		this.presentationUploaded = presentationUploaded;
 	}
 
+	/**
+	 * Get projected amount reimbursed for the event.
+	 * 
+	 * @return Projected amount
+	 */
 	public double getProjectedAmountReimbused() {
 		return projectedAmountReimbused;
 	}
 
+	/**
+	 * Get projected amount reimbursed for the event.
+	 * 
+	 * @param projectedAmountReimbused Projected amount
+	 */
 	public void setProjectedAmountReimbused(double projectedAmountReimbused) {
 		this.projectedAmountReimbused = projectedAmountReimbused;
 	}
 
+	/**
+	 * Amount reimbursed after the BenCo has approved the event.
+	 * 
+	 * @return Amount reimbursed
+	 */
 	public double getAcceptedAmountReimbursed() {
 		return acceptedAmountReimbursed;
 	}
 
+	/**
+	 * Amount reimbursed after the Benco has approved the event.
+	 * 
+	 * @param acceptedAmountReimbursed Amount reimbursed
+	 */
 	public void setAcceptedAmountReimbursed(double acceptedAmountReimbursed) {
 		this.acceptedAmountReimbursed = acceptedAmountReimbursed;
 	}
 
+	/**
+	 * The course is < 2 weeks from beginning. (Marker)
+	 * 
+	 * @return true/false
+	 */
 	public boolean isUrgent() {
 		return isUrgent;
 	}
 
+	/**
+	 * The course is < 2 weeks from beginning. (Marker)
+	 * 
+	 * @param isUrgent true/false
+	 */
 	public void setUrgent(boolean isUrgent) {
 		this.isUrgent = isUrgent;
 	}
 
+	/**
+	 * If the BenCo assigned more money than what was projected. (Marker)
+	 * 
+	 * @return true/false
+	 */
 	public boolean isExceedsAvaliableFunds() {
 		return exceedsAvaliableFunds;
 	}
 
+	/**
+	 * If the BenCo assigned more money than what was projected. (Marker)
+	 * 
+	 * @param exceedsAvaliableFunds true/false
+	 */
 	public void setExceedsAvaliableFunds(boolean exceedsAvaliableFunds) {
 		this.exceedsAvaliableFunds = exceedsAvaliableFunds;
 	}
 
+	/**
+	 * The event was canceled by the employee.
+	 * 
+	 * @return true/false
+	 */
 	public boolean isCanceledByEmployee() {
 		return isCanceledByEmployee;
 	}
 
+	/**
+	 * The event was canceled by the employee.
+	 * 
+	 * @param isCanceledByEmployee true/false
+	 */
 	public void setCanceledByEmployee(boolean isCanceledByEmployee) {
 		this.isCanceledByEmployee = isCanceledByEmployee;
 	}
 
+	/**
+	 * The reimbursement was Approved, Denied or Pending.
+	 * 
+	 * @return Reimbursement status
+	 */
+	public EventStatus getReimbursementStatus() {
+		return reimbursementStatus;
+	}
+
+	/**
+	 * Setting reimbursement status (Approved, Denied, or Pending).
+	 * 
+	 * @param reimbursementStatus The status
+	 */
+	public void setReimbursementStatus(EventStatus reimbursementStatus) {
+		this.reimbursementStatus = reimbursementStatus;
+	}
+
+	/**
+	 * Tells if the grade provided by the employee was satisfactory.
+	 * 
+	 * @return (Pending, Yes, No)
+	 */
 	public EvaluationResult getPassingGradeProvided() {
 		return passingGradeProvided;
 	}
 
+	/**
+	 * Tells if the grade provided by the employee was satisfactory.
+	 * 
+	 * @param (Pending, Yes, No)
+	 */
 	public void setPassingGradeProvided(EvaluationResult passingGradeProvided) {
 		this.passingGradeProvided = passingGradeProvided;
 	}
 
+	/**
+	 * Tells if the presentation was satisfactory, if required presentation was
+	 * true.
+	 * 
+	 * @return (Pending, Yes, No)
+	 */
 	public EvaluationResult getSuccessfulPresentationProvided() {
 		return successfulPresentationProvided;
 	}
 
+	/**
+	 * Tells if the presentation was satisfactory, if required presentation was
+	 * true.
+	 * 
+	 * @param successfulPresentationProvided (Pending, Yes, No)
+	 */
 	public void setSuccessfulPresentationProvided(EvaluationResult successfulPresentationProvided) {
 		this.successfulPresentationProvided = successfulPresentationProvided;
 	}
 
-	public int getEmployeeId() {
+	public Integer getEmployeeId() {
 		return employeeId;
 	}
 
-	public void setEmployeeId(int employeeId) {
+	public void setEmployeeId(Integer employeeId) {
 		this.employeeId = employeeId;
 	}
 
-	public int getEventTypeId() {
+	public Integer getEventTypeId() {
 		return eventTypeId;
 	}
 
-	public void setEventTypeId(int eventTypeId) {
+	public void setEventTypeId(Integer eventTypeId) {
 		this.eventTypeId = eventTypeId;
 	}
 
-	public int getGradingFormatId() {
+	public Integer getGradingFormatId() {
 		return gradingFormatId;
 	}
 
-	public void setGradingFormatId(int gradingFormatId) {
+	public void setGradingFormatId(Integer gradingFormatId) {
 		this.gradingFormatId = gradingFormatId;
 	}
 
@@ -260,49 +446,20 @@ public class Event {
 		this.bencoEventStatus = bencoEventStatus;
 	}
 
-	public ApprovalStage getApprovalStage() {
-		return approvalStage;
-	}
-
-	public void setApprovalStage(ApprovalStage approvalStage) {
-		this.approvalStage = approvalStage;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(acceptedAmountReimbursed);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((approvalStage == null) ? 0 : approvalStage.hashCode());
-		result = prime * result + ((bencoEventStatus == null) ? 0 : bencoEventStatus.hashCode());
-		temp = Double.doubleToLongBits(cost);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((cost == null) ? 0 : cost.hashCode());
 		result = prime * result + ((dateOfEvent == null) ? 0 : dateOfEvent.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((dsEventStatus == null) ? 0 : dsEventStatus.hashCode());
-		result = prime * result + employeeId;
+		result = prime * result + ((employeeId == null) ? 0 : employeeId.hashCode());
 		result = prime * result + ((eventId == null) ? 0 : eventId.hashCode());
-		result = prime * result + eventTypeId;
-		result = prime * result + (exceedsAvaliableFunds ? 1231 : 1237);
-		result = prime * result + ((finalGrade == null) ? 0 : finalGrade.hashCode());
+		result = prime * result + ((eventTypeId == null) ? 0 : eventTypeId.hashCode());
 		result = prime * result + ((gradeCutoff == null) ? 0 : gradeCutoff.hashCode());
-		result = prime * result + gradingFormatId;
-		result = prime * result + ((hdEventStatus == null) ? 0 : hdEventStatus.hashCode());
-		result = prime * result + (isCanceledByEmployee ? 1231 : 1237);
-		result = prime * result + (isUrgent ? 1231 : 1237);
 		result = prime * result + ((location == null) ? 0 : location.hashCode());
-		result = prime * result + ((passingGradeProvided == null) ? 0 : passingGradeProvided.hashCode());
-		result = prime * result + (presentationUploaded ? 1231 : 1237);
-		temp = Double.doubleToLongBits(projectedAmountReimbused);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + (requiredPresentation ? 1231 : 1237);
-		result = prime * result
-				+ ((successfulPresentationProvided == null) ? 0 : successfulPresentationProvided.hashCode());
 		result = prime * result + ((timeOfEvent == null) ? 0 : timeOfEvent.hashCode());
 		result = prime * result + ((workJustification == null) ? 0 : workJustification.hashCode());
-		result = prime * result + workTimeMissed;
 		return result;
 	}
 
@@ -315,14 +472,10 @@ public class Event {
 		if (getClass() != obj.getClass())
 			return false;
 		Event other = (Event) obj;
-		if (Double.doubleToLongBits(acceptedAmountReimbursed) != Double
-				.doubleToLongBits(other.acceptedAmountReimbursed))
-			return false;
-		if (approvalStage != other.approvalStage)
-			return false;
-		if (bencoEventStatus != other.bencoEventStatus)
-			return false;
-		if (Double.doubleToLongBits(cost) != Double.doubleToLongBits(other.cost))
+		if (cost == null) {
+			if (other.cost != null)
+				return false;
+		} else if (!cost.equals(other.cost))
 			return false;
 		if (dateOfEvent == null) {
 			if (other.dateOfEvent != null)
@@ -334,52 +487,30 @@ public class Event {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (dsEventStatus != other.dsEventStatus)
-			return false;
-		if (employeeId != other.employeeId)
+		if (employeeId == null) {
+			if (other.employeeId != null)
+				return false;
+		} else if (!employeeId.equals(other.employeeId))
 			return false;
 		if (eventId == null) {
 			if (other.eventId != null)
 				return false;
 		} else if (!eventId.equals(other.eventId))
 			return false;
-		if (eventTypeId != other.eventTypeId)
-			return false;
-		if (exceedsAvaliableFunds != other.exceedsAvaliableFunds)
-			return false;
-		if (finalGrade == null) {
-			if (other.finalGrade != null)
+		if (eventTypeId == null) {
+			if (other.eventTypeId != null)
 				return false;
-		} else if (!finalGrade.equals(other.finalGrade))
+		} else if (!eventTypeId.equals(other.eventTypeId))
 			return false;
 		if (gradeCutoff == null) {
 			if (other.gradeCutoff != null)
 				return false;
 		} else if (!gradeCutoff.equals(other.gradeCutoff))
 			return false;
-		if (gradingFormatId != other.gradingFormatId)
-			return false;
-		if (hdEventStatus != other.hdEventStatus)
-			return false;
-		if (isCanceledByEmployee != other.isCanceledByEmployee)
-			return false;
-		if (isUrgent != other.isUrgent)
-			return false;
 		if (location == null) {
 			if (other.location != null)
 				return false;
 		} else if (!location.equals(other.location))
-			return false;
-		if (passingGradeProvided != other.passingGradeProvided)
-			return false;
-		if (presentationUploaded != other.presentationUploaded)
-			return false;
-		if (Double.doubleToLongBits(projectedAmountReimbused) != Double
-				.doubleToLongBits(other.projectedAmountReimbused))
-			return false;
-		if (requiredPresentation != other.requiredPresentation)
-			return false;
-		if (successfulPresentationProvided != other.successfulPresentationProvided)
 			return false;
 		if (timeOfEvent == null) {
 			if (other.timeOfEvent != null)
@@ -391,8 +522,6 @@ public class Event {
 				return false;
 		} else if (!workJustification.equals(other.workJustification))
 			return false;
-		if (workTimeMissed != other.workTimeMissed)
-			return false;
 		return true;
 	}
 
@@ -400,16 +529,15 @@ public class Event {
 	public String toString() {
 		return "Event [eventId=" + eventId + ", dateOfEvent=" + dateOfEvent + ", timeOfEvent=" + timeOfEvent
 				+ ", location=" + location + ", description=" + description + ", cost=" + cost + ", workJustification="
-				+ workJustification + ", workTimeMissed=" + workTimeMissed + ", requiredPresentation="
-				+ requiredPresentation + ", gradeCutoff=" + gradeCutoff + ", finalGrade=" + finalGrade
-				+ ", presentationUploaded=" + presentationUploaded + ", projectedAmountReimbused="
-				+ projectedAmountReimbused + ", acceptedAmountReimbursed=" + acceptedAmountReimbursed + ", isUrgent="
-				+ isUrgent + ", exceedsAvaliableFunds=" + exceedsAvaliableFunds + ", isCanceledByEmployee="
-				+ isCanceledByEmployee + ", passingGradeProvided=" + passingGradeProvided
+				+ workJustification + ", requiredPresentation=" + requiredPresentation + ", gradeCutoff=" + gradeCutoff
+				+ ", workTimeMissed=" + workTimeMissed + ", finalGrade=" + finalGrade + ", presentationUploaded="
+				+ presentationUploaded + ", projectedAmountReimbused=" + projectedAmountReimbused
+				+ ", acceptedAmountReimbursed=" + acceptedAmountReimbursed + ", isUrgent=" + isUrgent
+				+ ", exceedsAvaliableFunds=" + exceedsAvaliableFunds + ", isCanceledByEmployee=" + isCanceledByEmployee
+				+ ", reimbursementStatus=" + reimbursementStatus + ", passingGradeProvided=" + passingGradeProvided
 				+ ", successfulPresentationProvided=" + successfulPresentationProvided + ", employeeId=" + employeeId
 				+ ", eventTypeId=" + eventTypeId + ", gradingFormatId=" + gradingFormatId + ", dsEventStatus="
-				+ dsEventStatus + ", hdEventStatus=" + hdEventStatus + ", bencoEventStatus=" + bencoEventStatus
-				+ ", approvalStage=" + approvalStage + "]";
+				+ dsEventStatus + ", hdEventStatus=" + hdEventStatus + ", bencoEventStatus=" + bencoEventStatus + "]";
 	}
 
 }

@@ -101,5 +101,6 @@ public class ModelMapperUtilities {
 		event.setCanceledByEmployee(rs.getBoolean("canceled_by_employee"));
 		event.setFinalGrade(rs.getString("final_grade"));
 		event.setPresentationUploaded(rs.getBoolean("presentation_up"));
+		event.setReimbursementStatus(EventStatus.valueOf(rs.getInt("reimbursement_awarded")));
 	}
 }

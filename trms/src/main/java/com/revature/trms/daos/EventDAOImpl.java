@@ -23,7 +23,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			+ "work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, "
 			+ "accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, "
 			+ "required_presentation, grade_cutoff, final_grade, ds_event_status_id, hd_event_status_id, benco_event_status_id, "
-			+ "canceled_by_employee, presentation_up FROM event";
+			+ "canceled_by_employee, presentation_up, reimbursement_awarded FROM event";
 
 	@Override
 	public boolean addEvent(Event event) {
@@ -34,8 +34,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 			String sql = "INSERT INTO event"
-					+ "(date_of_event, time_of_event, location, description, cost, work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, required_presentation, grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, canceled_by_employee, final_grade, presentation_up)"
-					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "(date_of_event, time_of_event, location, description, cost, work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, required_presentation, grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, canceled_by_employee, final_grade, presentation_up, reimbursement_approved)"
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
@@ -63,6 +63,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			ps.setBoolean(22, event.isCanceledByEmployee()); // canceled_by_employee
 			ps.setString(23, event.getFinalGrade()); // final_grade
 			ps.setBoolean(24, event.isPresentationUploaded()); // presentation_up
+			ps.setInt(25, event.getReimbursementStatus().getValue()); // reimbursement_awarded
 
 			if (ps.executeUpdate() != 0) {
 				rs = ps.getGeneratedKeys();
@@ -96,7 +97,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 					+ "work_time_miss=?, passing_grade=?, presentation_succ=?, projected_amt_reimbursed=?, accepted_amt_reimbursed=?, "
 					+ "urgent=?, exceeds_aval_funds=?, event_type_id=?, grading_format_id=?, employee_id=?, required_presentation=?, "
 					+ "grade_cutoff=?, ds_event_status_id=?, hd_event_status_id=?, benco_event_status_id=?, "
-					+ "canceled_by_employee=?, final_grade=?, presentation_up=? WHERE event_id=?";
+					+ "canceled_by_employee=?, final_grade=?, presentation_up=?, reimbursement_awarded=? WHERE event_id=?";
 
 			ps = conn.prepareStatement(sql);
 
@@ -124,7 +125,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			ps.setBoolean(22, event.isCanceledByEmployee()); // canceled_by_employee
 			ps.setString(23, event.getFinalGrade()); // final_grade
 			ps.setBoolean(24, event.isPresentationUploaded()); // presentation_up
-			ps.setInt(25, event.getEventId()); // event_id
+			ps.setInt(25, event.getReimbursementStatus().getValue()); // reimbursement_awarded
+			ps.setInt(26, event.getEventId()); // event_id
 
 			if (ps.executeUpdate() != 0) {
 				LogUtilities.trace("Event updated.");
@@ -198,6 +200,52 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		return event;
 	}
+	
+	@Override
+	public List<Event> getEventsNotDeniedByEmployeeAndYear(Integer employeeId, int year) {
+		LogUtilities.trace("Getting events not denied by employee and year.");
+
+		List<Event> events = new ArrayList<>();
+
+		PreparedStatement ps = null; // Creates the prepared statement from the query
+		ResultSet rs = null; // Queries the database
+
+		try (Connection conn = ConnectionUtilities.getConnection();) {
+
+			String sql = selectQuery + " WHERE employee_id = ? AND canceled_by_employee != true"
+					+ " AND date_of_event BETWEEN '?-01-01' AND '?-12-31'"
+					+ " AND (ds_event_status_id != ? AND hd_event_status_id != ? AND benco_event_status_id != ?)";
+			
+			// reimbuserment_approval_status
+			
+			LogUtilities.trace(sql);
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, employeeId);
+			ps.setInt(2, year);
+			ps.setInt(3, year);
+			ps.setInt(4, EventStatus.Denied.getValue());
+			ps.setInt(5, EventStatus.Denied.getValue());
+			ps.setInt(6, EventStatus.Denied.getValue());
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				Event event = new Event();
+				ModelMapperUtilities.mapRsToEvent(rs, event);
+				
+				events.add(event);
+			}
+
+		} catch (SQLException e) {
+			LogUtilities.error("Error getting events not denied by employee and year." + e.getMessage());
+		} finally {
+			closeResources(rs, ps, null);
+		}
+
+		return events;
+	}
 
 	@Override
 	public List<Event> getEventsPendingOfDirectSupervisorApproval() {
@@ -210,9 +258,12 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
+//			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)"
+//					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=? AND"
+//					+ " required_presentation = true AND presentation_up = false AND presentation_succ = ?)";
 			String sql = selectQuery + " WHERE (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=?)"
 					+ " OR (ds_event_status_id=? AND hd_event_status_id=? AND benco_event_status_id=? AND"
-					+ " required_presentation = true AND presentation_up = false AND presentation_succ = ?)";
+					+ " required_presentation = true AND presentation_succ = ?)";
 			
 			LogUtilities.trace(sql);
 

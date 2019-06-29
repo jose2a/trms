@@ -2,7 +2,7 @@ package com.revature.trms.pojos;
 
 public class GradingFormat {
 
-	private int gradingFormatId;
+	private Integer gradingFormatId;
 
 	private String fromRange;
 	private String toRange;
@@ -17,11 +17,11 @@ public class GradingFormat {
 		this.toRange = toRange;
 	}
 
-	public int getGradingFormatId() {
+	public Integer getGradingFormatId() {
 		return gradingFormatId;
 	}
 
-	public void setGradingFormatId(int gradingFormatId) {
+	public void setGradingFormatId(Integer gradingFormatId) {
 		this.gradingFormatId = gradingFormatId;
 	}
 
@@ -39,40 +39,6 @@ public class GradingFormat {
 
 	public void setToRange(String toRange) {
 		this.toRange = toRange;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((fromRange == null) ? 0 : fromRange.hashCode());
-		result = prime * result + gradingFormatId;
-		result = prime * result + ((toRange == null) ? 0 : toRange.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		GradingFormat other = (GradingFormat) obj;
-		if (fromRange == null) {
-			if (other.fromRange != null)
-				return false;
-		} else if (!fromRange.equals(other.fromRange))
-			return false;
-		if (gradingFormatId != other.gradingFormatId)
-			return false;
-		if (toRange == null) {
-			if (other.toRange != null)
-				return false;
-		} else if (!toRange.equals(other.toRange))
-			return false;
-		return true;
 	}
 
 	@Override

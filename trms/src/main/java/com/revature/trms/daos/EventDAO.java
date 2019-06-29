@@ -13,6 +13,8 @@ public interface EventDAO {
 	public boolean deleteEvent(int eventId);
 
 	public Event getEventById(int eventId);
+	
+	public List<Event> getEventsNotDeniedByEmployeeAndYear(Integer employeeId, int year);
 
 	public List<Event> getEventsPendingOfDirectSupervisorApproval();
 

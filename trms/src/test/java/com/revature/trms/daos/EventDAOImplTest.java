@@ -42,7 +42,7 @@ public class EventDAOImplTest {
 		Employee emp = empDao.getEmployeeById(27);
 
 		Event event = new Event(LocalDate.now().plusWeeks(3l), LocalTime.now(), "FIU", "Python Course for beginners",
-				500, "Python is needed to perform my job.", 5, true, "D");
+				500d, "Python is needed to perform my job.", true, "D");
 
 		event.setPassingGradeProvided(EvaluationResult.Pending);
 		event.setSuccessfulPresentationProvided(EvaluationResult.Pending);

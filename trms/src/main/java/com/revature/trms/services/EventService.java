@@ -2,15 +2,15 @@ package com.revature.trms.services;
 
 import java.util.List;
 
+import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Event;
-import com.revature.trms.pojos.GradingFormat;
 
 public interface EventService {
 
 	// Complete the Tuition Reimbursement Form
-	public boolean completeTuitionReimbursementForm(Event event, GradingFormat gradingFormat,
-			List<Attachment> attachments);
+	public boolean completeTuitionReimbursementForm(Event event, String From, String To,
+			List<Attachment> attachments) throws PojoValidationException;
 
 	// Approve Tuition Reimbursement Form
 	// Approve Reimbursement by Direct Supervisor
@@ -38,8 +38,6 @@ public interface EventService {
 
 	public boolean changeReimbursementAmount(Integer eventId, double newAmount, String reason);
 
-	public double getAvailableFundsForEmployee(Integer employeeId);
-
 	public boolean uploadGradeOrPresentation(Integer eventId, Attachment attachment);
 
 	public boolean confirmPassingGrade(Integer eventId);
@@ -55,4 +53,8 @@ public interface EventService {
 	public List<Event> getEventsPendingOfHeadDepartmentApproval();
 
 	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval();
+
+	public double getProjectedReimbursementForEvent(double cost, Integer eventTypeId);
+
+	public double getAvailableReimbursementForEmployee(Integer employeeId);
 }
