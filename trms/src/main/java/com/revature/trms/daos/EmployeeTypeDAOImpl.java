@@ -15,7 +15,7 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 
 	@Override
 	public boolean addEmployeeTypesToEmployee(int employeeId, List<EmployeeType> employeeType) {
-		LogUtilities.trace("Adding roles to employee. " + employeeId);
+		LogUtilities.trace("addEmployeeTypesToEmployee. " + employeeId);
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
@@ -36,7 +36,7 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 				LogUtilities.trace("Role " + type.getValue() + " added to employee.");
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error adding role to employee." + e.getMessage());
+			LogUtilities.error("Error. addEmployeeTypesToEmployee. " + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}
@@ -46,13 +46,13 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 
 	@Override
 	public boolean removeEmployeeTypesFromEmployee(int employeeId) {
-		LogUtilities.trace("Removing Roles from employee." + employeeId);
+		LogUtilities.trace("removeEmployeeTypesFromEmployee. " + employeeId);
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "DELETE FROM employee_employee_type WHERE employee_id = ?";
+			String sql = "DELETE FROM employee_employee_type WHERE employee_id=?";
 
 			ps = conn.prepareStatement(sql);
 
@@ -65,7 +65,7 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error removing roles from employee." + e.getMessage());
+			LogUtilities.error("Error. removeEmployeeTypesFromEmployee. " + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}
@@ -75,7 +75,7 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 
 	@Override
 	public List<EmployeeType> getEmployeeTypesForEmployee(int employeeId) {
-		LogUtilities.trace("Get roles for employee " + employeeId);
+		LogUtilities.trace("getEmployeeTypesForEmployee. " + employeeId);
 
 		List<EmployeeType> empTypes = new ArrayList<>();
 
@@ -84,7 +84,7 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_type_id FROM employee_employee_type WHERE employee_id = ?";
+			String sql = "SELECT employee_type_id FROM employee_employee_type WHERE employee_id=?";
 
 			ps = conn.prepareStatement(sql);
 
@@ -95,7 +95,7 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting roles for employee." + e.getMessage());
+			LogUtilities.error("Error. getEmployeeTypesForEmployee. " + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}

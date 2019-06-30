@@ -25,7 +25,7 @@ public class EventTypeServiceImpl extends BaseService implements EventTypeServic
 
 	@Override
 	public List<EventType> getAllEventType() {
-		return eventTypeDao.getAllEventType();
+		return eventTypeDao.getAllEventTypes();
 	}
 
 }

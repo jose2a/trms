@@ -14,9 +14,11 @@ import com.revature.trms.utilities.ModelMapperUtilities;
 
 public class EventTypeDAOImpl extends BaseDAO implements EventTypeDAO {
 
+	private String baseSql = "SELECT event_type_id, name, reimburse_coverage FROM event_type";
+	
 	@Override
 	public EventType getEventTypeById(int eventTypeId) {
-		LogUtilities.trace("Getting event type by eventTypeId " + eventTypeId);
+		LogUtilities.trace("getEventTypeById. " + eventTypeId);
 
 		EventType eventType = null;
 
@@ -25,7 +27,7 @@ public class EventTypeDAOImpl extends BaseDAO implements EventTypeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT event_type_id, name, reimburse_coverage FROM event_type WHERE event_type_id = ?";
+			String sql = baseSql + " WHERE event_type_id = ?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, eventTypeId);
@@ -38,7 +40,7 @@ public class EventTypeDAOImpl extends BaseDAO implements EventTypeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting event type by id." + e.getMessage());
+			LogUtilities.error("Error. getEventTypeById. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -47,8 +49,8 @@ public class EventTypeDAOImpl extends BaseDAO implements EventTypeDAO {
 	}
 
 	@Override
-	public List<EventType> getAllEventType() {
-		LogUtilities.trace("Getting all event types.");
+	public List<EventType> getAllEventTypes() {
+		LogUtilities.trace("getAllEventType.");
 
 		List<EventType> eventTypes = new ArrayList<>();
 
@@ -57,7 +59,7 @@ public class EventTypeDAOImpl extends BaseDAO implements EventTypeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT event_type_id, name, reimburse_coverage FROM event_type";
+			String sql = baseSql + " FROM event_type";
 
 			ps = conn.prepareStatement(sql);
 
@@ -71,7 +73,7 @@ public class EventTypeDAOImpl extends BaseDAO implements EventTypeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting event types." + e.getMessage());
+			LogUtilities.error("Error. getAllEventType. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}

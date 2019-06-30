@@ -8,5 +8,5 @@ public interface EventTypeDAO {
 
 	public EventType getEventTypeById(int eventTypeId);
 
-	public List<EventType> getAllEventType();
+	public List<EventType> getAllEventTypes();
 }
