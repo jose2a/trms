@@ -3,6 +3,7 @@ package com.revature.trms.services;
 import java.util.List;
 
 import com.revature.trms.daos.AttachmentDAO;
+import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.utilities.DAOUtilities;
@@ -17,36 +18,38 @@ public class AttachmentServiceImpl extends BaseService implements AttachmentServ
 	}
 
 	@Override
-	public boolean addAttachment(Attachment attachment) throws PojoValidationException {
-		validateAttachment(attachment);
-		checkValidationResults();
+	public boolean addAttachment(Attachment attachment) throws PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("addAttachment");
+
+		pojoValException = PojoValidationException.getInstance();
+		validateAttachment(attachment, pojoValException);
+		checkValidationResults(pojoValException);
 
 		if (attachment.getEventId() == null) {
-			throw new IllegalArgumentException("Employee id should not be empty.");
+			throw new IllegalParameterException("addAttachment - EventId should not be empty.");
 		}
-
-		LogUtilities.trace("No validation errors - addAttachment.");
 
 		return attachmentDao.addAttachment(attachment);
 	}
 
 	@Override
-	public Attachment getAttachmentById(Integer attachmentId) throws PojoValidationException {
-		validateOnlyAttachmentId(attachmentId);
-		checkValidationResults();
+	public Attachment getAttachmentById(Integer attachmentId) throws IllegalParameterException {
+		LogUtilities.trace("getAttachmentById");
 
-		LogUtilities.trace("No validation errors - getAttachmentById");
+		if (attachmentId == null) {
+			throw new IllegalParameterException("getAttachmentById - AttachmentId should not be empty.");
+		}
 
 		return attachmentDao.getAttachmentById(attachmentId);
 	}
 
 	@Override
-	public List<Attachment> getAttachmentsByEventId(Integer eventId) {
-		if (eventId == null) {
-			throw new IllegalArgumentException("Event id should not be empty.");
-		}
+	public List<Attachment> getAttachmentsByEventId(Integer eventId) throws IllegalParameterException {
+		LogUtilities.trace("getAttachmentsByEventId");
 
-		LogUtilities.trace("No validation errors - getAttachmentsByEventId");
+		if (eventId == null) {
+			throw new IllegalParameterException("getAttachmentsByEventId - EventId should not be empty.");
+		}
 
 		return attachmentDao.getAttachmentsByEventId(eventId);
 	}

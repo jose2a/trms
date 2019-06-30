@@ -16,13 +16,13 @@ public abstract class BaseService {
 	 * Saves validation errors in a list inside the exception so that we can throw
 	 * after validating everything we need
 	 */
-	protected PojoValidationException pojoValidationException = new PojoValidationException();
+	protected PojoValidationException pojoValException;
 
 	/**
 	 * Cleaning validation errors from the exception.
 	 */
 	private void cleanValidationResults() {
-		pojoValidationException.getErrors().clear();
+		pojoValException.getErrors().clear();
 	}
 
 	/**
@@ -31,8 +31,38 @@ public abstract class BaseService {
 	 * @throws PojoValidationException
 	 */
 	protected void checkValidationResults() throws PojoValidationException {
-		if (pojoValidationException.getErrors().size() > 0) {
-			throw pojoValidationException;
+		if (pojoValException != null && pojoValException.getErrors().size() > 0) {
+			throw pojoValException;
+		}
+	}
+	
+	/**
+	 * Checking if we have validation errors, if we have them we throw them.
+	 * 
+	 * @throws PojoValidationException
+	 */
+	protected void checkValidationResults(PojoValidationException validationException) throws PojoValidationException {
+		if (validationException != null && validationException.getErrors().size() > 0) {
+			throw validationException;
+		}
+	}
+	
+	/**
+	 * Validates an attachment properties.
+	 * 
+	 * @param attachment The attachment
+	 */
+	protected void validateAttachment(Attachment attachment, PojoValidationException validationException) {
+		if (attachment.getFileName().equals("") || attachment.getFileName().isEmpty()) {
+			validationException.addError("File name should not be empty.");
+		}
+
+		if (attachment.getDateSubmitted() == null) {
+			validationException.addError("Date submitted should not be empty.");
+		}
+
+		if (attachment.getFileContent().equals(null)) {
+			validationException.addError("You should upload a document.");
 		}
 	}
 
@@ -42,20 +72,35 @@ public abstract class BaseService {
 	 * @param employee The employee.
 	 * @throws PojoValidationException
 	 */
-	protected void validateEmployee(Employee employee) {
-		cleanValidationResults();
-
-		validateEmployeeUsername(employee.getUsername());
+	protected void validateEmployee(Employee employee, PojoValidationException validationException) {
+		validateEmployeeUsername(employee.getUsername(), validationException);
 
 		if (employee.getFirstName() == null || employee.getFirstName().isEmpty()) {
-			pojoValidationException.addError("First Name should not be empty.");
+			validationException.addError("First Name should not be empty.");
 		}
 
 		if (employee.getLastName() == null || employee.getLastName().isEmpty()) {
-			pojoValidationException.addError("Last Name should not be empty.");
+			validationException.addError("Last Name should not be empty.");
 		}
+		
+		if (employee.getEmail() == null  || employee.getEmail().isEmpty()) {
+			validationException.addError("Email should not be empty.");
+		}
+		
+		validateEmployeePassword(employee.getPassword(), validationException);
 
-		validateSupervisorId(employee.getSupervisorId());
+		validateSupervisorId(employee.getSupervisorId(), validationException);
+	}
+	
+	/**
+	 * Validating employee username.
+	 * 
+	 * @param username The username
+	 */
+	protected void validateEmployeeUsername(String username, PojoValidationException validationException) {
+		if (username == null || username.isEmpty()) {
+			validationException.addError("Username should not be empty.");
+		}
 	}
 
 	/**
@@ -63,115 +108,21 @@ public abstract class BaseService {
 	 * 
 	 * @param supervisorId The id
 	 */
-	private void validateSupervisorId(Integer supervisorId) {
+	protected void validateSupervisorId(Integer supervisorId, PojoValidationException validationException) {
 		if (supervisorId == null) {
-			pojoValidationException.addError("Supervisor should be selected.");
+			validationException.addError("Supervisor should be selected.");
 		}
 	}
-
-	/**
-	 * Validating only the supervisorId.
-	 * 
-	 * @param supervisorId The Id
-	 */
-	protected void validateOnlySupervisorId(Integer supervisorId) {
-		cleanValidationResults();
-
-		validateSupervisorId(supervisorId);
-	}
-
-	/**
-	 * Validating employee username.
-	 * 
-	 * @param username The username
-	 */
-	private void validateEmployeeUsername(String username) {
-		if (username == null || username.isEmpty()) {
-			pojoValidationException.addError("Username should not be empty.");
-		}
-	}
-
-	/**
-	 * Validating only employee username.
-	 * 
-	 * @param username The username
-	 */
-	protected void validateOnlyEmployeeUsername(String username) {
-		cleanValidationResults();
-
-		validateEmployeeUsername(username);
-	}
-
+	
 	/**
 	 * Validating employee password.
 	 * 
 	 * @param password The password
 	 */
-	private void validateEmployeePassword(String password) {
+	protected void validateEmployeePassword(String password, PojoValidationException validationException) {
 		if (password == null || password.isEmpty()) {
-			pojoValidationException.addError("Password should not be empty.");
+			validationException.addError("Password should not be empty.");
 		}
-	}
-
-	/**
-	 * Validating only employee password.
-	 * 
-	 * @param password The password
-	 */
-	protected void validateOnlyEmployeePassword(String password) {
-		cleanValidationResults();
-
-		validateEmployeePassword(password);
-	}
-
-	/**
-	 * Validates an attachment properties.
-	 * 
-	 * @param attachment The attachment
-	 */
-	protected void validateAttachment(Attachment attachment) {
-		cleanValidationResults();
-
-		if (attachment.getFileName().equals("") || attachment.getFileName().isEmpty()) {
-			pojoValidationException.addError("File name should not be empty.");
-		}
-
-		if (attachment.getDateSubmitted() == null) {
-			pojoValidationException.addError("Date submitted should not be empty.");
-		}
-
-		if (attachment.isApprovalDoc()) {
-			if (attachment.getDocumentType() == null) {
-				pojoValidationException.addError("You should select who approve this document.");
-			}
-		}
-
-		if (attachment.getFileContent().equals(null)) {
-			pojoValidationException.addError("You should upload a document.");
-		}
-
-	}
-
-	/**
-	 * Validating attachmentId.
-	 * 
-	 * @param attachmentId The id
-	 */
-	private void validateAttachmentId(Integer attachmentId) {
-		if (attachmentId == null) {
-			pojoValidationException.addError("Attachment id should not be empty.");
-		}
-	}
-
-	/**
-	 * Validating only attachmentId.
-	 * 
-	 * @param attachmentId The id
-	 */
-	protected void validateOnlyAttachmentId(Integer attachmentId) {
-		cleanValidationResults();
-
-		validateAttachmentId(attachmentId);
 	}
 
 	/**
@@ -183,11 +134,11 @@ public abstract class BaseService {
 		cleanValidationResults();
 
 		if (gradingFormat.getFromRange().equals("") || gradingFormat.getFromRange().isEmpty()) {
-			pojoValidationException.addError("From should not be empty.");
+			pojoValException.addError("From should not be empty.");
 		}
 
 		if (gradingFormat.getToRange().equals("") || gradingFormat.getToRange().isEmpty()) {
-			pojoValidationException.addError("To should not be empty.");
+			pojoValException.addError("To should not be empty.");
 		}
 	}
 
@@ -200,7 +151,7 @@ public abstract class BaseService {
 		cleanValidationResults();
 
 		if (informationRequired.getInformation().equals("") || informationRequired.getInformation().isEmpty()) {
-			pojoValidationException.addError("Please provide the information.");
+			pojoValException.addError("Please provide the information.");
 		}
 	}
 
@@ -213,7 +164,7 @@ public abstract class BaseService {
 		cleanValidationResults();
 
 		if (reasonDenied.getReason().equals("") || reasonDenied.getReason().isEmpty()) {
-			pojoValidationException.addError("Please provide the reason why this request was denied.");
+			pojoValException.addError("Please provide the reason why this request was denied.");
 		}
 	}
 
@@ -226,18 +177,17 @@ public abstract class BaseService {
 		cleanValidationResults();
 
 		if (reasonExceeding.getReason().equals("") || reasonExceeding.getReason().isEmpty()) {
-			pojoValidationException
-					.addError("Please provide the reason why the amount for this request was exceeding.");
+			pojoValException.addError("Please provide the reason why the amount for this request was exceeding.");
 		}
 	}
 
 	/**
 	 * Validating the event.
 	 * 
-	 * @param event The event
+	 * @param event                  The event
 	 * @param daysBeforeStartOfEvent Days before the event
-	 * @param from Grade range (from)
-	 * @param to Grade range (to)
+	 * @param from                   Grade range (from)
+	 * @param to                     Grade range (to)
 	 */
 	protected void validateEvent(Event event, int daysBeforeStartOfEvent, String from, String to) {
 		if (event.getEmployeeId() == null) {
@@ -245,45 +195,44 @@ public abstract class BaseService {
 		}
 
 		if (event.getDateOfEvent() == null) {
-			pojoValidationException.addError("Date of the event is required.");
+			pojoValException.addError("Date of the event is required.");
 		}
 
 		if (event.getTimeOfEvent() == null) {
-			pojoValidationException.addError("Time of the event is required.");
+			pojoValException.addError("Time of the event is required.");
 		}
 
 		if (event.getLocation().equals("") || event.getLocation().isEmpty()) {
-			pojoValidationException.addError("Location of the event is required.");
+			pojoValException.addError("Location of the event is required.");
 		}
 
 		if (event.getDescription().equals("") || event.getDescription().isEmpty()) {
-			pojoValidationException.addError("Description of the event is required.");
+			pojoValException.addError("Description of the event is required.");
 		}
 
 		if (event.getCost() <= 0) {
-			pojoValidationException.addError("Cost of the event should be greater than 0.");
+			pojoValException.addError("Cost of the event should be greater than 0.");
 		}
 
 		if (event.getGradingFormatId() == null) {
 			if (from.equals("") || from.isEmpty() || (to.equals("") || to.isEmpty())) {
 				LogUtilities.trace("The employee did not provide a gradding format or the grade for this event.");
-				pojoValidationException
-						.addError("You should select a grading format or enter a grading range [from - to].");
+				pojoValException.addError("You should select a grading format or enter a grading range [from - to].");
 			}
 		}
 
 		if (event.getEventTypeId() == null) {
-			pojoValidationException.addError("You should select the type of event.");
+			pojoValException.addError("You should select the type of event.");
 		}
 
 		if (event.getWorkJustification().equals("") || event.getWorkJustification().isEmpty()) {
-			pojoValidationException.addError("Work-related justification is required.");
+			pojoValException.addError("Work-related justification is required.");
 		}
 
 		if (daysBeforeStartOfEvent < 7) {
 			LogUtilities.trace("Event is less than a week from begin.");
 
-			pojoValidationException.addError("Your request could not be proccessed.\n"
+			pojoValException.addError("Your request could not be proccessed.\n"
 					+ "You must complete the Tuition Reimbursement form one week prior to the start of the event.");
 		}
 	}

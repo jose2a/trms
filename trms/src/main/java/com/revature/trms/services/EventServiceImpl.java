@@ -100,16 +100,76 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 		boolean added = eventDao.addEvent(event);
 
-		if (!added) {
-			LogUtilities.error("Event was not added to the system.");
+		if (added) {
+			addAttachmentsToEvent(event, attachments);
+
+			LogUtilities.trace("Event added sucessfully");
+
 			return false;
 		}
 
-		addAttachmentsToEvent(event, attachments);
+		LogUtilities.error("Event was not added to the system.");
 
-		LogUtilities.trace("Event added sucessfully");
+		return false;
+	}
 
-		return true;
+	/**
+	 * Adding attachments to the event.
+	 * 
+	 * @param event       The event
+	 * @param attachments Attachment to add
+	 * @throws PojoValidationException If there are validation errors
+	 */
+	private void addAttachmentsToEvent(Event event, List<Attachment> attachments) throws PojoValidationException {
+		if (attachments.size() > 0) {
+			LogUtilities.trace("There are attachments for this event");
+			// If the employee provided an approval email from a DS or a HD
+			for (Attachment attachment : attachments) {
+				switch (attachment.getDocumentType()) {
+				case Direct_Supervisor_Approval:
+					LogUtilities.trace("Direct Supervisor approval attachment.");
+					event.setDsEventStatus(EventStatus.Approved);
+					break;
+				case Department_Head_Approval:
+					LogUtilities.trace("Department Head approval attachment.");
+					event.setHdEventStatus(EventStatus.Approved);
+					break;
+				default:
+					break;
+				}
+
+				attachment.setEventId(event.getEventId());
+
+				attachmentService.addAttachment(attachment);
+			}
+
+			eventDao.updateEvent(event);
+
+			LogUtilities.trace("Event update with the attachment.");
+		}
+	}
+
+	/**
+	 * Setting a grading format for the event.
+	 * 
+	 * @param event The event
+	 * @param from  The lower level of the grading format
+	 * @param to    The upper level of the grading format
+	 * @throws PojoValidationException Validation errors
+	 */
+	private void setGradingFormat(Event event, String from, String to) throws PojoValidationException {
+		if (event.getGradingFormatId() == null) {
+			LogUtilities.trace("Employee entered a new grading format.");
+
+			GradingFormat gradingFormat = new GradingFormat(from, to);
+			boolean added = gradingFormatService.addGradingFormat(gradingFormat);
+
+			if (!added) {
+				LogUtilities.error("Gradding format not added - completeTuitionReimbursementForm");
+			}
+
+			event.setGradingFormatId(gradingFormat.getGradingFormatId());
+		}
 	}
 
 	@Override
@@ -366,7 +426,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 		}
 
 		if (information.equals("") || information.isEmpty()) {
-			pojoValidationException.addError("You should provide the information require from this employe.");
+			pojoValException.addError("You should provide the information require from this employe.");
 		}
 	}
 
@@ -396,11 +456,11 @@ public class EventServiceImpl extends BaseService implements EventService {
 		if (newAmount < 0) {
 			LogUtilities.trace("Amount reimburse is negative.");
 
-			pojoValidationException.addError("Amount should not be less than 0.");
+			pojoValException.addError("Amount should not be less than 0.");
 		}
 
 		if (reason.equals("") || reason.isEmpty()) {
-			pojoValidationException.addError("Reason for changin the projected amount is required.");
+			pojoValException.addError("Reason for changin the projected amount is required.");
 		}
 
 		checkValidationResults();
@@ -527,7 +587,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 		if (!event.isRequiredPresentation() && !event.getFinalGrade().equals("") || !event.getFinalGrade().isEmpty()) {
 			LogUtilities.trace("Grade has not been provided.");
-			pojoValidationException.addError("A passing grade has not been provided.");
+			pojoValException.addError("A passing grade has not been provided.");
 		}
 
 		checkValidationResults();
@@ -562,7 +622,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 		if (event.isRequiredPresentation() && !event.isPresentationUploaded()) {
 			LogUtilities.trace("Presentation has not been uploaded.");
-			pojoValidationException.addError("A presentation has not been uploaded.");
+			pojoValException.addError("A presentation has not been uploaded.");
 		}
 
 		checkValidationResults();
@@ -657,67 +717,6 @@ public class EventServiceImpl extends BaseService implements EventService {
 		}
 
 		return events;
-	}
-
-	/**
-	 * Adding attachments to the event.
-	 * 
-	 * @param event       The event
-	 * @param attachments Attachment to add
-	 * @throws PojoValidationException If there are validation errors
-	 */
-	private void addAttachmentsToEvent(Event event, List<Attachment> attachments) throws PojoValidationException {
-		if (attachments.size() > 0) {
-			LogUtilities.trace("There are attachments for this event");
-			// If the employee provided an approval email from a DS or a HD
-			for (Attachment attachment : attachments) {
-				if (attachment.isApprovalDoc()) {
-					switch (attachment.getDocumentType()) {
-					case Direct_Supervisor_Approval:
-						LogUtilities.trace("Direct Supervisor approval attachment.");
-						event.setDsEventStatus(EventStatus.Approved);
-						break;
-					case Department_Head_Approval:
-						LogUtilities.trace("Department Head approval attachment.");
-						event.setHdEventStatus(EventStatus.Approved);
-						break;
-					default:
-						break;
-					}
-				}
-
-				attachment.setEventId(event.getEventId());
-
-				attachmentService.addAttachment(attachment);
-			}
-
-			eventDao.updateEvent(event);
-
-			LogUtilities.trace("Event update with the attachment.");
-		}
-	}
-
-	/**
-	 * Setting a grading format for the event.
-	 * 
-	 * @param event The event
-	 * @param from  The lower level of the grading format
-	 * @param to    The upper level of the grading format
-	 * @throws PojoValidationException Validation errors
-	 */
-	private void setGradingFormat(Event event, String from, String to) throws PojoValidationException {
-		if (event.getGradingFormatId() == null) {
-			LogUtilities.trace("Employee entered a new grading format.");
-
-			GradingFormat gradingFormat = new GradingFormat(from, to);
-			boolean added = gradingFormatService.addGradingFormat(gradingFormat);
-
-			if (!added) {
-				LogUtilities.error("Gradding format not added - completeTuitionReimbursementForm");
-			}
-
-			event.setGradingFormatId(gradingFormat.getGradingFormatId());
-		}
 	}
 
 }

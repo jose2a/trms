@@ -101,39 +101,36 @@ public class EventServiceImplTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		dhEmp = new Employee("dhEmp", "s3cret", "Dep. Head", "LN");
+		dhEmp = new Employee("dhEmp", "s3cret", "Dep. Head", "LN", "email");
 		dhEmp.setEmployeeId(1);
 
-		benCoDS = new Employee("benCoDS", "s3cret", "Benco DS", "LN");
+		benCoDS = new Employee("benCoDS", "s3cret", "Benco DS", "LN", "email");
 		benCoDS.setEmployeeId(2);
 
-		benCo = new Employee("benCo", "s3cret", "Benco", "LN");
+		benCo = new Employee("benCo", "s3cret", "Benco", "LN", "email");
 		benCo.setEmployeeId(3);
 		benCo.setSupervisorId(benCoDS.getEmployeeId());
 
 		// DS
-		dsEmp = new Employee("ds1", "s3cret", "Dir. Sup. 1", "LN");
+		dsEmp = new Employee("ds1", "s3cret", "Dir. Sup. 1", "LN", "email");
 		dsEmp.setEmployeeId(4);
 		dsEmp.setSupervisorId(dhEmp.getEmployeeId());
 
-		dsAndHdEmp = new Employee("dsAndHD", "s3cret", "Dir. Sup. 2", "LN");
+		dsAndHdEmp = new Employee("dsAndHD", "s3cret", "Dir. Sup. 2", "LN", "email");
 		dsAndHdEmp.setEmployeeId(5);
 
 		// Employee
-		emp1 = new Employee("emp1", "s3cret", "Employee 1", "LN 1");
+		emp1 = new Employee("emp1", "s3cret", "Employee 1", "LN 1", "email");
 		emp1.setEmployeeId(6);
 		emp1.setSupervisorId(dsEmp.getEmployeeId());
-		emp1.setAvaliableReimbursementAmount(1000);
 
-		emp2 = new Employee("emp2", "s3cret", "Employee 2", "LN 2");
+		emp2 = new Employee("emp2", "s3cret", "Employee 2", "LN 2", "email");
 		emp2.setEmployeeId(7);
 		emp2.setSupervisorId(dsEmp.getEmployeeId());
-		emp2.setAvaliableReimbursementAmount(1000);
 
-		emp3 = new Employee("emp3", "s3cret", "Employee 3", "LN 3");
+		emp3 = new Employee("emp3", "s3cret", "Employee 3", "LN 3", "email");
 		emp3.setEmployeeId(8);
 		emp3.setSupervisorId(dsAndHdEmp.getSupervisorId());
-		emp3.setAvaliableReimbursementAmount(1000);
 
 		evTCourse = new EventType("University Courses", 80);
 		evTCourse.setEventTypeId(1);
@@ -234,12 +231,12 @@ public class EventServiceImplTest {
 		ev3Emp12019Denied.setHdEventStatus(EventStatus.Pending);
 		ev3Emp12019Denied.setBencoEventStatus(EventStatus.Pending);
 
-		attPDF = new Attachment("pdf.png", LocalDate.now().plusDays(15), false, null, null, newEventId);
-		attDSApproval = new Attachment("dsApp.png", LocalDate.now().plusDays(15), true, null,
+		attPDF = new Attachment("pdf.png", LocalDate.now().plusDays(15), null, null, newEventId);
+		attDSApproval = new Attachment("dsApp.png", LocalDate.now().plusDays(15), null,
 				AttachmentDocType.Direct_Supervisor_Approval, newEventId);
-		attHDAppr = new Attachment("hdApp.png", LocalDate.now().plusDays(15), true, null,
+		attHDAppr = new Attachment("hdApp.png", LocalDate.now().plusDays(15), null,
 				AttachmentDocType.Department_Head_Approval, newEventId);
-		attGrade = new Attachment("grade.png", LocalDate.now().plusDays(15), false, null, null, newEventId);
+		attGrade = new Attachment("grade.png", LocalDate.now().plusDays(15), null, null, newEventId);
 
 		infReqEmp = new InformationRequired(newEventId, emp1.getEmployeeId(), "We need more data employee", false,
 				emp1.getSupervisorId());

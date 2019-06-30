@@ -67,7 +67,7 @@ public class AddEmployeeServlet extends HttpServlet {
 		}
 
 		// Cresting new employee
-		Employee employee = new Employee(username, password, firstName, lastName);
+		Employee employee = new Employee(username, password, firstName, lastName, "email");
 		employee.setSupervisorId(Integer.parseInt(supervisorId));
 		employee.setEmployeeTypes(employeeType);
 

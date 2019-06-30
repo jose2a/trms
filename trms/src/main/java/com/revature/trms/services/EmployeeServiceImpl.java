@@ -3,6 +3,7 @@ package com.revature.trms.services;
 import java.util.List;
 
 import com.revature.trms.daos.EmployeeDAO;
+import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.exceptions.PreexistingRecordException;
@@ -23,19 +24,24 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 	}
 
 	@Override
-	public boolean addEmployee(Employee employee) throws PojoValidationException {
-		validateEmployee(employee); // validating
-		checkValidationResults(); // check validation results
+	public boolean addEmployee(Employee employee)
+			throws PojoValidationException, PreexistingRecordException, IllegalParameterException {
+		LogUtilities.trace("addEmployee");
 
-		LogUtilities.trace("Not validation errors while adding a new employee.");
+		pojoValException = PojoValidationException.getInstance();
+		validateEmployee(employee, pojoValException); // validating
+		checkValidationResults(pojoValException); // check validation results
 
-		employee.setAvaliableReimbursementAmount(1000);
+		if (employeeDao.getEmployeeByUsername(employee.getUsername()) != null) {
+			throw new PreexistingRecordException("An employee with the same username already exist.");
+		}
+
 		setDefaultEmployeeType(employee);
 
 		boolean empAdded = employeeDao.addEmployee(employee);
 
 		if (empAdded) {
-			LogUtilities.trace("Employee added successfully. Adding employee types to the employee.");
+			LogUtilities.trace("Employee added successfully.");
 
 			return employeeTypeService.addEmployeeTypesToEmployee(employee.getEmployeeId(),
 					employee.getEmployeeTypes());
@@ -44,18 +50,24 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 		return false;
 	}
 
-	@Override
-	public boolean updateEmployee(Employee employee) throws PreexistingRecordException, PojoValidationException {
-		if (employeeDao.getEmployeeByUsername(employee.getUsername()) != null) {
-			LogUtilities.trace("An employee with same username is in the db");
-
-			throw new PreexistingRecordException("An employee with the same username was already added to the system.");
+	/**
+	 * Setting associate as a default employee type.
+	 * 
+	 * @param employee The employee
+	 */
+	private void setDefaultEmployeeType(Employee employee) {
+		if (!employee.getEmployeeTypes().contains(EmployeeType.Associate)) {
+			employee.addEmployeeTypeId(EmployeeType.Associate);
 		}
+	}
 
-		validateEmployee(employee); // validating employee
-		checkValidationResults(); // check validation results
+	@Override
+	public boolean updateEmployee(Employee employee) throws PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("updateEmployee");
 
-		LogUtilities.trace("Not Validation errors while updating the employee");
+		pojoValException = PojoValidationException.getInstance();
+		validateEmployee(employee, pojoValException); // validating employee
+		checkValidationResults(pojoValException); // check validation results
 
 		boolean empUpdated = employeeDao.updateEmployee(employee);
 
@@ -70,7 +82,12 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 	}
 
 	@Override
-	public boolean deleteEmployee(Integer employeeId) throws NotFoundRecordException {
+	public boolean deleteEmployee(Integer employeeId) throws NotFoundRecordException, IllegalParameterException {
+		LogUtilities.trace("deleteEmployee");
+
+		if (employeeId == null) {
+			throw new IllegalParameterException("deleteEmployee - employeeId should not be empty");
+		}
 
 		if (employeeDao.getEmployeeById(employeeId) == null) {
 			LogUtilities.trace("Employee not found");
@@ -88,39 +105,57 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 	}
 
 	@Override
-	public Employee getEmployeeById(Integer employeeId) {
+	public Employee getEmployeeById(Integer employeeId) throws NotFoundRecordException, IllegalParameterException {
+		LogUtilities.trace("getEmployeeById");
+
+		if (employeeId == null) {
+			throw new IllegalParameterException("getEmployeeById - employeeId should not be empty");
+		}
+
 		Employee employee = employeeDao.getEmployeeById(employeeId);
 
-		if (employee != null) { // Loading employees types if the employee was found
-			LogUtilities.trace("Employee found. Loading employee types");
-
-			employee.setEmployeeTypes(employeeTypeService.getEmployeeTypesForEmployee(employeeId));
+		if (employee == null) {
+			throw new NotFoundRecordException("Employee not found.");
 		}
+
+		LogUtilities.trace("Employee found. Loading employee types.");
+
+		employee.setEmployeeTypes(employeeTypeService.getEmployeeTypesForEmployee(employeeId));
 
 		return employee;
 	}
 
 	@Override
-	public Employee getEmployeeByUsername(String username) throws PojoValidationException {
-		validateOnlyEmployeeUsername(username); // Validate username
-		checkValidationResults(); // Check validation status
+	public Employee getEmployeeByUsername(String username)
+			throws PojoValidationException, NotFoundRecordException, IllegalParameterException {
+		LogUtilities.trace("getEmployeeByUsername");
+
+		pojoValException = PojoValidationException.getInstance();
+		validateEmployeeUsername(username, pojoValException);
+		checkValidationResults(pojoValException); // Check validation status
 
 		Employee employee = employeeDao.getEmployeeByUsername(username);
 
-		if (employee != null) { // Loading employees types if the employee was found
-			LogUtilities.trace("Employee found. Loading employee types.");
-
-			employee.setEmployeeTypes(employeeTypeService.getEmployeeTypesForEmployee(employee.getEmployeeId()));
+		if (employee == null) {
+			throw new NotFoundRecordException("Employee not found.");
 		}
+
+		LogUtilities.trace("Employee found. Loading employee types.");
+
+		employee.setEmployeeTypes(employeeTypeService.getEmployeeTypesForEmployee(employee.getEmployeeId()));
 
 		return employee;
 	}
 
 	@Override
-	public Employee getEmployeeByUsernameAndPassword(String username, String password) throws PojoValidationException {
-		validateOnlyEmployeeUsername(username);
-		validateOnlyEmployeePassword(password);
-		checkValidationResults(); // Check validation results
+	public Employee getEmployeeByUsernameAndPassword(String username, String password)
+			throws PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("getEmployeeByUsernameAndPassword");
+
+		pojoValException = PojoValidationException.getInstance();
+		validateEmployeeUsername(username, pojoValException);
+		validateEmployeePassword(password, pojoValException);
+		checkValidationResults(pojoValException); // Check validation results
 
 		Employee employee = employeeDao.getEmployeeByUsernameAndPassword(username, password);
 
@@ -135,43 +170,53 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 
 	@Override
 	public List<Employee> getAllEmployees() {
-		LogUtilities.trace("Getting all the employees");
+		LogUtilities.trace("getAllEmployees");
 
 		return employeeDao.getAllEmployees();
 	}
 
 	@Override
 	public List<Employee> getAllSupervisors() {
-		LogUtilities.trace("Getting all the supervisors");
+		LogUtilities.trace("getAllSupervisors");
 
 		return employeeDao.getAllSupervisors();
 	}
 
 	@Override
-	public List<Employee> getEmployeesUnderSupervisorId(Integer supervisorId) throws PojoValidationException {
-		LogUtilities.trace("Getting all employees for this supervisor " + supervisorId);
+	public List<Employee> getEmployeesUnderSupervisorId(Integer supervisorId)
+			throws PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("getEmployeesUnderSupervisorId");
 
-		validateOnlySupervisorId(supervisorId);
-		checkValidationResults(); // check validation results
+		if (supervisorId == null) {
+			throw new IllegalParameterException("getEmployeesUnderSupervisorId - supervisorId should not be empty");
+		}
+
+		pojoValException = PojoValidationException.getInstance();
+		validateSupervisorId(supervisorId, pojoValException);
+		checkValidationResults(pojoValException); // check validation results
 
 		return employeeDao.getEmployeesUnderSupervisorId(supervisorId);
 	}
 
 	@Override
-	public List<Integer> getEmployeesIdsUnderSupervisorId(Integer supervisorId) throws PojoValidationException {
-		LogUtilities.trace("Getting employee ids for this supervisor " + supervisorId);
+	public List<Integer> getEmployeesIdsUnderSupervisorId(Integer supervisorId)
+			throws PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("getEmployeesIdsUnderSupervisorId");
 
-		validateOnlySupervisorId(supervisorId);
-		checkValidationResults(); // check validation results
+		if (supervisorId == null) {
+			throw new IllegalParameterException("getEmployeesIdsUnderSupervisorId - supervisorId should not be empty");
+		}
 
 		return employeeDao.getEmployeesIdsUnderSupervisorId(supervisorId);
 
 	}
 
 	@Override
-	public Employee getEmployeeSupervisor(Integer employeeId) {
+	public Employee getEmployeeSupervisor(Integer employeeId) throws IllegalParameterException {
+		LogUtilities.trace("getEmployeeSupervisor");
+
 		if (employeeId == null) {
-			throw new IllegalArgumentException("EmployeeId should not be empty.");
+			throw new IllegalParameterException("getEmployeeSupervisor - employeeId should not be empty");
 		}
 
 		return employeeDao.getEmployeeSupervisor(employeeId);
@@ -179,17 +224,9 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 
 	@Override
 	public List<Integer> getEmployeesUnderSupervisorIdList(List<Integer> employeeListIds) {
+		LogUtilities.trace("getEmployeesUnderSupervisorIdList");
+
 		return employeeDao.getEmployeesUnderSupervisorIdList(employeeListIds);
 	}
 
-	/**
-	 * Setting associate as a default employee type.
-	 * 
-	 * @param employee The employee
-	 */
-	private void setDefaultEmployeeType(Employee employee) {
-		if (!employee.getEmployeeTypes().contains(EmployeeType.Associate)) {
-			employee.addEmployeeTypeId(EmployeeType.Associate);
-		}
-	}
 }
