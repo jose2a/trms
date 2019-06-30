@@ -1,6 +1,7 @@
 package com.revature.trms.services;
 
 import com.revature.trms.daos.ReasonExceedingDAO;
+import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.exceptions.PreexistingRecordException;
 import com.revature.trms.pojos.ReasonExceeding;
@@ -17,14 +18,15 @@ public class ReasonExceedingServiceImpl extends BaseService implements ReasonExc
 
 	@Override
 	public boolean addReasonExceeding(ReasonExceeding reasonExceeding)
-			throws PojoValidationException, PreexistingRecordException {
-		LogUtilities.trace("addGradingFormat");
-		
-		validateReasonExceeding(reasonExceeding);
-		checkValidationResults();
+			throws PojoValidationException, PreexistingRecordException, IllegalParameterException {
+		LogUtilities.trace("addReasonExceeding");
+
+		pojoValException = PojoValidationException.getInstance();
+		validateReasonExceeding(reasonExceeding, pojoValException);
+		checkValidationResults(pojoValException); // check validation results
 
 		if (reasonExceeding.getEventId() == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("addReasonExceeding - eventId should not be empty");
 		}
 
 		ReasonExceeding reasonE = reasonExceedingDao.getReasonExceedingByEventId(reasonExceeding.getEventId());
@@ -34,20 +36,20 @@ public class ReasonExceedingServiceImpl extends BaseService implements ReasonExc
 					"You previously enter a reson why this project was exceeding the amount available.");
 		}
 
-		LogUtilities.trace("No validation errors - addReasonExceeding");
-
 		return reasonExceedingDao.addReasonExceeding(reasonExceeding);
 	}
 
 	@Override
-	public boolean updateReasonExceeding(ReasonExceeding reasonExceeding) throws PojoValidationException {
-		LogUtilities.trace("addGradingFormat");
-		
-		validateReasonExceeding(reasonExceeding);
-		checkValidationResults();
+	public boolean updateReasonExceeding(ReasonExceeding reasonExceeding)
+			throws PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("updateReasonExceeding");
+
+		pojoValException = PojoValidationException.getInstance();
+		validateReasonExceeding(reasonExceeding, pojoValException);
+		checkValidationResults(pojoValException); // check validation results
 
 		if (reasonExceeding.getEventId() == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("updateReasonExceeding - reasonExceeding should not be empty");
 		}
 
 		LogUtilities.trace("No validation errors - updateReasonExceeding");
@@ -56,11 +58,11 @@ public class ReasonExceedingServiceImpl extends BaseService implements ReasonExc
 	}
 
 	@Override
-	public ReasonExceeding getReasonExceedingByEventId(Integer eventId) {
+	public ReasonExceeding getReasonExceedingByEventId(Integer eventId) throws IllegalParameterException {
 		LogUtilities.trace("addGradingFormat");
-		
+
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("getReasonExceedingByEventId - eventId should not be empty");
 		}
 
 		return reasonExceedingDao.getReasonExceedingByEventId(eventId);

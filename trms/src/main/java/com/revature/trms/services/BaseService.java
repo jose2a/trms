@@ -13,31 +13,13 @@ import com.revature.trms.utilities.LogUtilities;
 public abstract class BaseService {
 
 	/**
-	 * Saves validation errors in a list inside the exception so that we can throw
+	 * Saves validation errors in a list inside the exception so that we can throw it
 	 * after validating everything we need
 	 */
 	protected PojoValidationException pojoValException;
-
-	/**
-	 * Cleaning validation errors from the exception.
-	 */
-	private void cleanValidationResults() {
-		pojoValException.getErrors().clear();
-	}
-
-	/**
-	 * Checking if we have validation errors, if we have them we throw them.
-	 * 
-	 * @throws PojoValidationException
-	 */
-	protected void checkValidationResults() throws PojoValidationException {
-		if (pojoValException != null && pojoValException.getErrors().size() > 0) {
-			throw pojoValException;
-		}
-	}
 	
 	/**
-	 * Checking if we have validation errors, if we have them we throw them.
+	 * Checking if we have validation errors, if we have them we throw them. Convenience method.
 	 * 
 	 * @throws PojoValidationException
 	 */
@@ -157,11 +139,10 @@ public abstract class BaseService {
 	 * 
 	 * @param reasonDenied The reason denied
 	 */
-	protected void validateReasonDenied(ReasonDenied reasonDenied) {
-		cleanValidationResults();
+	protected void validateReasonDenied(ReasonDenied reasonDenied, PojoValidationException validationException) {
 
 		if (reasonDenied.getReason().equals("") || reasonDenied.getReason().isEmpty()) {
-			pojoValException.addError("Please provide the reason why this request was denied.");
+			validationException.addError("Please provide the reason why this request was denied.");
 		}
 	}
 
@@ -170,11 +151,10 @@ public abstract class BaseService {
 	 * 
 	 * @param reasonExceeding The reason exceeding
 	 */
-	protected void validateReasonExceeding(ReasonExceeding reasonExceeding) {
-		cleanValidationResults();
+	protected void validateReasonExceeding(ReasonExceeding reasonExceeding, PojoValidationException validationException) {
 
 		if (reasonExceeding.getReason().equals("") || reasonExceeding.getReason().isEmpty()) {
-			pojoValException.addError("Please provide the reason why the amount for this request was exceeding.");
+			validationException.addError("Please provide the reason why the amount for this request was exceeding.");
 		}
 	}
 
@@ -186,7 +166,7 @@ public abstract class BaseService {
 	 * @param from                   Grade range (from)
 	 * @param to                     Grade range (to)
 	 */
-	protected void validateEvent(Event event, int daysBeforeStartOfEvent, String from, String to) {
+	protected void validateEvent(Event event, int daysBeforeStartOfEvent, String from, String to, PojoValidationException validationException) {
 		if (event.getEmployeeId() == null) {
 			throw new IllegalArgumentException("EmployeeId should not be empty.");
 		}
