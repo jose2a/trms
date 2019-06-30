@@ -54,7 +54,7 @@
 		<url-pattern>/gradingformat/*</url-pattern>
 	</servlet-mapping>
 	<!-- GradingFormat -->
-	
+
 	<!-- EmployeeTypeServlet -->
 	<servlet>
 		<description></description>
@@ -65,6 +65,19 @@
 	<servlet-mapping>
 		<servlet-name>EmployeeTypeServlet</servlet-name>
 		<url-pattern>/role/*</url-pattern>
+	</servlet-mapping>
+	<!-- EmployeeTypeServlet -->
+
+	<!-- EmployeeTypeServlet -->
+	<servlet>
+		<description></description>
+		<display-name>EventTypeServlet</display-name>
+		<servlet-name>EventTypeServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.EventTypeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EventTypeServlet</servlet-name>
+		<url-pattern>/eventtype/*</url-pattern>
 	</servlet-mapping>
 	<!-- EmployeeTypeServlet -->
 </web-app>
