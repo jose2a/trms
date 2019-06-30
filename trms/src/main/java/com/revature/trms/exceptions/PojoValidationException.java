@@ -8,7 +8,11 @@ public class PojoValidationException extends Exception {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5518839343235057704L;
+
+	public static PojoValidationException getInstance() {
+		return new PojoValidationException();
+	}
 
 	// List of errors when validating the pojo,
 	// this way all errors are stored until we are ready to throw them
