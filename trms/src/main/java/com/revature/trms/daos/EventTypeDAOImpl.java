@@ -59,9 +59,7 @@ public class EventTypeDAOImpl extends BaseDAO implements EventTypeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = baseSql + " FROM event_type";
-
-			ps = conn.prepareStatement(sql);
+			ps = conn.prepareStatement(baseSql);
 
 			rs = ps.executeQuery();
 

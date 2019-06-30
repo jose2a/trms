@@ -42,18 +42,19 @@
 		<servlet-name>ListEmployeeServlet</servlet-name>
 		<url-pattern>/admin/ListEmployee</url-pattern>
 	</servlet-mapping>
-	<!-- GradingFormat -->
+
+	<!-- EmployeeServlet -->
 	<servlet>
 		<description></description>
-		<display-name>GradingFormatServlet</display-name>
-		<servlet-name>GradingFormatServlet</servlet-name>
-		<servlet-class>com.revature.trms.servlets.GradingFormatServlet</servlet-class>
+		<display-name>EmployeeServlet</display-name>
+		<servlet-name>EmployeeServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.EmployeeServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>GradingFormatServlet</servlet-name>
-		<url-pattern>/gradingformat/*</url-pattern>
+		<servlet-name>EmployeeServlet</servlet-name>
+		<url-pattern>/employee/*</url-pattern>
 	</servlet-mapping>
-	<!-- GradingFormat -->
+	<!-- EmployeeServlet -->
 
 	<!-- EmployeeTypeServlet -->
 	<servlet>
@@ -68,7 +69,7 @@
 	</servlet-mapping>
 	<!-- EmployeeTypeServlet -->
 
-	<!-- EmployeeTypeServlet -->
+	<!-- EventTypeServlet -->
 	<servlet>
 		<description></description>
 		<display-name>EventTypeServlet</display-name>
@@ -79,5 +80,18 @@
 		<servlet-name>EventTypeServlet</servlet-name>
 		<url-pattern>/eventtype/*</url-pattern>
 	</servlet-mapping>
-	<!-- EmployeeTypeServlet -->
+	<!-- EventTypeServlet -->
+
+	<!-- GradingFormat -->
+	<servlet>
+		<description></description>
+		<display-name>GradingFormatServlet</display-name>
+		<servlet-name>GradingFormatServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.GradingFormatServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GradingFormatServlet</servlet-name>
+		<url-pattern>/gradingformat/*</url-pattern>
+	</servlet-mapping>
+	<!-- GradingFormat -->
 </web-app>

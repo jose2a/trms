@@ -1,7 +1,6 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,13 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
-import com.revature.trms.pojos.EmployeeType;
+import com.revature.trms.pojos.Employee;
 import com.revature.trms.services.EmployeeService;
 import com.revature.trms.services.EmployeeTypeService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class EmployeeTypeServlet extends HttpServlet {
+public class EmployeeServlet extends HttpServlet {
 
 	/**
 	 * 
@@ -27,7 +26,7 @@ public class EmployeeTypeServlet extends HttpServlet {
 	private EmployeeService employeeService;
 	private EmployeeTypeService employeeTypeService;
 
-	// <url-pattern>/role/*</url-pattern>
+	// <url-pattern>/employee/*</url-pattern>
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
@@ -44,23 +43,23 @@ public class EmployeeTypeServlet extends HttpServlet {
 
 		LogUtilities.trace("EmployeeId: " + id);
 
-		String employeTypesString = "";
-		List<EmployeeType> employeeTypes = null;
+		String employeString = "";
+		Employee employee = null;
 
 		try {
-			employeeService.getEmployeeById(id);
-			employeeTypes = employeeTypeService.getEmployeeTypesForEmployee(id);
+			employee = employeeService.getEmployeeById(id);
+			employee.setEmployeeTypes(employeeTypeService.getEmployeeTypesForEmployee(id));
 			
-			LogUtilities.trace(employeeTypes.toString());
+			LogUtilities.trace(employee.toString());
 		} catch (IllegalParameterException e) {
-			LogUtilities.error("Error. EmployeeTypeServlet. " + e.getMessage());
+			LogUtilities.error("Error. EmployeeServlet. " + e.getMessage());
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
 
-		employeTypesString = om.writeValueAsString(employeeTypes);
-		response.getWriter().write(employeTypesString);
+		employeString = om.writeValueAsString(employee);
+		response.getWriter().write(employeString);
 	}
 
 }

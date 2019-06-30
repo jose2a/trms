@@ -89,7 +89,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = baseSql + " FROM attachment WHERE attachment_id=?";
+			String sql = baseSql + " WHERE attachment_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, attachmentId);
@@ -121,7 +121,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = baseSql + " FROM attachment WHERE event_id=?";
+			String sql = baseSql + " WHERE event_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, eventId);

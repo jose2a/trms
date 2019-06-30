@@ -4,19 +4,17 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.pojos.GradingFormat;
 import com.revature.trms.services.GradingFormatService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class GradingFormatServlet extends HttpServlet {
+public class GradingFormatServlet extends BaseServlet implements DoGetMethod, DoPostMethod {
 
 	/**
 	 * 
@@ -24,26 +22,27 @@ public class GradingFormatServlet extends HttpServlet {
 	private static final long serialVersionUID = 2651555881410342046L;
 
 	private GradingFormatService gradingFmtService;
+	
+	@Override
+	void validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-
+	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		gradingFmtService = ServiceUtilities.getGradingFormatService();
 
-		ObjectMapper om = new ObjectMapper();
+		String id = (pathInfoParts.length > 0) ? pathInfoParts[1] : null;
 
-		String gradingId = request.getPathInfo();
-
-		if (gradingId == null || gradingId.substring(1) == "") {
+		if (id == null || id == "") {
 
 			List<GradingFormat> gradingFormats = gradingFmtService.getAllGradingFormats();
 
 			String gradingFormatsString = "";
 
 			try {
-				gradingFormatsString = om.writeValueAsString(gradingFormats);
+				gradingFormatsString = objectMapper.writeValueAsString(gradingFormats);
 			} catch (JsonProcessingException e) {
 				LogUtilities.error("Error. GradingFormatServlet. " + e.getMessage());
 			}
@@ -52,15 +51,15 @@ public class GradingFormatServlet extends HttpServlet {
 			return;
 		}
 
-		Integer id = Integer.parseInt(gradingId.substring(1));
-		
-		LogUtilities.trace("GradingFormatId: " + id);
+		Integer gradeId = Integer.parseInt(id);
+
+		LogUtilities.trace("GradingFormatId: " + gradeId);
 
 		String gradingFormatString = "";
 		GradingFormat gradingFormat = null;
 
 		try {
-			gradingFormat = gradingFmtService.getGradingFormatById(id);
+			gradingFormat = gradingFmtService.getGradingFormatById(gradeId);
 
 			if (gradingFormat == null) {
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -70,8 +69,20 @@ public class GradingFormatServlet extends HttpServlet {
 			LogUtilities.error("Error. GradingFormatServlet. " + e.getMessage());
 		}
 
-		gradingFormatString = om.writeValueAsString(gradingFormat);
+		gradingFormatString = objectMapper.writeValueAsString(gradingFormat);
 		response.getWriter().write(gradingFormatString);
+	}
+
+	@Override
+	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		GradingFormat gradingFormat = objectMapper.readValue(body, GradingFormat.class);
+		gradingFormat.setGradingFormatId(7);
+
+		String uri = getUri(request) + "/" + gradingFormat.getGradingFormatId();
+
+		response.setHeader("Location", uri);
+		response.setStatus(HttpServletResponse.SC_CREATED);
+		response.getWriter().write(objectMapper.writeValueAsString(gradingFormat));
 	}
 
 }
