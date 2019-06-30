@@ -38,6 +38,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 	private ReasonExceedingService reasonExceedingService;
 
 	private final double AVAILABLE_REIMBURSEMENT_AMOUNT_PER_YEAR = 1000.00; // $1,000
+	private final int DAYS_UNTIL_AUTOAPPROVED_REQUEST = 4; // 4 days before event to auto-approved the event
 
 	public EventServiceImpl() {
 		eventDao = DAOUtilities.geEventDAO();
@@ -480,16 +481,57 @@ public class EventServiceImpl extends BaseService implements EventService {
 		}
 
 		informationRequired.setProvided(true);
-		
+
 		informationRequiredService.updateInformationRequired(informationRequired);
 
 		LogUtilities.trace("Confirm the information requested was sent");
 	}
 
 	@Override
-	public boolean autoApproveEvents() {
-		// TODO Auto-generated method stub
-		return false;
+	public void autoApproveEvents() {
+		LogUtilities.trace("autoApproveEvents");
+		
+		// TODO Make this automatic every night
+		// Approving events not approved by a direct supervisor in a timely matter
+		List<Event> eventsPendingOfApproval;
+		
+		LogUtilities.trace("Approving Direct Supervisor's pending events");
+		eventsPendingOfApproval = eventDao.getEventsPendingOfDirectSupervisorApproval();
+
+		for (Event event : eventsPendingOfApproval) {
+			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent()).getDays();
+
+			if (daysBeforeStartOfEvent < Period.ofDays(DAYS_UNTIL_AUTOAPPROVED_REQUEST).getDays()) {
+				event.setDsEventStatus(EventStatus.Approved);
+				eventDao.updateEvent(event);
+			}
+		}
+
+		// Approving events not approved by a department head in a timely matter
+		LogUtilities.trace("Approving Head Deparment's pending events");
+		eventsPendingOfApproval = eventDao.getEventsPendingOfHeadDepartmentApproval();
+
+		for (Event event : eventsPendingOfApproval) {
+			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent()).getDays();
+
+			if (daysBeforeStartOfEvent < Period.ofDays(DAYS_UNTIL_AUTOAPPROVED_REQUEST).getDays()) {
+				event.setHdEventStatus(EventStatus.Approved);
+				eventDao.updateEvent(event);
+			}
+		}
+		
+		// TODO: Sending an escalation email to benco's direct supervisor, if request is not approved in a timely matter
+		LogUtilities.trace("Sending BenCo's manager about pending events");
+		eventsPendingOfApproval = eventDao.getEventsPendingOfBenefitsCoordinatorApproval();
+
+		for (Event event : eventsPendingOfApproval) {
+			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent()).getDays();
+
+			if (daysBeforeStartOfEvent < Period.ofDays(DAYS_UNTIL_AUTOAPPROVED_REQUEST).getDays()) {
+				LogUtilities.trace("Sending email to BenCo's suppervisor");
+			}
+		}
+		
 	}
 
 	@Override

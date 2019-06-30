@@ -58,7 +58,7 @@ public interface EventService {
 	public void confirmSentOfInformationRequired(Integer eventId, Integer employeeId)
 			throws NotFoundRecordException, IllegalParameterException, PojoValidationException;
 
-	public boolean autoApproveEvents();
+	public void autoApproveEvents();
 
 	public boolean changeReimbursementAmount(Integer eventId, double newAmount, String reason)
 			throws PojoValidationException, NotFoundRecordException, PreexistingRecordException,
