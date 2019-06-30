@@ -73,10 +73,10 @@ public interface EventService {
 	public boolean uploadEventPresentation(Integer eventId, Attachment attachment)
 			throws NotFoundRecordException, PojoValidationException, IllegalParameterException;
 
-	public boolean confirmPassingGrade(Integer eventId)
+	public boolean confirmPassingGrade(Integer eventId, boolean successful)
 			throws NotFoundRecordException, PojoValidationException, IllegalParameterException;
 
-	public boolean confirmSuccessfulPresentation(Integer eventId)
+	public boolean confirmSuccessfulPresentation(Integer eventId, boolean successful)
 			throws NotFoundRecordException, PojoValidationException, IllegalParameterException;
 
 	public Event getEventById(Integer eventId) throws IllegalParameterException;

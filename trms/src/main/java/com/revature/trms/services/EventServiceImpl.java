@@ -490,11 +490,11 @@ public class EventServiceImpl extends BaseService implements EventService {
 	@Override
 	public void autoApproveEvents() {
 		LogUtilities.trace("autoApproveEvents");
-		
+
 		// TODO Make this automatic every night
 		// Approving events not approved by a direct supervisor in a timely matter
 		List<Event> eventsPendingOfApproval;
-		
+
 		LogUtilities.trace("Approving Direct Supervisor's pending events");
 		eventsPendingOfApproval = eventDao.getEventsPendingOfDirectSupervisorApproval();
 
@@ -519,8 +519,9 @@ public class EventServiceImpl extends BaseService implements EventService {
 				eventDao.updateEvent(event);
 			}
 		}
-		
-		// TODO: Sending an escalation email to benco's direct supervisor, if request is not approved in a timely matter
+
+		// TODO: Sending an escalation email to benco's direct supervisor, if request is
+		// not approved in a timely matter
 		LogUtilities.trace("Sending BenCo's manager about pending events");
 		eventsPendingOfApproval = eventDao.getEventsPendingOfBenefitsCoordinatorApproval();
 
@@ -531,7 +532,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 				LogUtilities.trace("Sending email to BenCo's suppervisor");
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -657,7 +658,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public boolean confirmPassingGrade(Integer eventId)
+	public boolean confirmPassingGrade(Integer eventId, boolean successful)
 			throws NotFoundRecordException, PojoValidationException, IllegalParameterException {
 		LogUtilities.trace("confirmPassingGrade");
 
@@ -680,8 +681,14 @@ public class EventServiceImpl extends BaseService implements EventService {
 			event.setAcceptedAmountReimbursed(event.getProjectedAmountReimbused());
 		}
 
-		event.setPassingGradeProvided(EvaluationResult.Yes);
-		event.setReimbursementStatus(EventStatus.Approved);
+		if (successful) {
+			event.setPassingGradeProvided(EvaluationResult.Yes);
+			event.setReimbursementStatus(EventStatus.Approved);
+
+		} else {
+			event.setPassingGradeProvided(EvaluationResult.No);
+			event.setReimbursementStatus(EventStatus.Denied);
+		}
 
 		LogUtilities.trace("Passing grade confirmed.");
 
@@ -689,7 +696,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public boolean confirmSuccessfulPresentation(Integer eventId)
+	public boolean confirmSuccessfulPresentation(Integer eventId, boolean successful)
 			throws NotFoundRecordException, PojoValidationException, IllegalParameterException {
 		LogUtilities.trace("confirmSuccessfulPresentation");
 
@@ -710,6 +717,14 @@ public class EventServiceImpl extends BaseService implements EventService {
 		if (event.getAcceptedAmountReimbursed() == 0) {
 			LogUtilities.trace("Awarded amount was not changed. Assigning projected amount.");
 			event.setAcceptedAmountReimbursed(event.getProjectedAmountReimbused());
+		}
+		
+		if (successful) {
+			event.setSuccessfulPresentationProvided(EvaluationResult.Yes);
+			event.setReimbursementStatus(EventStatus.Approved);
+		} else {
+			event.setSuccessfulPresentationProvided(EvaluationResult.No);
+			event.setReimbursementStatus(EventStatus.Denied);
 		}
 
 		event.setSuccessfulPresentationProvided(EvaluationResult.Yes);

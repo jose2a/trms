@@ -37,7 +37,7 @@ public abstract class BaseServlet extends HttpServlet {
 	private DoPutMethod doPutMethodImpl;
 	private DoDeleteMethod doDeleteMethodImpl;
 
-	abstract void validateAuthorization(HttpServletRequest request, HttpServletResponse response);
+	abstract boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response);
 
 	public BaseServlet() {
 		LogUtilities.trace("BaseServlet - Constructor");
@@ -73,8 +73,7 @@ public abstract class BaseServlet extends HttpServlet {
 			return;
 		}
 
-		validateAuthentication(request, response);
-		validateAuthorization(request, response);
+		handleAuthenticationAndAuthorization(request, response);
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -98,8 +97,7 @@ public abstract class BaseServlet extends HttpServlet {
 			return;
 		}
 
-		validateAuthentication(request, response);
-		validateAuthorization(request, response);
+		handleAuthenticationAndAuthorization(request, response);
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -121,8 +119,7 @@ public abstract class BaseServlet extends HttpServlet {
 			return;
 		}
 
-		validateAuthentication(request, response);
-		validateAuthorization(request, response);
+		handleAuthenticationAndAuthorization(request, response);
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -144,8 +141,7 @@ public abstract class BaseServlet extends HttpServlet {
 			return;
 		}
 
-		validateAuthentication(request, response);
-		validateAuthorization(request, response);
+		handleAuthenticationAndAuthorization(request, response);
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -155,6 +151,17 @@ public abstract class BaseServlet extends HttpServlet {
 		LogUtilities.trace("Path info parts: " + String.join("", pathInfoParts));
 
 		doDeleteMethodImpl.delete(request, response);
+	}
+
+	private void handleAuthenticationAndAuthorization(HttpServletRequest request, HttpServletResponse response) {
+		validateAuthentication(request, response);
+
+		boolean authorized = validateAuthorization(request, response);
+
+		if (!authorized) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
 	}
 
 	private void validateAuthentication(HttpServletRequest request, HttpServletResponse response) {

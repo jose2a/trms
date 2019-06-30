@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.pojos.EmployeeType;
@@ -17,7 +15,7 @@ import com.revature.trms.services.EmployeeTypeService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class EmployeeTypeServlet extends HttpServlet {
+public class EmployeeTypeServlet extends BaseServlet implements DoGetMethod {
 
 	/**
 	 * 
@@ -29,28 +27,23 @@ public class EmployeeTypeServlet extends HttpServlet {
 
 	// <url-pattern>/role/*</url-pattern>
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-
+	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		employeeService = ServiceUtilities.getEmployeeService();
 		employeeTypeService = ServiceUtilities.geEmployeeTypeService();
 
-		ObjectMapper om = new ObjectMapper();
+		String id = (pathInfoParts.length > 0) ? pathInfoParts[1] : null;
 
-		String employeeId = request.getPathInfo();
+		Integer employeeId = Integer.parseInt(id);
 
-		Integer id = Integer.parseInt(employeeId.substring(1));
-
-		LogUtilities.trace("EmployeeId: " + id);
+		LogUtilities.trace("EmployeeId: " + employeeId);
 
 		String employeTypesString = "";
 		List<EmployeeType> employeeTypes = null;
 
 		try {
-			employeeService.getEmployeeById(id);
-			employeeTypes = employeeTypeService.getEmployeeTypesForEmployee(id);
-			
+			employeeService.getEmployeeById(employeeId);
+			employeeTypes = employeeTypeService.getEmployeeTypesForEmployee(employeeId);
+
 			LogUtilities.trace(employeeTypes.toString());
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EmployeeTypeServlet. " + e.getMessage());
@@ -59,8 +52,14 @@ public class EmployeeTypeServlet extends HttpServlet {
 			return;
 		}
 
-		employeTypesString = om.writeValueAsString(employeeTypes);
+		employeTypesString = objectMapper.writeValueAsString(employeeTypes);
 		response.getWriter().write(employeTypesString);
+	}
+
+	@Override
+	boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

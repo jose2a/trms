@@ -22,12 +22,6 @@ public class GradingFormatServlet extends BaseServlet implements DoGetMethod, Do
 	private static final long serialVersionUID = 2651555881410342046L;
 
 	private GradingFormatService gradingFmtService;
-	
-	@Override
-	void validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -83,6 +77,12 @@ public class GradingFormatServlet extends BaseServlet implements DoGetMethod, Do
 		response.setHeader("Location", uri);
 		response.setStatus(HttpServletResponse.SC_CREATED);
 		response.getWriter().write(objectMapper.writeValueAsString(gradingFormat));
+	}
+
+	@Override
+	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }
