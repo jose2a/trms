@@ -141,7 +141,7 @@ public abstract class BaseService {
 		}
 
 		if (attachment.isApprovalDoc()) {
-			if (attachment.getApprovalStage() == null) {
+			if (attachment.getDocumentType() == null) {
 				pojoValidationException.addError("You should select who approve this document.");
 			}
 		}

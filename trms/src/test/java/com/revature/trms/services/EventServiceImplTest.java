@@ -23,7 +23,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.revature.trms.daos.EventDAO;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
-import com.revature.trms.pojos.AttachmentApprovalType;
+import com.revature.trms.pojos.AttachmentDocType;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EmployeeType;
@@ -236,9 +236,9 @@ public class EventServiceImplTest {
 
 		attPDF = new Attachment("pdf.png", LocalDate.now().plusDays(15), false, null, null, newEventId);
 		attDSApproval = new Attachment("dsApp.png", LocalDate.now().plusDays(15), true, null,
-				AttachmentApprovalType.Direct_Supervisor_Approval, newEventId);
+				AttachmentDocType.Direct_Supervisor_Approval, newEventId);
 		attHDAppr = new Attachment("hdApp.png", LocalDate.now().plusDays(15), true, null,
-				AttachmentApprovalType.Department_Head_Approval, newEventId);
+				AttachmentDocType.Department_Head_Approval, newEventId);
 		attGrade = new Attachment("grade.png", LocalDate.now().plusDays(15), false, null, null, newEventId);
 
 		infReqEmp = new InformationRequired(newEventId, emp1.getEmployeeId(), "We need more data employee", false,

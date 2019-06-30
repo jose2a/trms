@@ -1,32 +1,29 @@
 package com.revature.trms.pojos;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 public class Attachment {
 
 	private Integer attachmentId;
-	
+
 	private String fileName;
 	private LocalDate dateSubmitted;
-	private boolean isApprovalDoc;
 	private byte[] fileContent;
-	private AttachmentApprovalType approvalStage;
-	
+	private AttachmentDocType documentType;
+
 	private Integer eventId;
 
 	public Attachment() {
 		super();
 	}
 
-	public Attachment(String fileName, LocalDate dateSubmitted, boolean isApprovalDoc, byte[] fileContent,
-			AttachmentApprovalType approvalStage, int eventId) {
+	public Attachment(String fileName, LocalDate dateSubmitted, byte[] fileContent, AttachmentDocType documentType,
+			int eventId) {
 		super();
 		this.fileName = fileName;
 		this.dateSubmitted = dateSubmitted;
-		this.isApprovalDoc = isApprovalDoc;
 		this.fileContent = fileContent;
-		this.approvalStage = approvalStage;
+		this.documentType = documentType;
 		this.eventId = eventId;
 	}
 
@@ -54,14 +51,6 @@ public class Attachment {
 		this.dateSubmitted = dateSubmitted;
 	}
 
-	public boolean isApprovalDoc() {
-		return isApprovalDoc;
-	}
-
-	public void setApprovalDoc(boolean isApprovalDoc) {
-		this.isApprovalDoc = isApprovalDoc;
-	}
-
 	public byte[] getFileContent() {
 		return fileContent;
 	}
@@ -70,12 +59,12 @@ public class Attachment {
 		this.fileContent = fileContent;
 	}
 
-	public AttachmentApprovalType getApprovalStage() {
-		return approvalStage;
+	public AttachmentDocType getDocumentType() {
+		return documentType;
 	}
 
-	public void setApprovalStage(AttachmentApprovalType approvalStage) {
-		this.approvalStage = approvalStage;
+	public void setDocumentType(AttachmentDocType documentType) {
+		this.documentType = documentType;
 	}
 
 	public Integer getEventId() {
@@ -90,13 +79,11 @@ public class Attachment {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((approvalStage == null) ? 0 : approvalStage.hashCode());
-		result = prime * result + attachmentId;
+		result = prime * result + ((attachmentId == null) ? 0 : attachmentId.hashCode());
 		result = prime * result + ((dateSubmitted == null) ? 0 : dateSubmitted.hashCode());
-		result = prime * result + eventId;
-		result = prime * result + Arrays.hashCode(fileContent);
+		result = prime * result + ((documentType == null) ? 0 : documentType.hashCode());
+		result = prime * result + ((eventId == null) ? 0 : eventId.hashCode());
 		result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
-		result = prime * result + (isApprovalDoc ? 1231 : 1237);
 		return result;
 	}
 
@@ -109,25 +96,27 @@ public class Attachment {
 		if (getClass() != obj.getClass())
 			return false;
 		Attachment other = (Attachment) obj;
-		if (approvalStage != other.approvalStage)
-			return false;
-		if (attachmentId != other.attachmentId)
+		if (attachmentId == null) {
+			if (other.attachmentId != null)
+				return false;
+		} else if (!attachmentId.equals(other.attachmentId))
 			return false;
 		if (dateSubmitted == null) {
 			if (other.dateSubmitted != null)
 				return false;
 		} else if (!dateSubmitted.equals(other.dateSubmitted))
 			return false;
-		if (eventId != other.eventId)
+		if (documentType != other.documentType)
 			return false;
-		if (!Arrays.equals(fileContent, other.fileContent))
+		if (eventId == null) {
+			if (other.eventId != null)
+				return false;
+		} else if (!eventId.equals(other.eventId))
 			return false;
 		if (fileName == null) {
 			if (other.fileName != null)
 				return false;
 		} else if (!fileName.equals(other.fileName))
-			return false;
-		if (isApprovalDoc != other.isApprovalDoc)
 			return false;
 		return true;
 	}
@@ -135,8 +124,7 @@ public class Attachment {
 	@Override
 	public String toString() {
 		return "Attachment [attachmentId=" + attachmentId + ", fileName=" + fileName + ", dateSubmitted="
-				+ dateSubmitted + ", isApprovalDoc=" + isApprovalDoc + ", fileContent=" + fileContent
-				+ ", approvalStage=" + approvalStage + ", eventId=" + eventId + "]";
+				+ dateSubmitted + ", documentType=" + documentType + ", eventId=" + eventId + "]";
 	}
 
 }

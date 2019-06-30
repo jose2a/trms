@@ -3,7 +3,7 @@ package com.revature.trms.utilities;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.revature.trms.pojos.AttachmentApprovalType;
+import com.revature.trms.pojos.AttachmentDocType;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EvaluationResult;
@@ -19,13 +19,12 @@ public class ModelMapperUtilities {
 
 	// Mapping ResultSet to Attachment
 	public static void mapRsToAttachment(ResultSet rs, Attachment attachment) throws SQLException {
-		attachment.setAttachmentId(rs.getInt("attachment_id"));
-		attachment.setFileName(rs.getString("file_name"));
-		attachment.setDateSubmitted(rs.getDate("date_submitted").toLocalDate());
-		attachment.setApprovalDoc(rs.getBoolean("approval_doc"));
-		attachment.setFileContent(rs.getBytes("file_content"));
-		attachment.setApprovalStage(AttachmentApprovalType.valueOf(rs.getInt("approval_stage_id")));
-		attachment.setEventId(rs.getInt("event_id"));
+		attachment.setAttachmentId(rs.getInt("attachment_id")); // attachment_id
+		attachment.setFileName(rs.getString("file_name")); // file_name
+		attachment.setDateSubmitted(rs.getDate("date_submitted").toLocalDate()); // date_submitted
+		attachment.setFileContent(rs.getBytes("file_content")); // file_content
+		attachment.setDocumentType(AttachmentDocType.valueOf(rs.getInt("attachment_type_id"))); // attachment_type_id
+		attachment.setEventId(rs.getInt("event_id")); // event_id
 	}
 
 	// Mapping ResultSet to Employee

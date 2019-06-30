@@ -672,7 +672,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 			// If the employee provided an approval email from a DS or a HD
 			for (Attachment attachment : attachments) {
 				if (attachment.isApprovalDoc()) {
-					switch (attachment.getApprovalStage()) {
+					switch (attachment.getDocumentType()) {
 					case Direct_Supervisor_Approval:
 						LogUtilities.trace("Direct Supervisor approval attachment.");
 						event.setDsEventStatus(EventStatus.Approved);

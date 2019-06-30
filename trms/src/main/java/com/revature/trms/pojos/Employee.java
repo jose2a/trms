@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Employee {
-	
+
 	private Integer employeeId;
-	
+
 	private String username;
 	private String password;
 	private String firstName;
 	private String lastName;
-	private double avaliableReimbursementAmount;
-	
+	private String email;
+
 	private Integer supervisorId;
-	
+
 	private List<EmployeeType> employeeTypes;
 
 	public Employee() {
@@ -22,16 +22,18 @@ public class Employee {
 		employeeTypes = new ArrayList<>();
 	}
 
-	public Employee(String username, String password, String firstName, String lastName) {
-		this();
+	public Employee(String username, String password, String firstName, String lastName, String email) {
+		super();
 		this.username = username;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.email = email;
 	}
 
-	public Employee(String username, String password, String firstName, String lastName, int supervisorId) {
-		this(username, password, firstName, lastName);
+	public Employee(String username, String password, String firstName, String lastName, String email,
+			int supervisorId) {
+		this(username, password, firstName, lastName, email);
 		this.supervisorId = supervisorId;
 	}
 
@@ -75,12 +77,12 @@ public class Employee {
 		this.lastName = lastName;
 	}
 
-	public double getAvaliableReimbursementAmount() {
-		return avaliableReimbursementAmount;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setAvaliableReimbursementAmount(double avaliableReimbursementAmount) {
-		this.avaliableReimbursementAmount = avaliableReimbursementAmount;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Integer getSupervisorId() {

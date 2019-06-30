@@ -15,8 +15,8 @@ import com.revature.trms.utilities.ModelMapperUtilities;
 
 public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
-	private String baseSql = "SELECT attachment_id, file_name, date_submitted, approval_doc,"
-			+ " file_content, approval_stage_id, event_id FROM attachment";
+	
+	private String baseSql = "SELECT attachment_id, file_name, date_submitted, file_content, attachment_type_id, event_id FROM attachment";
 
 	@Override
 	public boolean addAttachment(Attachment attachment) {
@@ -26,17 +26,16 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 		ResultSet rs = null;
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
-			String sql = "INSERT INTO attachment (file_name, date_submitted, approval_doc, file_content, approval_stage_id, event_id) "
-					+ "VALUES(?, ?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO public.attachment(file_name, date_submitted, file_content, attachment_type_id, event_id)" + 
+					" VALUES (?, ?, ?, ?, ?, ?);";
 
 			ps = conn.prepareStatement(sql);
 
 			ps.setString(1, attachment.getFileName());
 			ps.setDate(2, Date.valueOf(attachment.getDateSubmitted()));
-			ps.setBoolean(3, attachment.isApprovalDoc());
-			ps.setBytes(4, attachment.getFileContent());
-			ps.setInt(5, attachment.getApprovalStage().getValue());
-			ps.setInt(6, attachment.getEventId());
+			ps.setBytes(3, attachment.getFileContent());
+			ps.setInt(4, attachment.getDocumentType().getValue());
+			ps.setInt(5, attachment.getEventId());
 
 			if (ps.executeUpdate() != 0) {
 				LogUtilities.trace("Attachment inserted.");
