@@ -87,6 +87,7 @@ public class EmployeeTypeDAOImpl extends BaseDAO implements EmployeeTypeDAO {
 			String sql = "SELECT employee_type_id FROM employee_employee_type WHERE employee_id=?";
 
 			ps = conn.prepareStatement(sql);
+			ps.setInt(1, employeeId);
 
 			rs = ps.executeQuery();
 
