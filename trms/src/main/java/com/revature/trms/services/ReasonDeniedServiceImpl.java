@@ -17,6 +17,8 @@ public class ReasonDeniedServiceImpl extends BaseService implements ReasonDenied
 
 	@Override
 	public boolean addReasonDenied(ReasonDenied reasonDenied) throws PreexistingRecordException, PojoValidationException {
+		LogUtilities.trace("addGradingFormat");
+		
 		validateReasonDenied(reasonDenied);
 		checkValidationResults();
 		
@@ -39,6 +41,8 @@ public class ReasonDeniedServiceImpl extends BaseService implements ReasonDenied
 
 	@Override
 	public boolean updateReasonDenied(ReasonDenied reasonDenied) throws PojoValidationException {
+		LogUtilities.trace("addGradingFormat");
+		
 		validateReasonDenied(reasonDenied);
 		checkValidationResults();
 		
@@ -53,6 +57,8 @@ public class ReasonDeniedServiceImpl extends BaseService implements ReasonDenied
 
 	@Override
 	public ReasonDenied getReasonDeniedByEventId(Integer eventId) {
+		LogUtilities.trace("addGradingFormat");
+		
 		if (eventId == null) {
 			throw new IllegalArgumentException("EventId should not be empty.");
 		}

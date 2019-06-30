@@ -130,15 +130,13 @@ public abstract class BaseService {
 	 * 
 	 * @param gradingFormat The grading format
 	 */
-	protected void validateGradingFormat(GradingFormat gradingFormat) {
-		cleanValidationResults();
-
+	protected void validateGradingFormat(GradingFormat gradingFormat, PojoValidationException validationException) {
 		if (gradingFormat.getFromRange().equals("") || gradingFormat.getFromRange().isEmpty()) {
-			pojoValException.addError("From should not be empty.");
+			validationException.addError("From should not be empty.");
 		}
 
 		if (gradingFormat.getToRange().equals("") || gradingFormat.getToRange().isEmpty()) {
-			pojoValException.addError("To should not be empty.");
+			validationException.addError("To should not be empty.");
 		}
 	}
 
@@ -147,11 +145,10 @@ public abstract class BaseService {
 	 * 
 	 * @param informationRequired The information required
 	 */
-	protected void validateInformationRequired(InformationRequired informationRequired) {
-		cleanValidationResults();
+	protected void validateInformationRequired(InformationRequired informationRequired, PojoValidationException validationException) {
 
 		if (informationRequired.getInformation().equals("") || informationRequired.getInformation().isEmpty()) {
-			pojoValException.addError("Please provide the information.");
+			validationException.addError("Please provide the information.");
 		}
 	}
 

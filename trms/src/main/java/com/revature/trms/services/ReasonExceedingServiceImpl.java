@@ -18,6 +18,8 @@ public class ReasonExceedingServiceImpl extends BaseService implements ReasonExc
 	@Override
 	public boolean addReasonExceeding(ReasonExceeding reasonExceeding)
 			throws PojoValidationException, PreexistingRecordException {
+		LogUtilities.trace("addGradingFormat");
+		
 		validateReasonExceeding(reasonExceeding);
 		checkValidationResults();
 
@@ -39,6 +41,8 @@ public class ReasonExceedingServiceImpl extends BaseService implements ReasonExc
 
 	@Override
 	public boolean updateReasonExceeding(ReasonExceeding reasonExceeding) throws PojoValidationException {
+		LogUtilities.trace("addGradingFormat");
+		
 		validateReasonExceeding(reasonExceeding);
 		checkValidationResults();
 
@@ -53,6 +57,8 @@ public class ReasonExceedingServiceImpl extends BaseService implements ReasonExc
 
 	@Override
 	public ReasonExceeding getReasonExceedingByEventId(Integer eventId) {
+		LogUtilities.trace("addGradingFormat");
+		
 		if (eventId == null) {
 			throw new IllegalArgumentException("EventId should not be empty.");
 		}

@@ -3,6 +3,7 @@ package com.revature.trms.services;
 import java.util.List;
 
 import com.revature.trms.daos.GradingFormatDAO;
+import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.GradingFormat;
 import com.revature.trms.utilities.DAOUtilities;
@@ -18,18 +19,21 @@ public class GradingFormatServiceImpl extends BaseService implements GradingForm
 
 	@Override
 	public boolean addGradingFormat(GradingFormat gradingFormat) throws PojoValidationException {
-		validateGradingFormat(gradingFormat);
-		checkValidationResults();
-
-		LogUtilities.trace("No validation errors - addGradingFormat");
+		LogUtilities.trace("addGradingFormat");
+		
+		pojoValException = PojoValidationException.getInstance();
+		validateGradingFormat(gradingFormat, pojoValException);
+		checkValidationResults(pojoValException);
 
 		return gradingFormatDao.addGradingFormat(gradingFormat);
 	}
 
 	@Override
-	public GradingFormat getGradingFormatById(Integer gradingFormatId) {
+	public GradingFormat getGradingFormatById(Integer gradingFormatId) throws IllegalParameterException {
+		LogUtilities.trace("getGradingFormatById");
+		
 		if (gradingFormatId == null) {
-			throw new IllegalArgumentException("GradingFormatId should not be null.");
+			throw new IllegalParameterException("getGradingFormatById - GradingFormatId should not be null.");
 		}
 
 		return gradingFormatDao.getGradingFormatById(gradingFormatId);
@@ -37,6 +41,8 @@ public class GradingFormatServiceImpl extends BaseService implements GradingForm
 
 	@Override
 	public List<GradingFormat> getAllGradingFormats() {
+		LogUtilities.trace("getAllGradingFormats");
+		
 		return gradingFormatDao.getAllGradingFormats();
 	}
 
