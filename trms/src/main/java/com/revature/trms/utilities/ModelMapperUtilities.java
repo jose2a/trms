@@ -34,6 +34,7 @@ public class ModelMapperUtilities {
 		employee.setFirstName(rs.getString("first_name"));
 		employee.setLastName(rs.getString("last_name"));
 		employee.setPassword(rs.getString("password"));
+		employee.setEmail(rs.getString("email"));
 		employee.setSupervisorId(rs.getInt("supervisor_id"));
 	}
 

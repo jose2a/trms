@@ -20,15 +20,15 @@ import com.revature.trms.utilities.ModelMapperUtilities;
 
 public class EventDAOImpl extends BaseDAO implements EventDAO {
 
-	private String selectQuery = "SELECT event_id, date_of_event, time_of_event, location, description, cost, "
-			+ "work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed, "
-			+ "accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id, "
-			+ "required_presentation, grade_cutoff, final_grade, ds_event_status_id, hd_event_status_id, benco_event_status_id, "
-			+ "canceled_by_employee, presentation_up, reimbursement_awarded FROM event";
+	private String selectQuery = "SELECT event_id, date_of_event, time_of_event, location, description, cost,"
+			+ " work_justification, work_time_miss, passing_grade, presentation_succ, projected_amt_reimbursed,"
+			+ " accepted_amt_reimbursed, urgent, exceeds_aval_funds, event_type_id, grading_format_id, employee_id,"
+			+ " required_presentation, grade_cutoff, final_grade, ds_event_status_id, hd_event_status_id, benco_event_status_id,"
+			+ " canceled_by_employee, presentation_up, reimbursement_awarded FROM event";
 
 	@Override
 	public boolean addEvent(Event event) {
-		LogUtilities.trace("Inserting event.");
+		LogUtilities.trace("addEvent.");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null;
@@ -39,7 +39,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 					+ " passing_grade, presentation_succ, projected_amt_reimbursed, accepted_amt_reimbursed, urgent,"
 					+ " exceeds_aval_funds, event_type_id, grading_format_id, employee_id, required_presentation,"
 					+ " grade_cutoff, ds_event_status_id, hd_event_status_id, benco_event_status_id, canceled_by_employee,"
-					+ " final_grade, presentation_up, reimbursement_approved)"
+					+ " final_grade, presentation_up, reimbursement_awarded)"
 					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -59,7 +59,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error adding the event." + e.getMessage());
+			LogUtilities.error("Error. addEvent. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -69,7 +69,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 	@Override
 	public boolean updateEvent(Event event) {
-		LogUtilities.trace("Updating event: " + event.getEventId().toString());
+		LogUtilities.trace("updateEvent. " + event.getEventId().toString());
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
@@ -91,7 +91,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error updating the event." + e.getMessage());
+			LogUtilities.error("Error. updateEvent. " + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}
@@ -101,7 +101,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 	@Override
 	public boolean deleteEvent(int eventId) {
-		LogUtilities.trace("Deleting event: " + eventId);
+		LogUtilities.trace("deleteEvent. " + eventId);
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
@@ -118,7 +118,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error deleting the event." + e.getMessage());
+			LogUtilities.error("Error. deleteEvent. " + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}
@@ -128,7 +128,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 	@Override
 	public Event getEventById(int eventId) {
-		LogUtilities.trace("Getting event by eventId " + eventId);
+		LogUtilities.trace("getEventById. " + eventId);
 
 		Event event = null;
 
@@ -150,7 +150,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting event by id." + e.getMessage());
+			LogUtilities.error("Error. getEventById. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -160,7 +160,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 	@Override
 	public List<Event> getEventsNotDeniedByEmployeeAndYear(Integer employeeId, int year) {
-		LogUtilities.trace("Getting events not denied by employee and year.");
+		LogUtilities.trace("getEventsNotDeniedByEmployeeAndYear.");
 
 		List<Event> events = new ArrayList<>();
 
@@ -194,7 +194,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting events not denied by employee and year." + e.getMessage());
+			LogUtilities.error("Error. getEventsNotDeniedByEmployeeAndYear. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -204,7 +204,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 	@Override
 	public List<Event> getEventsPendingOfDirectSupervisorApproval() {
-		LogUtilities.trace("Getting event pending of direct supervisor approval.");
+		LogUtilities.trace("getEventsPendingOfDirectSupervisorApproval.");
 
 		List<Event> events = new ArrayList<>();
 
@@ -214,14 +214,14 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
 			String sql = selectQuery + " WHERE ds_event_status_id=? OR (reimbursement_awarded=?"
-					+ " AND required_presentation=true AND presentation_up=true && presentation_succ=?)";
+					+ " AND required_presentation=true AND presentation_up=true AND presentation_succ=?)";
 
 			LogUtilities.trace(sql);
 
 			ps = conn.prepareStatement(sql);
 
 			ps.setInt(1, EventStatus.Pending.getValue());
-			ps.setInt(2, EventStatus.Approved.getValue());
+			ps.setInt(2, EventStatus.Pending.getValue());
 			ps.setInt(3, EvaluationResult.Pending.getValue());
 
 			rs = ps.executeQuery();
@@ -244,7 +244,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 	@Override
 	public List<Event> getEventsPendingOfHeadDepartmentApproval() {
-		LogUtilities.trace("Getting event pending of head department approval.");
+		LogUtilities.trace("getEventsPendingOfHeadDepartmentApproval.");
 
 		List<Event> events = new ArrayList<>();
 
@@ -272,7 +272,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error event pending of head department approval." + e.getMessage());
+			LogUtilities.error("Error. getEventsPendingOfHeadDepartmentApproval. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -282,7 +282,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 	@Override
 	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval() {
-		LogUtilities.trace("Getting event pending of BenCo approval.");
+		LogUtilities.trace("getEventsPendingOfBenefitsCoordinatorApproval.");
 
 		List<Event> events = new ArrayList<>();
 
@@ -314,7 +314,7 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error event pending of BenCo approval." + e.getMessage());
+			LogUtilities.error("Error. getEventsPendingOfBenefitsCoordinatorApproval." + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}

@@ -3,7 +3,7 @@ package com.revature.trms.pojos;
 public class ReasonDenied {
 
 	private Integer eventId;
-	
+
 	private String reason;
 
 	public ReasonDenied() {

@@ -109,9 +109,12 @@ public class Employee {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + employeeId;
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((employeeId == null) ? 0 : employeeId.hashCode());
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((supervisorId == null) ? 0 : supervisorId.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -125,7 +128,15 @@ public class Employee {
 		if (getClass() != obj.getClass())
 			return false;
 		Employee other = (Employee) obj;
-		if (employeeId != other.employeeId)
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (employeeId == null) {
+			if (other.employeeId != null)
+				return false;
+		} else if (!employeeId.equals(other.employeeId))
 			return false;
 		if (firstName == null) {
 			if (other.firstName != null)
@@ -136,6 +147,16 @@ public class Employee {
 			if (other.lastName != null)
 				return false;
 		} else if (!lastName.equals(other.lastName))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (supervisorId == null) {
+			if (other.supervisorId != null)
+				return false;
+		} else if (!supervisorId.equals(other.supervisorId))
 			return false;
 		if (username == null) {
 			if (other.username != null)
@@ -148,7 +169,7 @@ public class Employee {
 	@Override
 	public String toString() {
 		return "Employee [employeeId=" + employeeId + ", username=" + username + ", firstName=" + firstName
-				+ ", lastName=" + lastName + "]";
+				+ ", lastName=" + lastName + ", email=" + email + ", supervisorId=" + supervisorId + "]";
 	}
 
 }

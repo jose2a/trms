@@ -2,6 +2,7 @@ package com.revature.trms.pojos;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class Event {
 
@@ -23,8 +24,10 @@ public class Event {
 	// Used for business logic
 	private String finalGrade;
 	private boolean presentationUploaded;
+
 	private double projectedAmountReimbused;
 	private double acceptedAmountReimbursed;
+
 	private boolean isUrgent;
 	private boolean exceedsAvaliableFunds;
 	private boolean isCanceledByEmployee;
@@ -43,6 +46,11 @@ public class Event {
 	private EventStatus dsEventStatus;
 	private EventStatus hdEventStatus;
 	private EventStatus bencoEventStatus;
+
+	private Employee employee;
+	private EventType eventType;
+	private GradingFormat gradingFormat;
+	private List<Attachment> attachments;
 
 	public Event() {
 		super();
@@ -444,6 +452,38 @@ public class Event {
 
 	public void setBencoEventStatus(EventStatus bencoEventStatus) {
 		this.bencoEventStatus = bencoEventStatus;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	public EventType getEventType() {
+		return eventType;
+	}
+
+	public void setEventType(EventType eventType) {
+		this.eventType = eventType;
+	}
+
+	public GradingFormat getGradingFormat() {
+		return gradingFormat;
+	}
+
+	public void setGradingFormat(GradingFormat gradingFormat) {
+		this.gradingFormat = gradingFormat;
+	}
+
+	public List<Attachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
 	}
 
 	@Override

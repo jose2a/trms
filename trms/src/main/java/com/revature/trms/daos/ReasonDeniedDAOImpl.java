@@ -77,7 +77,7 @@ public class ReasonDeniedDAOImpl extends BaseDAO implements ReasonDeniedDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT event_id, reason FROM reason_denied " + "WHERE event_id=?";
+			String sql = "SELECT event_id, reason FROM reason_denied WHERE event_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, eventId);

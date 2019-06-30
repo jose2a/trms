@@ -45,7 +45,7 @@ public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error adding grading fortmat." + e.getMessage());
+			LogUtilities.error("Error. addGradingFormat. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}

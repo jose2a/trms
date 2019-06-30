@@ -3,7 +3,7 @@ package com.revature.trms.pojos;
 public class ReasonExceeding {
 
 	private Integer eventId;
-	
+
 	private String reason;
 
 	public ReasonExceeding() {

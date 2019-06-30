@@ -42,6 +42,43 @@ public class GradingFormat {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((fromRange == null) ? 0 : fromRange.hashCode());
+		result = prime * result + ((gradingFormatId == null) ? 0 : gradingFormatId.hashCode());
+		result = prime * result + ((toRange == null) ? 0 : toRange.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GradingFormat other = (GradingFormat) obj;
+		if (fromRange == null) {
+			if (other.fromRange != null)
+				return false;
+		} else if (!fromRange.equals(other.fromRange))
+			return false;
+		if (gradingFormatId == null) {
+			if (other.gradingFormatId != null)
+				return false;
+		} else if (!gradingFormatId.equals(other.gradingFormatId))
+			return false;
+		if (toRange == null) {
+			if (other.toRange != null)
+				return false;
+		} else if (!toRange.equals(other.toRange))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "GradingFormat [gradingFormatId=" + gradingFormatId + ", fromRange=" + fromRange + ", toRange=" + toRange
 				+ "]";

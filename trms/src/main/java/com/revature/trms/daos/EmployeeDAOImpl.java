@@ -29,8 +29,8 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 		ResultSet rs = null;
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
-			String sql = "INSERT INTO employee(username, password, first_name, last_name, supervisor_id)"
-					+ " VALUES (?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO employee(username, password, first_name, last_name, email, supervisor_id)"
+					+ " VALUES (?, ?, ?, ?, ?, ?)";
 
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
@@ -64,7 +64,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
-			String sql = "UPDATE employee SET username=?, password=?, first_name=?, last_name=?, supervisor_id=?"
+			String sql = "UPDATE employee SET username=?, password=?, first_name=?, last_name=?, email=?, supervisor_id=?"
 					+ "WHERE employee_id=?";
 
 			ps = conn.prepareStatement(sql);
@@ -91,7 +91,8 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 		ps.setString(2, employee.getPassword());
 		ps.setString(3, employee.getFirstName());
 		ps.setString(4, employee.getLastName());
-		ps.setInt(5, employee.getSupervisorId());
+		ps.setString(5, employee.getEmail());
+		ps.setInt(6, employee.getSupervisorId());
 	}
 
 	@Override
@@ -363,9 +364,9 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "select e2.employee_id, e2.first_name, e2.last_name, e2.password, e2.supervisor_id "
-					+ "from employee e1 inner join employee e2 on e1.supervisor_id = e2.employee_id "
-					+ "where e1.employee_id = ?";
+			String sql = "SELECT e2.employee_id, e2.first_name, e2.last_name, e2.password, e2.supervisor_id"
+					+ " FROM employee e1 INNER JOIN employee e2 ON e1.supervisor_id = e2.employee_id"
+					+ " WHERE e1.employee_id = ?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, employeeId);

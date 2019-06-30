@@ -9,11 +9,15 @@ public class InformationRequired {
 	private boolean provided;
 	private Integer requiredBy;
 
+	private Event event;
+	private Employee reuireBy;
+
 	public InformationRequired() {
 		super();
 	}
 
-	public InformationRequired(Integer eventId, Integer employeeId, String information, boolean provided, Integer requiredBy) {
+	public InformationRequired(Integer eventId, Integer employeeId, String information, boolean provided,
+			Integer requiredBy) {
 		super();
 		this.eventId = eventId;
 		this.employeeId = employeeId;
@@ -60,6 +64,22 @@ public class InformationRequired {
 
 	public void setRequiredBy(Integer requiredBy) {
 		this.requiredBy = requiredBy;
+	}
+
+	public Event getEvent() {
+		return event;
+	}
+
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+
+	public Employee getReuireBy() {
+		return reuireBy;
+	}
+
+	public void setReuireBy(Employee reuireBy) {
+		this.reuireBy = reuireBy;
 	}
 
 	@Override

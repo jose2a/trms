@@ -79,7 +79,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 
 	@Override
 	public List<InformationRequired> getInformationRequiredByEmployeeId(Integer employeeId) {
-		LogUtilities.trace("Getting info required from this employee. ID " + employeeId);
+		LogUtilities.trace("getInformationRequiredByEmployeeId. " + employeeId);
 
 		List<InformationRequired> informationRequiredList = new ArrayList<>();
 
@@ -88,8 +88,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT event_id, employee_id, information, provided, required_by "
-					+ "FROM info_required WHERE employee_id=? AND provided=false";
+			String sql = baseSql + " WHERE employee_id=? AND provided=false";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, employeeId);
@@ -104,7 +103,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting info required from this employee." + e.getMessage());
+			LogUtilities.error("Error. getInformationRequiredByEmployeeId. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -137,7 +136,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error. getInformationRequiredByEmployeeIdAndEventId" + e.getMessage());
+			LogUtilities.error("Error. getInformationRequiredByEmployeeIdAndEventId. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
