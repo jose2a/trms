@@ -40,9 +40,8 @@ public interface EventService {
 			IllegalParameterException;
 
 	// Deny Reimbursement by BenCo
-	public boolean denyTuitionReimbursementByBenCo(Integer eventId, String reason)
-			throws NotFoundRecordException, PreexistingRecordException, PojoValidationException,
-			IllegalParameterException;
+	public boolean denyTuitionReimbursementByBenCo(Integer eventId, String reason) throws NotFoundRecordException,
+			PreexistingRecordException, PojoValidationException, IllegalParameterException;
 
 	public boolean requestInformationFromEmployee(Integer eventId, String information, Integer requiredBy)
 			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException,
@@ -55,6 +54,9 @@ public interface EventService {
 	public boolean requestInformationFromDepartmentHead(Integer eventId, String information, Integer requiredBy)
 			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException,
 			IllegalParameterException;
+
+	public void confirmSentOfInformationRequired(Integer eventId, Integer employeeId)
+			throws NotFoundRecordException, IllegalParameterException, PojoValidationException;
 
 	public boolean autoApproveEvents();
 

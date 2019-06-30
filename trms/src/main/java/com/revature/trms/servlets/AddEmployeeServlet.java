@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.PojoValidationException;
+import com.revature.trms.exceptions.PreexistingRecordException;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.services.EmployeeService;
@@ -80,6 +82,12 @@ public class AddEmployeeServlet extends HttpServlet {
 			// If we have validation errors, we show them to the user
 			request.setAttribute("valErrors", pve.getErrors());
 			isAdded = false;
+		} catch (PreexistingRecordException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		if (isAdded) {

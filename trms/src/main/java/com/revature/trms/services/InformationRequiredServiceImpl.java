@@ -68,10 +68,25 @@ public class InformationRequiredServiceImpl extends BaseService implements Infor
 		LogUtilities.trace("getInformationRequiredByEmployeeId");
 
 		if (employeeId == null) {
-			throw new IllegalParameterException("EmployeeId should be provided.");
+			throw new IllegalParameterException("getInformationRequiredByEmployeeId - employeeId should be provided.");
 		}
 
 		return informationRequiredDao.getInformationRequiredByEmployeeId(employeeId);
+	}
+	
+	public InformationRequired getInformationRequiredByEmployeeIdAndEventId(Integer employeeId, Integer eventId)
+			throws IllegalParameterException {
+		LogUtilities.trace("getInformationRequiredByEmployeeIdAndEventId");
+
+		if (employeeId == null) {
+			throw new IllegalParameterException("getInformationRequiredByEmployeeIdAndEventId - employeeId should be provided.");
+		}
+		
+		if (eventId == null) {
+			throw new IllegalParameterException("getInformationRequiredByEmployeeIdAndEventId - eventId should be provided.");
+		}
+
+		return informationRequiredDao.getInformationRequiredByEmployeeIdAndEventId(employeeId, eventId);
 	}
 
 }

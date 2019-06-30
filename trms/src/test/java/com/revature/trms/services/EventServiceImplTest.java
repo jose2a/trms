@@ -1,7 +1,7 @@
 package com.revature.trms.services;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,8 +24,9 @@ import com.revature.trms.daos.EventDAO;
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
-import com.revature.trms.pojos.AttachmentDocType;
+import com.revature.trms.exceptions.PreexistingRecordException;
 import com.revature.trms.pojos.Attachment;
+import com.revature.trms.pojos.AttachmentDocType;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.EvaluationResult;
@@ -33,9 +34,6 @@ import com.revature.trms.pojos.Event;
 import com.revature.trms.pojos.EventStatus;
 import com.revature.trms.pojos.EventType;
 import com.revature.trms.pojos.GradingFormat;
-import com.revature.trms.pojos.InformationRequired;
-import com.revature.trms.pojos.ReasonDenied;
-import com.revature.trms.pojos.ReasonExceeding;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventServiceImplTest {
@@ -81,14 +79,6 @@ public class EventServiceImplTest {
 	private Attachment attPDF;
 	private Attachment attDSApproval; // DS approval
 	private Attachment attHDAppr; // HD approval
-	private Attachment attGrade;
-
-	private InformationRequired infReqEmp; // Emp
-	private InformationRequired infReqDS; // DS
-	private InformationRequired infReqHD; // HD
-
-	private ReasonDenied rDenied;
-	private ReasonExceeding rExcee;
 
 	private Event ev1Emp12018;
 	private Event ev1Emp12019Approved;
@@ -237,17 +227,6 @@ public class EventServiceImplTest {
 				AttachmentDocType.Direct_Supervisor_Approval, newEventId);
 		attHDAppr = new Attachment("hdApp.png", LocalDate.now().plusDays(15), null,
 				AttachmentDocType.Department_Head_Approval, newEventId);
-		attGrade = new Attachment("grade.png", LocalDate.now().plusDays(15), null, null, newEventId);
-
-		infReqEmp = new InformationRequired(newEventId, emp1.getEmployeeId(), "We need more data employee", false,
-				emp1.getSupervisorId());
-		infReqDS = new InformationRequired(newEventId, dsEmp.getEmployeeId(), "We need more data DS", false,
-				dhEmp.getEmployeeId()); // HD
-		infReqHD = new InformationRequired(newEventId, dhEmp.getEmployeeId(), "We need more data HD", false,
-				benCo.getEmployeeId()); // BenCo
-
-		rDenied = new ReasonDenied(newEventId, "No related to your work");
-		rExcee = new ReasonExceeding(newEventId, "This course is important for the job");
 	}
 
 	@Test
@@ -425,9 +404,11 @@ public class EventServiceImplTest {
 	}
 
 	@Test
-	public void approveTuitionReimbursementByDirectSupervisor() throws NotFoundRecordException, IllegalParameterException {
+	public void approveTuitionReimbursementByDirectSupervisor()
+			throws NotFoundRecordException, IllegalParameterException {
 		List<EmployeeType> types = new ArrayList<>();
 		types.add(EmployeeType.Associate);
+		types.add(EmployeeType.Direct_Supervisor);
 
 		ev2Emp12019Pending.setDsEventStatus(EventStatus.Pending);
 		dhEmp.setEmployeeTypes(types);
@@ -442,7 +423,7 @@ public class EventServiceImplTest {
 
 		assertTrue(result);
 		assertTrue(EventStatus.Approved == ev2Emp12019Pending.getDsEventStatus());
-		
+
 		verify(employeeService).getEmployeeById(Mockito.anyInt());
 		verify(eventDao).getEventById(ev2Emp12019Pending.getEventId());
 		verify(eventDao).updateEvent(ev2Emp12019Pending);
@@ -470,90 +451,103 @@ public class EventServiceImplTest {
 		assertTrue(result);
 		assertTrue(EventStatus.Approved == ev2Emp12019Pending.getDsEventStatus());
 		assertTrue(EventStatus.Approved == ev2Emp12019Pending.getHdEventStatus());
-		
+
 		verify(employeeService).getEmployeeById(Mockito.anyInt());
 		verify(eventDao).getEventById(ev2Emp12019Pending.getEventId());
 		verify(eventDao).updateEvent(ev2Emp12019Pending);
 	}
 
 	@Test
-	public void testApproveTuitionReimbursementByBenCo() {
-		fail("Not yet implemented");
+	public void denyTuitionReimbursementByDirectSupervisor_EventShould() throws NotFoundRecordException,
+			IllegalParameterException, PreexistingRecordException, PojoValidationException {
+		List<EmployeeType> types = new ArrayList<>();
+		types.add(EmployeeType.Associate);
+		types.add(EmployeeType.Direct_Supervisor);
+
+		ev2Emp12019Pending.setDsEventStatus(EventStatus.Pending);
+		dhEmp.setEmployeeTypes(types);
+
+		// setting up mockito
+		when(eventDao.getEventById(ev2Emp12019Pending.getEventId())).thenReturn(ev2Emp12019Pending);
+		when(eventDao.updateEvent(ev2Emp12019Pending)).thenReturn(true);
+		when(reasonDeniedService.addReasonDenied(Mockito.any())).thenReturn(true);
+
+		boolean result = eventService.denyTuitionReimbursementByDirectSupervisor(ev2Emp12019Pending.getEventId(),
+				"No enough information provided to make an inform desicion.");
+
+		assertTrue(result);
+		assertTrue(EventStatus.Denied == ev2Emp12019Pending.getDsEventStatus());
+		assertTrue(EventStatus.Denied == ev2Emp12019Pending.getReimbursementStatus());
+
+		verify(reasonDeniedService).addReasonDenied(Mockito.any());
+		verify(eventDao).getEventById(ev2Emp12019Pending.getEventId());
+		verify(eventDao).updateEvent(ev2Emp12019Pending);
 	}
 
 	@Test
-	public void testDenyTuitionReimbursementByDirectSupervisor() {
-		fail("Not yet implemented");
+	public void requestInformationFromEmployee() throws NotFoundRecordException, PojoValidationException,
+			PreexistingRecordException, IllegalParameterException {
+		ev2Emp12019Pending.setDsEventStatus(EventStatus.Pending);
+
+		// setting up mockito
+		when(eventDao.getEventById(ev2Emp12019Pending.getEventId())).thenReturn(ev2Emp12019Pending);
+		when(informationRequiredService.addInformationRequired(Mockito.any())).thenReturn(true);
+
+		eventService.requestInformationFromEmployee(ev2Emp12019Pending.getEventId(), "Need more details",
+				emp1.getSupervisorId());
+
+		verify(informationRequiredService).addInformationRequired(Mockito.any());
+		verify(eventDao).getEventById(ev2Emp12019Pending.getEventId());
 	}
 
 	@Test
-	public void testDenyTuitionReimbursementByHeadDepartmentr() {
-		fail("Not yet implemented");
+	public void changeReimbursementAmount() throws PojoValidationException, PreexistingRecordException,
+			IllegalParameterException, NotFoundRecordException {
+
+		List<Event> events = new ArrayList<>();
+		events.add(ev1Emp12019Approved);
+
+		// setting up mockito
+		when(eventDao.getEventById(ev2Emp12019Pending.getEventId())).thenReturn(ev2Emp12019Pending);
+		when(eventDao.updateEvent(Mockito.any())).thenReturn(true);
+		when(reasonExceedingService.getReasonExceedingByEventId(Mockito.anyInt())).thenReturn(null);
+		when(reasonExceedingService.addReasonExceeding(Mockito.any())).thenReturn(true);
+		when(eventDao.getEventsNotDeniedByEmployeeAndYear(Mockito.anyInt(), Mockito.anyInt())).thenReturn(events);
+
+		eventService.changeReimbursementAmount(ev2Emp12019Pending.getEventId(), 800,
+				"This would benefit the business.");
+		
+		assertTrue(ev2Emp12019Pending.getAcceptedAmountReimbursed() == 800);
+
+		verify(eventDao).getEventById(ev2Emp12019Pending.getEventId());
+		verify(eventDao).updateEvent(Mockito.any());
+		verify(reasonExceedingService).getReasonExceedingByEventId(Mockito.anyInt());
+		verify(reasonExceedingService).addReasonExceeding(Mockito.any());
+		verify(eventDao).getEventsNotDeniedByEmployeeAndYear(Mockito.anyInt(), Mockito.anyInt());
 	}
 
 	@Test
-	public void testDenyTuitionReimbursementByBenCo() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testRequestAdditionalInformation() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAutoApproveEvents() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testChangeReimbursementAmount() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetAvailableFundsForEmployee() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testUploadGradeOrPresentation() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testConfirmPassingGrade() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testConfirmSuccessfulPresentation() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAwardAmount() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetEventById() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetEventsPendingOfDirectSupervisorApproval() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetEventsPendingOfHeadDepartmentApproval() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetEventsPendingOfBenefitsCoordinatorApproval() {
-		fail("Not yet implemented");
+	public void getEventsPendingOfDirectSupervisorApproval() throws PojoValidationException, IllegalParameterException {
+		List<Event> events = new ArrayList<>();
+		ev1Emp12018.setEmployeeId(emp2.getEmployeeId());
+		events.add(ev1Emp12018);
+		events.add(ev1Emp12019Approved);
+		events.add(ev2Emp12019Pending);
+		ev3Emp12019Denied.setEmployeeId(emp2.getEmployeeId());
+		events.add(ev3Emp12019Denied);
+		
+		List<Integer> empIds = new ArrayList<>();
+		empIds.add(6);
+		
+		when(eventDao.getEventsPendingOfDirectSupervisorApproval()).thenReturn(events);
+		when(employeeService.getEmployeesIdsUnderSupervisorId(Mockito.anyInt())).thenReturn(empIds);
+		
+		List<Event> result = eventService.getEventsPendingOfDirectSupervisorApproval(emp1.getSupervisorId());
+		
+		assertEquals(2, result.size());
+		
+		verify(eventDao).getEventsPendingOfDirectSupervisorApproval();
+		verify(employeeService).getEmployeesIdsUnderSupervisorId(Mockito.anyInt());
 	}
 
 }

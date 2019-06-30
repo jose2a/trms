@@ -189,24 +189,26 @@ public class EventServiceImpl extends BaseService implements EventService {
 	public double getAvailableReimbursementForEmployee(Integer employeeId) {
 		LogUtilities.trace("getAvailableReimbursementForEmployee");
 
-		double availableReimburstment = AVAILABLE_REIMBURSEMENT_AMOUNT_PER_YEAR;
+		double availableReimbursement = AVAILABLE_REIMBURSEMENT_AMOUNT_PER_YEAR;
 
 		List<Event> eventsForEmployee = eventDao.getEventsNotDeniedByEmployeeAndYear(employeeId,
 				LocalDate.now().getYear());
 
 		for (Event event : eventsForEmployee) {
 			if (event.getBencoEventStatus() == EventStatus.Pending) {
-				availableReimburstment -= event.getProjectedAmountReimbused();
+				availableReimbursement -= event.getProjectedAmountReimbused();
 
 			} else if (event.getBencoEventStatus() == EventStatus.Approved
 					&& (event.getPassingGradeProvided() == EvaluationResult.Yes
 							|| event.getSuccessfulPresentationProvided() == EvaluationResult.Yes)) {
 
-				availableReimburstment -= event.getAcceptedAmountReimbursed();
+				availableReimbursement -= event.getAcceptedAmountReimbursed();
 			}
 		}
 
-		return availableReimburstment;
+		LogUtilities.trace("Available reimbursement: " + availableReimbursement);
+
+		return availableReimbursement;
 	}
 
 	@Override
@@ -315,6 +317,8 @@ public class EventServiceImpl extends BaseService implements EventService {
 		boolean updated = eventDao.updateEvent(event);
 
 		if (updated) {
+			LogUtilities.trace("Event has been denied");
+
 			ReasonDenied reasonDenied = new ReasonDenied(eventId, reason);
 
 			return reasonDeniedService.addReasonDenied(reasonDenied);
@@ -464,6 +468,24 @@ public class EventServiceImpl extends BaseService implements EventService {
 		return informationRequiredService.addInformationRequired(informationRequired);
 	}
 
+	public void confirmSentOfInformationRequired(Integer eventId, Integer employeeId)
+			throws NotFoundRecordException, IllegalParameterException, PojoValidationException {
+		LogUtilities.trace("confirmSentOfInformationRequired");
+
+		InformationRequired informationRequired = informationRequiredService
+				.getInformationRequiredByEmployeeIdAndEventId(employeeId, eventId);
+
+		if (informationRequired == null) {
+			throw new NotFoundRecordException("We could not found this information.");
+		}
+
+		informationRequired.setProvided(true);
+		
+		informationRequiredService.updateInformationRequired(informationRequired);
+
+		LogUtilities.trace("Confirm the information requested was sent");
+	}
+
 	@Override
 	public boolean autoApproveEvents() {
 		// TODO Auto-generated method stub
@@ -501,6 +523,8 @@ public class EventServiceImpl extends BaseService implements EventService {
 		boolean updated = eventDao.updateEvent(event);
 
 		if (updated) {
+			LogUtilities.trace("Amount change. Saving the reason of the amount change.");
+
 			ReasonExceeding reasonExceeding = reasonExceedingService.getReasonExceedingByEventId(eventId);
 
 			if (reasonExceeding == null) {
@@ -679,11 +703,14 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 		// Getting events
 		List<Event> eventsPendingOfDirectSupervisorApproval = eventDao.getEventsPendingOfDirectSupervisorApproval();
+
 		// Getting employees under this supervisor
 		List<Integer> employeesIdsUnderSup = employeeService.getEmployeesIdsUnderSupervisorId(employeeId);
+		LogUtilities.trace(employeesIdsUnderSup.toString());
 
 		for (Event evt : eventsPendingOfDirectSupervisorApproval) {
 			if (employeesIdsUnderSup.contains(evt.getEmployeeId())) {
+				LogUtilities.trace("Add event: " + evt);
 				events.add(evt);
 			}
 		}

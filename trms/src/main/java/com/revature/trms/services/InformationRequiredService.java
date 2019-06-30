@@ -12,7 +12,12 @@ public interface InformationRequiredService {
 	public boolean addInformationRequired(InformationRequired informationRequired)
 			throws PojoValidationException, PreexistingRecordException, IllegalParameterException;
 
-	public boolean updateInformationRequired(InformationRequired informationRequired) throws PojoValidationException, IllegalParameterException;
-	
-	public List<InformationRequired> getInformationRequiredByEmployeeId(Integer employeeId) throws IllegalParameterException;
+	public boolean updateInformationRequired(InformationRequired informationRequired)
+			throws PojoValidationException, IllegalParameterException;
+
+	public List<InformationRequired> getInformationRequiredByEmployeeId(Integer employeeId)
+			throws IllegalParameterException;
+
+	public InformationRequired getInformationRequiredByEmployeeIdAndEventId(Integer employeeId, Integer eventId)
+			throws IllegalParameterException;
 }
