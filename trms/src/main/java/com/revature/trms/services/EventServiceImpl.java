@@ -6,13 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.revature.trms.daos.EventDAO;
+import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
+import com.revature.trms.exceptions.PreexistingRecordException;
 import com.revature.trms.pojos.Attachment;
+import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.EvaluationResult;
 import com.revature.trms.pojos.Event;
 import com.revature.trms.pojos.EventStatus;
 import com.revature.trms.pojos.EventType;
 import com.revature.trms.pojos.GradingFormat;
+import com.revature.trms.pojos.InformationRequired;
+import com.revature.trms.pojos.ReasonDenied;
+import com.revature.trms.pojos.ReasonExceeding;
 import com.revature.trms.utilities.DAOUtilities;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
@@ -141,45 +148,234 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public boolean approveTuitionReimbursementByDirectSupervisor(Integer eventId, Integer supervisorId) {
-		// TODO Auto-generated method stub
+	public boolean approveTuitionReimbursementByDirectSupervisor(Integer eventId, Integer supervisorId)
+			throws NotFoundRecordException {
+		LogUtilities.trace("approveTuitionReimbursementByDirectSupervisor");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		event.setDsEventStatus(EventStatus.Approved);
+
+		Employee employee = employeeService.getEmployeeById(supervisorId);
+
+		if (employee.getEmployeeTypes().contains(EmployeeType.Head_Department)) {
+			LogUtilities.trace("Direct Supervisor is also a Head Department");
+
+			event.setHdEventStatus(EventStatus.Approved);
+		}
+
+		return eventDao.updateEvent(event);
+	}
+
+	@Override
+	public boolean approveTuitionReimbursementByHeadDepartment(Integer eventId) throws NotFoundRecordException {
+		LogUtilities.trace("approveTuitionReimbursementByHeadDepartment");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			LogUtilities.trace("Event not found");
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		event.setHdEventStatus(EventStatus.Approved);
+
+		return eventDao.updateEvent(event);
+	}
+
+	@Override
+	public boolean approveTuitionReimbursementByBenCo(Integer eventId) throws NotFoundRecordException {
+		LogUtilities.trace("approveTuitionReimbursementByBenCo");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		event.setBencoEventStatus(EventStatus.Approved);
+
+		return eventDao.updateEvent(event);
+	}
+
+	@Override
+	public boolean denyTuitionReimbursementByDirectSupervisor(Integer eventId, String reason)
+			throws NotFoundRecordException, PreexistingRecordException, PojoValidationException {
+		LogUtilities.trace("denyTuitionReimbursementByDirectSupervisor");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		event.setDsEventStatus(EventStatus.Denied);
+		event.setReimbursementStatus(EventStatus.Denied);
+
+		boolean updated = eventDao.updateEvent(event);
+
+		if (updated) {
+			ReasonDenied reasonDenied = new ReasonDenied(eventId, reason);
+
+			return reasonDeniedService.addReasonDenied(reasonDenied);
+		}
+
 		return false;
 	}
 
 	@Override
-	public boolean approveTuitionReimbursementByHeadDepartment(Integer eventId, Integer supervisorId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean denyTuitionReimbursementByHeadDepartment(Integer eventId, String reason)
+			throws NotFoundRecordException, PreexistingRecordException, PojoValidationException {
+		LogUtilities.trace("denyTuitionReimbursementByHeadDepartment");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		event.setHdEventStatus(EventStatus.Denied);
+		event.setReimbursementStatus(EventStatus.Denied);
+
+		return eventDao.updateEvent(event);
 	}
 
 	@Override
-	public boolean approveTuitionReimbursementByBenCo(Integer eventId, Integer supervisorId) {
-		// TODO Auto-generated method stub
+	public boolean denyTuitionReimbursementByBenCo(Integer eventId, String reason)
+			throws NotFoundRecordException, PreexistingRecordException, PojoValidationException {
+		LogUtilities.trace("denyTuitionReimbursementByBenCo");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		event.setBencoEventStatus(EventStatus.Denied);
+		event.setReimbursementStatus(EventStatus.Denied);
+
+		boolean updated = eventDao.updateEvent(event);
+
+		if (updated) {
+			ReasonDenied reasonDenied = new ReasonDenied(eventId, reason);
+
+			return reasonDeniedService.addReasonDenied(reasonDenied);
+		}
+
 		return false;
 	}
 
-	@Override
-	public boolean denyTuitionReimbursementByDirectSupervisor(Integer eventId, Integer supervisorId, String reason) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean requestInformationFromEmployee(Integer eventId, String information, Integer requiredBy)
+			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException {
+		LogUtilities.trace("requestInformationFromEmployee");
+
+		validateInformationRequired(eventId, information, requiredBy);
+
+		LogUtilities.trace("Information required is valid");
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		LogUtilities.trace("Sending request for information.");
+
+		return sendRequestForInformation(eventId, event.getEmployeeId(), information, requiredBy);
 	}
 
 	@Override
-	public boolean denyTuitionReimbursementByHeadDepartment(Integer eventId, Integer supervisorId, String reason) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean requestInformationFromDirectSupervisor(Integer eventId, String information, Integer requiredBy)
+			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException {
+		LogUtilities.trace("requestInformationFromDirectSupervisor");
+
+		validateInformationRequired(eventId, information, requiredBy);
+
+		LogUtilities.trace("Information required is valid");
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		Employee directSupervisor = employeeService.getEmployeeSupervisor(event.getEmployeeId());
+
+		LogUtilities.trace("Sending request for information.");
+
+		return sendRequestForInformation(eventId, directSupervisor.getEmployeeId(), information, requiredBy);
 	}
 
 	@Override
-	public boolean denyTuitionReimbursementByBenCo(Integer eventId, Integer supervisorId, String reason) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean requestInformationFromDepartmentHead(Integer eventId, String information, Integer requiredBy)
+			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException {
+		LogUtilities.trace("requestInformationFromDepartmentHead");
+
+		validateInformationRequired(eventId, information, requiredBy);
+		LogUtilities.trace("Information required is valid");
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		Employee directSupervisor = employeeService.getEmployeeSupervisor(event.getEmployeeId());
+		Employee departHead = employeeService.getEmployeeSupervisor(directSupervisor.getEmployeeId());
+
+		LogUtilities.trace("Sending request for information.");
+
+		return sendRequestForInformation(eventId, departHead.getEmployeeId(), information, requiredBy);
 	}
 
-	@Override
-	public boolean requestAdditionalInformation(Integer fromEmployee, Integer toEmployee, String information) {
-		// TODO Auto-generated method stub
-		return false;
+	private void validateInformationRequired(Integer eventId, String information, Integer requiredBy) {
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		if (requiredBy == null) {
+			throw new IllegalArgumentException("RequireBy should not be empty.");
+		}
+
+		if (information.equals("") || information.isEmpty()) {
+			pojoValidationException.addError("You should provide the information require from this employe.");
+		}
+	}
+
+	private boolean sendRequestForInformation(Integer eventId, Integer employeeId, String information,
+			Integer requiredBy) throws PojoValidationException, PreexistingRecordException {
+		InformationRequired informationRequired = new InformationRequired(eventId, employeeId, information, false,
+				requiredBy);
+
+		return informationRequiredService.addInformationRequired(informationRequired);
 	}
 
 	@Override
@@ -189,33 +385,208 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public boolean changeReimbursementAmount(Integer eventId, double newAmount, String reason) {
-		// TODO Auto-generated method stub
+	public boolean changeReimbursementAmount(Integer eventId, double newAmount, String reason)
+			throws PojoValidationException, NotFoundRecordException, PreexistingRecordException {
+		LogUtilities.trace("changeReimbursementAmount");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		if (newAmount < 0) {
+			LogUtilities.trace("Amount reimburse is negative.");
+
+			pojoValidationException.addError("Amount should not be less than 0.");
+		}
+
+		if (reason.equals("") || reason.isEmpty()) {
+			pojoValidationException.addError("Reason for changin the projected amount is required.");
+		}
+
+		checkValidationResults();
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			LogUtilities.error("Event is null");
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		if (newAmount > getAvailableReimbursementForEmployee(event.getEmployeeId())) {
+			LogUtilities.trace("New amount exceeds available amount for employee");
+			event.setExceedsAvaliableFunds(true);
+		}
+
+		event.setAcceptedAmountReimbursed(newAmount);
+
+		boolean updated = eventDao.updateEvent(event);
+
+		if (updated) {
+			ReasonExceeding reasonExceeding = reasonExceedingService.getReasonExceedingByEventId(eventId);
+
+			if (reasonExceeding == null) {
+				reasonExceeding = new ReasonExceeding(eventId, reason);
+				return reasonExceedingService.addReasonExceeding(reasonExceeding);
+			}
+
+			return reasonExceedingService.updateReasonExceeding(reasonExceeding);
+		}
+
 		return false;
 	}
 
 	@Override
-	public boolean uploadGradeOrPresentation(Integer eventId, Attachment attachment) {
-		// TODO Auto-generated method stub
+	public boolean cancelReimbursementRequest(Integer eventId) throws NotFoundRecordException {
+		LogUtilities.trace("cancelReimbursementRequest");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		event.setCanceledByEmployee(true);
+
+		LogUtilities.trace("Request has been canceled.");
+
+		return eventDao.updateEvent(event);
+	}
+
+	@Override
+	public boolean uploadFinalGrade(Integer eventId, String finalGrade, Attachment attachment)
+			throws NotFoundRecordException, PojoValidationException {
+		LogUtilities.trace("uploadFinalGrade");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		event.setFinalGrade(finalGrade);
+
+		boolean updated = eventDao.updateEvent(event);
+
+		if (updated) {
+			LogUtilities.trace("Final grade has been uploaded.");
+			return attachmentService.addAttachment(attachment);
+		}
+
 		return false;
 	}
 
 	@Override
-	public boolean confirmPassingGrade(Integer eventId) {
-		// TODO Auto-generated method stub
+	public boolean uploadEventPresentation(Integer eventId, Attachment attachment)
+			throws NotFoundRecordException, PojoValidationException {
+		// TODO: Implement add attachment
+		LogUtilities.trace("uploadEventPresentation");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		event.setPresentationUploaded(true);
+
+		boolean updated = eventDao.updateEvent(event);
+
+		if (updated) {
+			LogUtilities.trace("Event presentation has been uploaded.");
+			return attachmentService.addAttachment(attachment);
+		}
+
 		return false;
 	}
 
 	@Override
-	public boolean confirmSuccessfulPresentation(Integer eventId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean confirmPassingGrade(Integer eventId) throws NotFoundRecordException, PojoValidationException {
+		LogUtilities.trace("confirmPassingGrade");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		if (!event.isRequiredPresentation() && !event.getFinalGrade().equals("") || !event.getFinalGrade().isEmpty()) {
+			LogUtilities.trace("Grade has not been provided.");
+			pojoValidationException.addError("A passing grade has not been provided.");
+		}
+
+		checkValidationResults();
+
+		if (event.getAcceptedAmountReimbursed() == 0) {
+			LogUtilities.trace("Awarded amount was not changed. Assigning projected amount.");
+			event.setAcceptedAmountReimbursed(event.getProjectedAmountReimbused());
+		}
+
+		event.setPassingGradeProvided(EvaluationResult.Yes);
+		event.setReimbursementStatus(EventStatus.Approved);
+
+		LogUtilities.trace("Passing grade confirmed.");
+
+		return eventDao.updateEvent(event);
+	}
+
+	@Override
+	public boolean confirmSuccessfulPresentation(Integer eventId)
+			throws NotFoundRecordException, PojoValidationException {
+		LogUtilities.trace("confirmSuccessfulPresentation");
+
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		Event event = eventDao.getEventById(eventId);
+
+		if (event == null) {
+			throw new NotFoundRecordException("Event not found.");
+		}
+
+		if (event.isRequiredPresentation() && !event.isPresentationUploaded()) {
+			LogUtilities.trace("Presentation has not been uploaded.");
+			pojoValidationException.addError("A presentation has not been uploaded.");
+		}
+
+		checkValidationResults();
+
+		if (event.getAcceptedAmountReimbursed() == 0) {
+			LogUtilities.trace("Awarded amount was not changed. Assigning projected amount.");
+			event.setAcceptedAmountReimbursed(event.getProjectedAmountReimbused());
+		}
+
+		event.setSuccessfulPresentationProvided(EvaluationResult.Yes);
+		event.setReimbursementStatus(EventStatus.Approved);
+
+		LogUtilities.trace("Successful presentation was presented.");
+
+		return eventDao.updateEvent(event);
 	}
 
 	@Override
 	public Event getEventById(Integer eventId) {
-		// TODO Auto-generated method stub
-		return null;
+		if (eventId == null) {
+			throw new IllegalArgumentException("EventId should not be empty.");
+		}
+
+		return eventDao.getEventById(eventId);
 	}
 
 	@Override

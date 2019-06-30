@@ -21,10 +21,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.revature.trms.daos.EventDAO;
+import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.ApprovalStage;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.EvaluationResult;
 import com.revature.trms.pojos.Event;
 import com.revature.trms.pojos.EventStatus;
@@ -148,6 +150,7 @@ public class EventServiceImplTest {
 		// Last year
 		ev1Emp12018 = new Event(LocalDate.now().minusYears(1), LocalTime.NOON, "FIU", "Python Course for beginners",
 				500d, "Python is needed to perform my analytics job.", false, "D");
+		ev1Emp12018.setEventId(1);
 
 		ev1Emp12018.setFinalGrade("B");
 		ev1Emp12018.setPresentationUploaded(false);
@@ -172,6 +175,7 @@ public class EventServiceImplTest {
 		// event approved
 		ev1Emp12019Approved = new Event(LocalDate.now().minusMonths(1), LocalTime.NOON, "USF",
 				"Java course for beginners", 300d, "Java is requied for my project.", false, "D");
+		ev1Emp12019Approved.setEventId(2);
 
 		ev1Emp12019Approved.setFinalGrade("A");
 		ev1Emp12019Approved.setPresentationUploaded(false);
@@ -194,6 +198,7 @@ public class EventServiceImplTest {
 		// event pending
 		ev2Emp12019Pending = new Event(LocalDate.now().plusWeeks(4), LocalTime.NOON, "USF",
 				"Java 2 course for beginners", 400d, "Java2 is requied for project improvements.", false, "D");
+		ev2Emp12019Pending.setEventId(3);
 
 		ev2Emp12019Pending.setFinalGrade("");
 		ev2Emp12019Pending.setPresentationUploaded(false);
@@ -216,6 +221,8 @@ public class EventServiceImplTest {
 		// Denied
 		ev3Emp12019Denied = new Event(LocalDate.now().minusMonths(2), LocalTime.NOON, "UCF", "Personal grow", 300d,
 				"Personal grow is important", true, "");
+		ev3Emp12019Denied.setEventId(4);
+
 		ev3Emp12019Denied.setProjectedAmountReimbused(180);
 		ev3Emp12019Denied.setPassingGradeProvided(EvaluationResult.Pending);
 		ev3Emp12019Denied.setSuccessfulPresentationProvided(EvaluationResult.Pending);
@@ -342,8 +349,7 @@ public class EventServiceImplTest {
 	}
 
 	@Test
-	public void completeTuitionReimbursementForm_DSApprovalProvided_ShouldSetsEventStatusToApproved()
-			throws Exception {
+	public void completeTuitionReimbursementForm_DSApprovalProvided_ShouldSetsEventStatusToApproved() throws Exception {
 		// Setting up the data for the test
 		List<Event> eventsNotDenied = new ArrayList<Event>();
 		eventsNotDenied.add(ev1Emp12019Approved);
@@ -379,10 +385,9 @@ public class EventServiceImplTest {
 		assertTrue(EventStatus.Pending == event.getHdEventStatus());
 		assertTrue(EventStatus.Pending == event.getBencoEventStatus());
 	}
-	
+
 	@Test
-	public void completeTuitionReimbursementForm_DHApprovalProvided_ShouldSetsEventStatusToApproved()
-			throws Exception {
+	public void completeTuitionReimbursementForm_DHApprovalProvided_ShouldSetsEventStatusToApproved() throws Exception {
 		// Setting up the data for the test
 		List<Event> eventsNotDenied = new ArrayList<Event>();
 		eventsNotDenied.add(ev1Emp12019Approved);
@@ -421,8 +426,54 @@ public class EventServiceImplTest {
 	}
 
 	@Test
-	public void testApproveTuitionReimbursementByHeadDepartment() {
-		fail("Not yet implemented");
+	public void approveTuitionReimbursementByDirectSupervisor() throws NotFoundRecordException {
+		List<EmployeeType> types = new ArrayList<>();
+		types.add(EmployeeType.Associate);
+
+		ev2Emp12019Pending.setDsEventStatus(EventStatus.Pending);
+		dhEmp.setEmployeeTypes(types);
+
+		// setting up mockito
+		when(eventDao.getEventById(ev2Emp12019Pending.getEventId())).thenReturn(ev2Emp12019Pending);
+		when(eventDao.updateEvent(ev2Emp12019Pending)).thenReturn(true);
+		when(employeeService.getEmployeeById(Mockito.anyInt())).thenReturn(dhEmp);
+
+		boolean result = eventService.approveTuitionReimbursementByDirectSupervisor(ev2Emp12019Pending.getEventId(),
+				emp1.getSupervisorId());
+
+		assertTrue(result);
+		assertTrue(EventStatus.Approved == ev2Emp12019Pending.getDsEventStatus());
+		
+		verify(employeeService).getEmployeeById(Mockito.anyInt());
+		verify(eventDao).getEventById(ev2Emp12019Pending.getEventId());
+		verify(eventDao).updateEvent(ev2Emp12019Pending);
+	}
+
+	@Test
+	public void approveTuitionReimbursementByDirectSupervisor_DSisHD() throws NotFoundRecordException {
+		List<EmployeeType> types = new ArrayList<>();
+		types.add(EmployeeType.Associate);
+		types.add(EmployeeType.Direct_Supervisor);
+		types.add(EmployeeType.Head_Department);
+
+		ev2Emp12019Pending.setDsEventStatus(EventStatus.Pending);
+		dsAndHdEmp.setEmployeeTypes(types);
+
+		// setting up mockito
+		when(eventDao.getEventById(ev2Emp12019Pending.getEventId())).thenReturn(ev2Emp12019Pending);
+		when(eventDao.updateEvent(ev2Emp12019Pending)).thenReturn(true);
+		when(employeeService.getEmployeeById(Mockito.anyInt())).thenReturn(dsAndHdEmp);
+
+		boolean result = eventService.approveTuitionReimbursementByDirectSupervisor(ev2Emp12019Pending.getEventId(),
+				emp1.getSupervisorId());
+
+		assertTrue(result);
+		assertTrue(EventStatus.Approved == ev2Emp12019Pending.getDsEventStatus());
+		assertTrue(EventStatus.Approved == ev2Emp12019Pending.getHdEventStatus());
+		
+		verify(employeeService).getEmployeeById(Mockito.anyInt());
+		verify(eventDao).getEventById(ev2Emp12019Pending.getEventId());
+		verify(eventDao).updateEvent(ev2Emp12019Pending);
 	}
 
 	@Test
