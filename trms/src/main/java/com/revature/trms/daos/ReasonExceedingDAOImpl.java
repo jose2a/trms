@@ -14,7 +14,7 @@ public class ReasonExceedingDAOImpl extends BaseDAO implements ReasonExceedingDA
 
 	@Override
 	public boolean addReasonExceeding(ReasonExceeding reasonExceeding) {
-		LogUtilities.trace("Inserting Reason Exceeding.");
+		LogUtilities.trace("addReasonExceeding.");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null;
@@ -31,7 +31,7 @@ public class ReasonExceedingDAOImpl extends BaseDAO implements ReasonExceedingDA
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error inserting the Reason Exceeding." + e.getMessage());
+			LogUtilities.error("Error. addReasonExceeding. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -41,7 +41,7 @@ public class ReasonExceedingDAOImpl extends BaseDAO implements ReasonExceedingDA
 
 	@Override
 	public boolean updateReasonExceeding(ReasonExceeding reasonExceeding) {
-		LogUtilities.trace("Updating Reason Exceeding.");
+		LogUtilities.trace("updateReasonExceeding.");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null;
@@ -58,7 +58,7 @@ public class ReasonExceedingDAOImpl extends BaseDAO implements ReasonExceedingDA
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error updating the Reason Exceeding." + e.getMessage());
+			LogUtilities.error("Error. updateReasonExceeding. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -68,7 +68,7 @@ public class ReasonExceedingDAOImpl extends BaseDAO implements ReasonExceedingDA
 
 	@Override
 	public ReasonExceeding getReasonExceedingByEventId(Integer eventId) {
-		LogUtilities.trace("Getting Reason Exceeding by event Id. " + eventId);
+		LogUtilities.trace("getReasonExceedingByEventId. " + eventId);
 
 		ReasonExceeding reasonExceeding = null;
 
@@ -90,7 +90,7 @@ public class ReasonExceedingDAOImpl extends BaseDAO implements ReasonExceedingDA
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting Reason Exceeding." + e.getMessage());
+			LogUtilities.error("Error. getReasonExceedingByEventId. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}

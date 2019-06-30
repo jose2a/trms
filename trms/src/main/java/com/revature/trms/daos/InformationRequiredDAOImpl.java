@@ -14,9 +14,11 @@ import com.revature.trms.utilities.ModelMapperUtilities;
 
 public class InformationRequiredDAOImpl extends BaseDAO implements InformationRequiredDAO {
 
+	private String baseSql = "SELECT event_id, employee_id, information, provided, required_by FROM info_required";
+
 	@Override
 	public boolean addInformationRequired(InformationRequired informationRequired) {
-		LogUtilities.trace("Inserting informationRequired.");
+		LogUtilities.trace("addInformationRequired.");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null;
@@ -36,7 +38,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error inserting the informationRequired." + e.getMessage());
+			LogUtilities.error("Error. addInformationRequired." + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -46,7 +48,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 
 	@Override
 	public boolean updateInformationRequired(InformationRequired informationRequired) {
-		LogUtilities.trace("Updating informationRequired.");
+		LogUtilities.trace("updateInformationRequired.");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
@@ -67,7 +69,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error updating the information required." + e.getMessage());
+			LogUtilities.error("Error. updateInformationRequired." + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}
@@ -97,7 +99,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 			while (rs.next()) {
 				InformationRequired informationRequired = new InformationRequired();
 				ModelMapperUtilities.mapRsToInformationRequired(rs, informationRequired);
-				
+
 				informationRequiredList.add(informationRequired);
 			}
 
@@ -112,7 +114,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 
 	@Override
 	public InformationRequired getInformationRequiredByEmployeeIdAndEventId(Integer employeeId, Integer eventId) {
-		LogUtilities.trace("Getting info required by this employee and event. Id Emp " + employeeId);
+		LogUtilities.trace("getInformationRequiredByEmployeeIdAndEventId. " + employeeId);
 
 		InformationRequired informationRequired = null;
 
@@ -121,8 +123,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT event_id, employee_id, information, provided, required_by "
-					+ "FROM info_required WHERE employee_id=? AND event_id=?";
+			String sql = baseSql + " WHERE employee_id=? AND event_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, employeeId);
@@ -136,7 +137,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting info required by this employee." + e.getMessage());
+			LogUtilities.error("Error. getInformationRequiredByEmployeeIdAndEventId" + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}

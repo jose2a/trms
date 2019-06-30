@@ -14,7 +14,7 @@ public class ReasonDeniedDAOImpl extends BaseDAO implements ReasonDeniedDAO {
 
 	@Override
 	public boolean addReasonDenied(ReasonDenied reasonDenied) {
-		LogUtilities.trace("Inserting Reason Denied.");
+		LogUtilities.trace("addReasonDenied.");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null;
@@ -31,7 +31,7 @@ public class ReasonDeniedDAOImpl extends BaseDAO implements ReasonDeniedDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error inserting the Reason Denied." + e.getMessage());
+			LogUtilities.error("Error. addReasonDenied. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -41,7 +41,7 @@ public class ReasonDeniedDAOImpl extends BaseDAO implements ReasonDeniedDAO {
 
 	@Override
 	public boolean updateReasonDenied(ReasonDenied reasonDenied) {
-		LogUtilities.trace("Updating Reason Denied.");
+		LogUtilities.trace("updateReasonDenied.");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null;
@@ -58,7 +58,7 @@ public class ReasonDeniedDAOImpl extends BaseDAO implements ReasonDeniedDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error updating the Reason Denied." + e.getMessage());
+			LogUtilities.error("Error. updateReasonDenied. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -68,7 +68,7 @@ public class ReasonDeniedDAOImpl extends BaseDAO implements ReasonDeniedDAO {
 
 	@Override
 	public ReasonDenied getReasonDeniedByEventId(Integer eventId) {
-		LogUtilities.trace("Getting Reason Denied by event Id. " + eventId);
+		LogUtilities.trace("getReasonDeniedByEventId. " + eventId);
 
 		ReasonDenied reasonDenied = null;
 
@@ -90,7 +90,7 @@ public class ReasonDeniedDAOImpl extends BaseDAO implements ReasonDeniedDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting Reason Denied." + e.getMessage());
+			LogUtilities.error("Error. getReasonDeniedByEventId. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}

@@ -15,9 +15,11 @@ import com.revature.trms.utilities.ModelMapperUtilities;
 
 public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 
+	private String baseSql = "SELECT grading_format_id, from_range, to_range FROM grading_format";
+
 	@Override
 	public boolean addGradingFormat(GradingFormat gradingFormat) {
-		LogUtilities.trace("Inserting grading format.");
+		LogUtilities.trace("addGradingFormat.");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null;
@@ -53,7 +55,7 @@ public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 
 	@Override
 	public GradingFormat getGradingFormatById(Integer gradingFormatId) {
-		LogUtilities.trace("Getting grading format by gradingFormatId " + gradingFormatId);
+		LogUtilities.trace("getGradingFormatById. " + gradingFormatId);
 
 		GradingFormat gradingFormat = null;
 
@@ -62,7 +64,7 @@ public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT grading_format_id, from_range, to_range FROM grading_format WHERE grading_format_id = ?";
+			String sql = baseSql + " WHERE grading_format_id = ?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, gradingFormatId);
@@ -75,7 +77,7 @@ public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting grading Format by id." + e.getMessage());
+			LogUtilities.error("Error. getGradingFormatById. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -85,7 +87,7 @@ public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 
 	@Override
 	public List<GradingFormat> getAllGradingFormats() {
-		LogUtilities.trace("Getting all grading formats.");
+		LogUtilities.trace("getAllGradingFormats.");
 
 		List<GradingFormat> gradingFormats = new ArrayList<>();
 
@@ -94,9 +96,7 @@ public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT grading_format_id, from_range, to_range FROM grading_format";
-
-			ps = conn.prepareStatement(sql);
+			ps = conn.prepareStatement(baseSql);
 
 			rs = ps.executeQuery();
 
@@ -107,7 +107,7 @@ public class GradingFormatDAOImpl extends BaseDAO implements GradingFormatDAO {
 				gradingFormats.add(gradingFormat);
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting grading formats." + e.getMessage());
+			LogUtilities.error("Error. getAllGradingFormats. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
