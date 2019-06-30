@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.revature.trms.daos.EventDAO;
+import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.exceptions.PreexistingRecordException;
@@ -52,15 +53,22 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean completeTuitionReimbursementForm(Event event, String from, String to, List<Attachment> attachments)
-			throws PojoValidationException {
+			throws PojoValidationException, IllegalParameterException {
 
 		LogUtilities.trace("completeTuitionReimbursementForm");
+
+		if (event.getEmployeeId() == null) {
+			throw new IllegalParameterException("completeTuitionReimbursementForm - employeeId should not be empty.");
+		}
 
 		int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent()).getDays();
 
 		LogUtilities.trace("Days before start: " + daysBeforeStartOfEvent);
 
-		validateEvent(event, daysBeforeStartOfEvent, from, to);
+		// Validating the data for the event
+		pojoValException = PojoValidationException.getInstance();
+		validateEvent(event, daysBeforeStartOfEvent, from, to, pojoValException);
+		checkValidationResults(pojoValException);
 
 		double projectedReimbursement = getProjectedReimbursementForEvent(event.getCost(), event.getEventTypeId());
 		LogUtilities.trace("Projected Reimbursement: " + projectedReimbursement);
@@ -88,10 +96,13 @@ public class EventServiceImpl extends BaseService implements EventService {
 		event.setExceedsAvaliableFunds(false);
 		event.setCanceledByEmployee(false);
 
-		// Setting status for grade provided or presentation uploaded
+		// Setting status for passing grade provided or presentation uploaded
 		// This two variables will determine if the event is awarded or not
 		event.setPassingGradeProvided(EvaluationResult.Pending);
 		event.setSuccessfulPresentationProvided(EvaluationResult.Pending);
+
+		// Setting if the event is pending, approve or rejected
+		event.setReimbursementStatus(EventStatus.Pending);
 
 		// Setting approval status
 		event.setDsEventStatus(EventStatus.Pending); // Direct supervisor
@@ -111,42 +122,6 @@ public class EventServiceImpl extends BaseService implements EventService {
 		LogUtilities.error("Event was not added to the system.");
 
 		return false;
-	}
-
-	/**
-	 * Adding attachments to the event.
-	 * 
-	 * @param event       The event
-	 * @param attachments Attachment to add
-	 * @throws PojoValidationException If there are validation errors
-	 */
-	private void addAttachmentsToEvent(Event event, List<Attachment> attachments) throws PojoValidationException {
-		if (attachments.size() > 0) {
-			LogUtilities.trace("There are attachments for this event");
-			// If the employee provided an approval email from a DS or a HD
-			for (Attachment attachment : attachments) {
-				switch (attachment.getDocumentType()) {
-				case Direct_Supervisor_Approval:
-					LogUtilities.trace("Direct Supervisor approval attachment.");
-					event.setDsEventStatus(EventStatus.Approved);
-					break;
-				case Department_Head_Approval:
-					LogUtilities.trace("Department Head approval attachment.");
-					event.setHdEventStatus(EventStatus.Approved);
-					break;
-				default:
-					break;
-				}
-
-				attachment.setEventId(event.getEventId());
-
-				attachmentService.addAttachment(attachment);
-			}
-
-			eventDao.updateEvent(event);
-
-			LogUtilities.trace("Event update with the attachment.");
-		}
 	}
 
 	/**
@@ -172,9 +147,48 @@ public class EventServiceImpl extends BaseService implements EventService {
 		}
 	}
 
+	/**
+	 * Adding attachments to the event.
+	 * 
+	 * @param event       The event
+	 * @param attachments Attachment to add
+	 * @throws PojoValidationException   If there are validation errors
+	 * @throws IllegalParameterException
+	 */
+	private void addAttachmentsToEvent(Event event, List<Attachment> attachments)
+			throws PojoValidationException, IllegalParameterException {
+		if (attachments.size() > 0) {
+			LogUtilities.trace("There are attachments for this event");
+			// If the employee provided an approval email from a DS or a DH
+			for (Attachment attachment : attachments) {
+				switch (attachment.getDocumentType()) {
+				case Direct_Supervisor_Approval:
+					LogUtilities.trace("Direct Supervisor approval attachment.");
+					event.setDsEventStatus(EventStatus.Approved);
+					break;
+				case Department_Head_Approval:
+					LogUtilities.trace("Department Head approval attachment.");
+					event.setHdEventStatus(EventStatus.Approved);
+					break;
+				default:
+					break;
+				}
+
+				attachment.setEventId(event.getEventId());
+
+				attachmentService.addAttachment(attachment);
+			}
+
+			eventDao.updateEvent(event);
+
+			LogUtilities.trace("Event update with the attachment.");
+		}
+	}
+
 	@Override
 	public double getAvailableReimbursementForEmployee(Integer employeeId) {
 		LogUtilities.trace("getAvailableReimbursementForEmployee");
+
 		double availableReimburstment = AVAILABLE_REIMBURSEMENT_AMOUNT_PER_YEAR;
 
 		List<Event> eventsForEmployee = eventDao.getEventsNotDeniedByEmployeeAndYear(employeeId,
@@ -196,7 +210,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public double getProjectedReimbursementForEvent(double cost, Integer eventTypeId) {
+	public double getProjectedReimbursementForEvent(double cost, Integer eventTypeId) throws IllegalParameterException {
 		LogUtilities.trace("getProjectedReimbursementForEvent");
 
 		EventType eventType = eventTypeService.getEventTypeById(eventTypeId);
@@ -209,11 +223,12 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean approveTuitionReimbursementByDirectSupervisor(Integer eventId, Integer supervisorId)
-			throws NotFoundRecordException {
+			throws NotFoundRecordException, IllegalParameterException {
 		LogUtilities.trace("approveTuitionReimbursementByDirectSupervisor");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException(
+					"approveTuitionReimbursementByDirectSupervisor - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -236,11 +251,13 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public boolean approveTuitionReimbursementByHeadDepartment(Integer eventId) throws NotFoundRecordException {
+	public boolean approveTuitionReimbursementByHeadDepartment(Integer eventId)
+			throws NotFoundRecordException, IllegalParameterException {
 		LogUtilities.trace("approveTuitionReimbursementByHeadDepartment");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException(
+					"approveTuitionReimbursementByHeadDepartment - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -256,11 +273,12 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public boolean approveTuitionReimbursementByBenCo(Integer eventId) throws NotFoundRecordException {
+	public boolean approveTuitionReimbursementByBenCo(Integer eventId)
+			throws NotFoundRecordException, IllegalParameterException {
 		LogUtilities.trace("approveTuitionReimbursementByBenCo");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("approveTuitionReimbursementByBenCo - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -276,11 +294,13 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean denyTuitionReimbursementByDirectSupervisor(Integer eventId, String reason)
-			throws NotFoundRecordException, PreexistingRecordException, PojoValidationException {
+			throws NotFoundRecordException, PreexistingRecordException, PojoValidationException,
+			IllegalParameterException {
 		LogUtilities.trace("denyTuitionReimbursementByDirectSupervisor");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException(
+					"denyTuitionReimbursementByDirectSupervisor - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -305,11 +325,13 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean denyTuitionReimbursementByHeadDepartment(Integer eventId, String reason)
-			throws NotFoundRecordException, PreexistingRecordException, PojoValidationException {
+			throws NotFoundRecordException, PreexistingRecordException, PojoValidationException,
+			IllegalParameterException {
 		LogUtilities.trace("denyTuitionReimbursementByHeadDepartment");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException(
+					"denyTuitionReimbursementByHeadDepartment - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -325,12 +347,12 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public boolean denyTuitionReimbursementByBenCo(Integer eventId, String reason)
-			throws NotFoundRecordException, PreexistingRecordException, PojoValidationException {
+	public boolean denyTuitionReimbursementByBenCo(Integer eventId, String reason) throws NotFoundRecordException,
+			PreexistingRecordException, PojoValidationException, IllegalParameterException {
 		LogUtilities.trace("denyTuitionReimbursementByBenCo");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("denyTuitionReimbursementByBenCo - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -354,12 +376,11 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	public boolean requestInformationFromEmployee(Integer eventId, String information, Integer requiredBy)
-			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException {
+			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException,
+			IllegalParameterException {
 		LogUtilities.trace("requestInformationFromEmployee");
 
 		validateInformationRequired(eventId, information, requiredBy);
-
-		LogUtilities.trace("Information required is valid");
 
 		Event event = eventDao.getEventById(eventId);
 
@@ -374,12 +395,11 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean requestInformationFromDirectSupervisor(Integer eventId, String information, Integer requiredBy)
-			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException {
+			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException,
+			IllegalParameterException {
 		LogUtilities.trace("requestInformationFromDirectSupervisor");
 
 		validateInformationRequired(eventId, information, requiredBy);
-
-		LogUtilities.trace("Information required is valid");
 
 		Event event = eventDao.getEventById(eventId);
 
@@ -396,11 +416,11 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean requestInformationFromDepartmentHead(Integer eventId, String information, Integer requiredBy)
-			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException {
+			throws NotFoundRecordException, PojoValidationException, PreexistingRecordException,
+			IllegalParameterException {
 		LogUtilities.trace("requestInformationFromDepartmentHead");
 
 		validateInformationRequired(eventId, information, requiredBy);
-		LogUtilities.trace("Information required is valid");
 
 		Event event = eventDao.getEventById(eventId);
 
@@ -416,22 +436,28 @@ public class EventServiceImpl extends BaseService implements EventService {
 		return sendRequestForInformation(eventId, departHead.getEmployeeId(), information, requiredBy);
 	}
 
-	private void validateInformationRequired(Integer eventId, String information, Integer requiredBy) {
+	private void validateInformationRequired(Integer eventId, String information, Integer requiredBy)
+			throws IllegalParameterException, PojoValidationException {
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("validateInformationRequired - eventId should not be empty");
 		}
 
 		if (requiredBy == null) {
-			throw new IllegalArgumentException("RequireBy should not be empty.");
+			throw new IllegalParameterException("validateInformationRequired - requireBy should not be empty");
 		}
+
+		pojoValException = PojoValidationException.getInstance();
 
 		if (information.equals("") || information.isEmpty()) {
 			pojoValException.addError("You should provide the information require from this employe.");
 		}
+
+		checkValidationResults(pojoValException); // check validation results
 	}
 
 	private boolean sendRequestForInformation(Integer eventId, Integer employeeId, String information,
-			Integer requiredBy) throws PojoValidationException, PreexistingRecordException {
+			Integer requiredBy) throws PojoValidationException, PreexistingRecordException, IllegalParameterException {
+
 		InformationRequired informationRequired = new InformationRequired(eventId, employeeId, information, false,
 				requiredBy);
 
@@ -446,24 +472,17 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean changeReimbursementAmount(Integer eventId, double newAmount, String reason)
-			throws PojoValidationException, NotFoundRecordException, PreexistingRecordException {
+			throws PojoValidationException, NotFoundRecordException, PreexistingRecordException,
+			IllegalParameterException {
 		LogUtilities.trace("changeReimbursementAmount");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("validateInformationRequired - eventId should not be empty");
 		}
 
-		if (newAmount < 0) {
-			LogUtilities.trace("Amount reimburse is negative.");
-
-			pojoValException.addError("Amount should not be less than 0.");
-		}
-
-		if (reason.equals("") || reason.isEmpty()) {
-			pojoValException.addError("Reason for changin the projected amount is required.");
-		}
-
-		checkValidationResults();
+		pojoValException = PojoValidationException.getInstance();
+		validateReimbursementChangeAmount(newAmount, reason, pojoValException);
+		checkValidationResults(pojoValException); // check validation results
 
 		Event event = eventDao.getEventById(eventId);
 
@@ -496,11 +515,12 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public boolean cancelReimbursementRequest(Integer eventId) throws NotFoundRecordException {
+	public boolean cancelReimbursementRequest(Integer eventId)
+			throws NotFoundRecordException, IllegalParameterException {
 		LogUtilities.trace("cancelReimbursementRequest");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("cancelReimbursementRequest - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -518,11 +538,11 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean uploadFinalGrade(Integer eventId, String finalGrade, Attachment attachment)
-			throws NotFoundRecordException, PojoValidationException {
+			throws NotFoundRecordException, PojoValidationException, IllegalParameterException {
 		LogUtilities.trace("uploadFinalGrade");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("uploadFinalGrade - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -545,12 +565,11 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean uploadEventPresentation(Integer eventId, Attachment attachment)
-			throws NotFoundRecordException, PojoValidationException {
-		// TODO: Implement add attachment
+			throws NotFoundRecordException, PojoValidationException, IllegalParameterException {
 		LogUtilities.trace("uploadEventPresentation");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("uploadFinalGrade - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -572,11 +591,12 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public boolean confirmPassingGrade(Integer eventId) throws NotFoundRecordException, PojoValidationException {
+	public boolean confirmPassingGrade(Integer eventId)
+			throws NotFoundRecordException, PojoValidationException, IllegalParameterException {
 		LogUtilities.trace("confirmPassingGrade");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("uploadFinalGrade - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -585,12 +605,9 @@ public class EventServiceImpl extends BaseService implements EventService {
 			throw new NotFoundRecordException("Event not found.");
 		}
 
-		if (!event.isRequiredPresentation() && !event.getFinalGrade().equals("") || !event.getFinalGrade().isEmpty()) {
-			LogUtilities.trace("Grade has not been provided.");
-			pojoValException.addError("A passing grade has not been provided.");
-		}
-
-		checkValidationResults();
+		pojoValException = PojoValidationException.getInstance();
+		validateConfirmPassingGrade(event, pojoValException);
+		checkValidationResults(pojoValException);
 
 		if (event.getAcceptedAmountReimbursed() == 0) {
 			LogUtilities.trace("Awarded amount was not changed. Assigning projected amount.");
@@ -607,11 +624,11 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public boolean confirmSuccessfulPresentation(Integer eventId)
-			throws NotFoundRecordException, PojoValidationException {
+			throws NotFoundRecordException, PojoValidationException, IllegalParameterException {
 		LogUtilities.trace("confirmSuccessfulPresentation");
 
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("confirmSuccessfulPresentation - eventId should not be empty");
 		}
 
 		Event event = eventDao.getEventById(eventId);
@@ -620,12 +637,9 @@ public class EventServiceImpl extends BaseService implements EventService {
 			throw new NotFoundRecordException("Event not found.");
 		}
 
-		if (event.isRequiredPresentation() && !event.isPresentationUploaded()) {
-			LogUtilities.trace("Presentation has not been uploaded.");
-			pojoValException.addError("A presentation has not been uploaded.");
-		}
-
-		checkValidationResults();
+		pojoValException = PojoValidationException.getInstance();
+		validateConfirmSuccessfulPresentation(event, pojoValException);
+		checkValidationResults(pojoValException);
 
 		if (event.getAcceptedAmountReimbursed() == 0) {
 			LogUtilities.trace("Awarded amount was not changed. Assigning projected amount.");
@@ -641,19 +655,24 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public Event getEventById(Integer eventId) {
+	public Event getEventById(Integer eventId) throws IllegalParameterException {
+		LogUtilities.trace("getEventById");
+
 		if (eventId == null) {
-			throw new IllegalArgumentException("EventId should not be empty.");
+			throw new IllegalParameterException("getEventById - eventId should not be empty");
 		}
 
 		return eventDao.getEventById(eventId);
 	}
 
 	@Override
-	public List<Event> getEventsPendingOfDirectSupervisorApproval(Integer employeeId) throws PojoValidationException {
+	public List<Event> getEventsPendingOfDirectSupervisorApproval(Integer employeeId)
+			throws PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("getEventsPendingOfDirectSupervisorApproval");
+
 		if (employeeId == null) {
-			LogUtilities.error("EmployeeId should not be empty.");
-			throw new IllegalArgumentException("EmployeeId should not be empty.");
+			throw new IllegalParameterException(
+					"getEventsPendingOfDirectSupervisorApproval - employeeId should not be empty");
 		}
 
 		List<Event> events = new ArrayList<>();
@@ -673,10 +692,13 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId) throws PojoValidationException {
+	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId)
+			throws PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("getEventsPendingOfDirectSupervisorApproval");
+
 		if (employeeId == null) {
-			LogUtilities.error("EmployeeId should not be empty.");
-			throw new IllegalArgumentException("EmployeeId should not be empty.");
+			throw new IllegalParameterException(
+					"getEventsPendingOfDirectSupervisorApproval - employeeId should not be empty");
 		}
 
 		List<Event> events = new ArrayList<>();
@@ -697,10 +719,12 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval(Integer employeeId)
-			throws PojoValidationException {
+			throws PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("getEventsPendingOfBenefitsCoordinatorApproval");
+
 		if (employeeId == null) {
-			LogUtilities.error("EmployeeId should not be empty.");
-			throw new IllegalArgumentException("EmployeeId should not be empty.");
+			throw new IllegalParameterException(
+					"getEventsPendingOfBenefitsCoordinatorApproval - employeeId should not be empty");
 		}
 
 		List<Event> events = new ArrayList<>();

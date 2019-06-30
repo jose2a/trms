@@ -21,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.revature.trms.daos.EventDAO;
+import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.AttachmentDocType;
@@ -250,7 +251,8 @@ public class EventServiceImplTest {
 	}
 
 	@Test
-	public void completeTuitionReimbursementForm_InfoCorrect_ShouldReturnTrue() throws PojoValidationException {
+	public void completeTuitionReimbursementForm_InfoCorrect_ShouldReturnTrue()
+			throws PojoValidationException, IllegalParameterException {
 		// Setting up the data for the test
 		List<Event> eventsNotDenied = new ArrayList<Event>();
 		eventsNotDenied.add(ev1Emp12019Approved);
@@ -282,7 +284,7 @@ public class EventServiceImplTest {
 
 	@Test
 	public void completeTuitionReimbursementForm_ProjectedAmtExceeds_EventShouldAdjust()
-			throws PojoValidationException {
+			throws PojoValidationException, IllegalParameterException {
 		// Setting up the data for the test
 		List<Event> eventsNotDenied = new ArrayList<Event>();
 		eventsNotDenied.add(ev1Emp12019Approved);
@@ -423,7 +425,7 @@ public class EventServiceImplTest {
 	}
 
 	@Test
-	public void approveTuitionReimbursementByDirectSupervisor() throws NotFoundRecordException {
+	public void approveTuitionReimbursementByDirectSupervisor() throws NotFoundRecordException, IllegalParameterException {
 		List<EmployeeType> types = new ArrayList<>();
 		types.add(EmployeeType.Associate);
 
@@ -447,7 +449,8 @@ public class EventServiceImplTest {
 	}
 
 	@Test
-	public void approveTuitionReimbursementByDirectSupervisor_DSisHD() throws NotFoundRecordException {
+	public void approveTuitionReimbursementByDirectSupervisor_DSisHD()
+			throws NotFoundRecordException, IllegalParameterException {
 		List<EmployeeType> types = new ArrayList<>();
 		types.add(EmployeeType.Associate);
 		types.add(EmployeeType.Direct_Supervisor);

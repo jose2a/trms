@@ -13,13 +13,14 @@ import com.revature.trms.utilities.LogUtilities;
 public abstract class BaseService {
 
 	/**
-	 * Saves validation errors in a list inside the exception so that we can throw it
-	 * after validating everything we need
+	 * Saves validation errors in a list inside the exception so that we can throw
+	 * it after validating everything we need
 	 */
 	protected PojoValidationException pojoValException;
-	
+
 	/**
-	 * Checking if we have validation errors, if we have them we throw them. Convenience method.
+	 * Checking if we have validation errors, if we have them we throw them.
+	 * Convenience method.
 	 * 
 	 * @throws PojoValidationException
 	 */
@@ -28,7 +29,7 @@ public abstract class BaseService {
 			throw validationException;
 		}
 	}
-	
+
 	/**
 	 * Validates an attachment properties.
 	 * 
@@ -64,16 +65,16 @@ public abstract class BaseService {
 		if (employee.getLastName() == null || employee.getLastName().isEmpty()) {
 			validationException.addError("Last Name should not be empty.");
 		}
-		
-		if (employee.getEmail() == null  || employee.getEmail().isEmpty()) {
+
+		if (employee.getEmail() == null || employee.getEmail().isEmpty()) {
 			validationException.addError("Email should not be empty.");
 		}
-		
+
 		validateEmployeePassword(employee.getPassword(), validationException);
 
 		validateSupervisorId(employee.getSupervisorId(), validationException);
 	}
-	
+
 	/**
 	 * Validating employee username.
 	 * 
@@ -95,7 +96,7 @@ public abstract class BaseService {
 			validationException.addError("Supervisor should be selected.");
 		}
 	}
-	
+
 	/**
 	 * Validating employee password.
 	 * 
@@ -127,7 +128,8 @@ public abstract class BaseService {
 	 * 
 	 * @param informationRequired The information required
 	 */
-	protected void validateInformationRequired(InformationRequired informationRequired, PojoValidationException validationException) {
+	protected void validateInformationRequired(InformationRequired informationRequired,
+			PojoValidationException validationException) {
 
 		if (informationRequired.getInformation().equals("") || informationRequired.getInformation().isEmpty()) {
 			validationException.addError("Please provide the information.");
@@ -151,7 +153,8 @@ public abstract class BaseService {
 	 * 
 	 * @param reasonExceeding The reason exceeding
 	 */
-	protected void validateReasonExceeding(ReasonExceeding reasonExceeding, PojoValidationException validationException) {
+	protected void validateReasonExceeding(ReasonExceeding reasonExceeding,
+			PojoValidationException validationException) {
 
 		if (reasonExceeding.getReason().equals("") || reasonExceeding.getReason().isEmpty()) {
 			validationException.addError("Please provide the reason why the amount for this request was exceeding.");
@@ -166,51 +169,77 @@ public abstract class BaseService {
 	 * @param from                   Grade range (from)
 	 * @param to                     Grade range (to)
 	 */
-	protected void validateEvent(Event event, int daysBeforeStartOfEvent, String from, String to, PojoValidationException validationException) {
-		if (event.getEmployeeId() == null) {
-			throw new IllegalArgumentException("EmployeeId should not be empty.");
-		}
+	protected void validateEvent(Event event, int daysBeforeStartOfEvent, String from, String to,
+			PojoValidationException validationException) {
 
 		if (event.getDateOfEvent() == null) {
-			pojoValException.addError("Date of the event is required.");
+			validationException.addError("Date of the event is required.");
 		}
 
 		if (event.getTimeOfEvent() == null) {
-			pojoValException.addError("Time of the event is required.");
+			validationException.addError("Time of the event is required.");
 		}
 
 		if (event.getLocation().equals("") || event.getLocation().isEmpty()) {
-			pojoValException.addError("Location of the event is required.");
+			validationException.addError("Location of the event is required.");
 		}
 
 		if (event.getDescription().equals("") || event.getDescription().isEmpty()) {
-			pojoValException.addError("Description of the event is required.");
+			validationException.addError("Description of the event is required.");
 		}
 
 		if (event.getCost() <= 0) {
-			pojoValException.addError("Cost of the event should be greater than 0.");
+			validationException.addError("Cost of the event should be greater than 0.");
+		}
+
+		if (event.getEventTypeId() == null) {
+			validationException.addError("You should select the type of event.");
 		}
 
 		if (event.getGradingFormatId() == null) {
 			if (from.equals("") || from.isEmpty() || (to.equals("") || to.isEmpty())) {
 				LogUtilities.trace("The employee did not provide a gradding format or the grade for this event.");
-				pojoValException.addError("You should select a grading format or enter a grading range [from - to].");
+				validationException
+						.addError("You should select a grading format or enter a grading range [from - to].");
 			}
 		}
 
-		if (event.getEventTypeId() == null) {
-			pojoValException.addError("You should select the type of event.");
-		}
-
 		if (event.getWorkJustification().equals("") || event.getWorkJustification().isEmpty()) {
-			pojoValException.addError("Work-related justification is required.");
+			validationException.addError("Work-related justification is required.");
 		}
 
 		if (daysBeforeStartOfEvent < 7) {
 			LogUtilities.trace("Event is less than a week from begin.");
 
-			pojoValException.addError("Your request could not be proccessed.\n"
+			validationException.addError("Your request could not be proccessed.\n"
 					+ "You must complete the Tuition Reimbursement form one week prior to the start of the event.");
+		}
+	}
+
+	protected void validateReimbursementChangeAmount(double newAmount, String reason,
+			PojoValidationException validationException) {
+		if (newAmount < 0) {
+			LogUtilities.trace("Amount reimburse is negative.");
+
+			validationException.addError("Amount should not be less than 0.");
+		}
+
+		if (reason.equals("") || reason.isEmpty()) {
+			validationException.addError("Reason for changin the projected amount is required.");
+		}
+	}
+
+	protected void validateConfirmPassingGrade(Event event, PojoValidationException validationException) {
+		if (!event.isRequiredPresentation() && !event.getFinalGrade().equals("") || !event.getFinalGrade().isEmpty()) {
+			LogUtilities.trace("Grade has not been provided.");
+			validationException.addError("A passing grade has not been provided.");
+		}
+	}
+
+	protected void validateConfirmSuccessfulPresentation(Event event, PojoValidationException validationException) {
+		if (event.isRequiredPresentation() && !event.isPresentationUploaded()) {
+			LogUtilities.trace("Presentation has not been uploaded.");
+			pojoValException.addError("A presentation has not been uploaded.");
 		}
 	}
 
