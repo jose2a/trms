@@ -15,9 +15,12 @@ import com.revature.trms.utilities.ModelMapperUtilities;
 
 public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
+	private String baseSql = "SELECT attachment_id, file_name, date_submitted, approval_doc,"
+			+ " file_content, approval_stage_id, event_id FROM attachment";
+
 	@Override
 	public boolean addAttachment(Attachment attachment) {
-		LogUtilities.trace("Inserting attachment.");
+		LogUtilities.trace("addAttachment");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null;
@@ -37,11 +40,11 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 			if (ps.executeUpdate() != 0) {
 				LogUtilities.trace("Attachment inserted.");
-				
+
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error adding the attachment." + e.getMessage());
+			LogUtilities.error("Error. addAttachment. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -51,7 +54,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 	@Override
 	public boolean deleteAttachment(int attachmentId) {
-		LogUtilities.trace("Deleting attachment: " + attachmentId);
+		LogUtilities.trace("deleteAttachment. " + attachmentId);
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
@@ -68,7 +71,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error deleting the attachment." + e.getMessage());
+			LogUtilities.error("Error. deleteAttachment. " + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}
@@ -78,7 +81,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 	@Override
 	public Attachment getAttachmentById(int attachmentId) {
-		LogUtilities.trace("Getting attachment by attachmentId " + attachmentId);
+		LogUtilities.trace("getAttachmentById. " + attachmentId);
 
 		Attachment attachment = null;
 
@@ -87,8 +90,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT attachment_id, file_name, date_submitted, approval_doc, file_content, approval_stage_id, event_id "
-					+ "FROM attachment WHERE attachment_id = ?";
+			String sql = baseSql + " FROM attachment WHERE attachment_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, attachmentId);
@@ -101,7 +103,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting attachment by id." + e.getMessage());
+			LogUtilities.error("Error. getAttachmentById. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -111,7 +113,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 	@Override
 	public List<Attachment> getAttachmentsByEventId(int eventId) {
-		LogUtilities.trace("Getting attachments by eventId " + eventId);
+		LogUtilities.trace("getAttachmentsByEventId. " + eventId);
 
 		List<Attachment> attachments = new ArrayList<>();
 
@@ -120,8 +122,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT attachment_id, file_name, date_submitted, approval_doc, file_content, approval_stage_id, event_id "
-					+ "FROM attachment WHERE event_id = ?";
+			String sql = baseSql + " FROM attachment WHERE event_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, eventId);
@@ -131,12 +132,12 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 			while (rs.next()) {
 				Attachment attachment = new Attachment();
 				ModelMapperUtilities.mapRsToAttachment(rs, attachment);
-				
+
 				attachments.add(attachment);
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting attachment by eventId." + e.getMessage());
+			LogUtilities.error("Error. getAttachmentsByEventId. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}

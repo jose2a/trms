@@ -12,22 +12,21 @@ public interface EmployeeDAO {
 	public boolean deleteEmployee(int employeeId);
 
 	public Employee getEmployeeById(int employeeId);
-	
+
 	public Employee getEmployeeByUsername(String username);
 
 	public Employee getEmployeeByUsernameAndPassword(String username, String password);
-	
+
 	public Employee getEmployeeSupervisor(Integer employeeId);
 
 	public List<Employee> getAllEmployees();
-	
+
 	public List<Employee> getAllSupervisors();
-	
+
 	public List<Employee> getEmployeesUnderSupervisorId(int supervisorId);
-	
+
 	public List<Integer> getEmployeesIdsUnderSupervisorId(int supervisorId);
-	
+
 	public List<Integer> getEmployeesUnderSupervisorIdList(List<Integer> employeeListIds);
-	
 
 }

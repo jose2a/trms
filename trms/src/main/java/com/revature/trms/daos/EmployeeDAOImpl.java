@@ -19,24 +19,22 @@ import com.revature.trms.utilities.ModelMapperUtilities;
 
 public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
+	private String baseSql = "SELECT employee_id, username, password, first_name, last_name, supervisor_id, email FROM employee e";
+
 	@Override
 	public boolean addEmployee(Employee employee) {
-		LogUtilities.trace("Inserting employee.");
+		LogUtilities.trace("addEmployee.");
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 		ResultSet rs = null;
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
-			String sql = "INSERT INTO employee(username, password, first_name, last_name, supervisor_id) "
-					+ "VALUES (?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO employee(username, password, first_name, last_name, supervisor_id)"
+					+ " VALUES (?, ?, ?, ?, ?)";
 
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-			ps.setString(1, employee.getUsername());
-			ps.setString(2, employee.getPassword());
-			ps.setString(3, employee.getFirstName());
-			ps.setString(4, employee.getLastName());
-			ps.setInt(5, employee.getSupervisorId());
+			mapEmployeeToRS(employee, ps);
 
 			if (ps.executeUpdate() != 0) {
 				rs = ps.getGeneratedKeys();
@@ -47,11 +45,11 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 					employee.setEmployeeId(rs.getInt(1));
 				}
 
-				LogUtilities.trace("Employee inserted Id: " + employee.getEmployeeId().toString());
+				LogUtilities.trace("Employee inserted Id: " + employee.getEmployeeId());
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error adding the employee." + e.getMessage());
+			LogUtilities.error("Error. addEmployee. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -61,21 +59,17 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public boolean updateEmployee(Employee employee) {
-		LogUtilities.trace("Updating employee: " + employee.getEmployeeId().toString());
+		LogUtilities.trace("updateEmployee. " + employee.getEmployeeId());
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
-			String sql = "UPDATE employee " + "SET username=?, password=?, first_name=?, last_name=?, supervisor_id=?"
+			String sql = "UPDATE employee SET username=?, password=?, first_name=?, last_name=?, supervisor_id=?"
 					+ "WHERE employee_id=?";
 
 			ps = conn.prepareStatement(sql);
 
-			ps.setString(1, employee.getUsername());
-			ps.setString(2, employee.getPassword());
-			ps.setString(3, employee.getFirstName());
-			ps.setString(4, employee.getLastName());
-			ps.setInt(5, employee.getSupervisorId());
+			mapEmployeeToRS(employee, ps);
 			ps.setInt(6, employee.getEmployeeId());
 
 			if (ps.executeUpdate() != 0) {
@@ -84,7 +78,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error updating the employee." + e.getMessage());
+			LogUtilities.error("Error. updateEmployee. " + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}
@@ -92,9 +86,17 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 		return false;
 	}
 
+	private void mapEmployeeToRS(Employee employee, PreparedStatement ps) throws SQLException {
+		ps.setString(1, employee.getUsername());
+		ps.setString(2, employee.getPassword());
+		ps.setString(3, employee.getFirstName());
+		ps.setString(4, employee.getLastName());
+		ps.setInt(5, employee.getSupervisorId());
+	}
+
 	@Override
 	public boolean deleteEmployee(int employeeId) {
-		LogUtilities.trace("Deleting employee: " + employeeId);
+		LogUtilities.trace("deleteEmployee. " + employeeId);
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
@@ -111,7 +113,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			LogUtilities.error("Error deleting the employee." + e.getMessage());
+			LogUtilities.error("deleteEmployee. " + e.getMessage());
 		} finally {
 			closeResources(null, ps, null);
 		}
@@ -121,7 +123,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public Employee getEmployeeById(int employeeId) {
-		LogUtilities.trace("Getting employee by employeeId " + employeeId);
+		LogUtilities.trace("getEmployeeById. " + employeeId);
 
 		Employee employee = null;
 
@@ -130,7 +132,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id FROM employee WHERE employee_id=?";
+			String sql = baseSql + " WHERE employee_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, employeeId);
@@ -143,7 +145,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting employee by id." + e.getMessage());
+			LogUtilities.error("getEmployeeById. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -153,7 +155,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public Employee getEmployeeByUsername(String username) {
-		LogUtilities.trace("Getting employee by username " + username);
+		LogUtilities.trace("getEmployeeByUsername. " + username);
 
 		Employee employee = null;
 
@@ -162,7 +164,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id FROM employee WHERE username = ?";
+			String sql = baseSql + " WHERE username=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, username);
@@ -175,7 +177,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting employee by username." + e.getMessage());
+			LogUtilities.error("Error. getEmployeeByUsername. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -185,7 +187,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public Employee getEmployeeByUsernameAndPassword(String username, String password) {
-		LogUtilities.trace("Getting employee by username and password.");
+		LogUtilities.trace("getEmployeeByUsernameAndPassword.");
 
 		Employee employee = null;
 
@@ -194,7 +196,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id FROM employee WHERE username=? AND password=?";
+			String sql = baseSql + " WHERE username=? AND password=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, username);
@@ -208,7 +210,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting employee by username and password." + e.getMessage());
+			LogUtilities.error("Error. getEmployeeByUsernameAndPassword. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -218,7 +220,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public List<Employee> getAllEmployees() {
-		LogUtilities.trace("Getting all the employees.");
+		LogUtilities.trace("getAllEmployees.");
 
 		List<Employee> employees = new ArrayList<>();
 
@@ -227,9 +229,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id FROM employee";
-
-			ps = conn.prepareStatement(sql);
+			ps = conn.prepareStatement(baseSql);
 
 			rs = ps.executeQuery();
 
@@ -241,7 +241,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting all employees." + e.getMessage());
+			LogUtilities.error("Error. getAllEmployees. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -251,7 +251,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public List<Employee> getAllSupervisors() {
-		LogUtilities.trace("Getting employees that are supervisors.");
+		LogUtilities.trace("getAllSupervisors.");
 
 		Set<Employee> supervisors = new HashSet<>();
 
@@ -260,9 +260,9 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT e.employee_id, username, first_name, last_name, supervisor_id "
-					+ "FROM employee e inner join employee_employee_type et " + "On e.employee_id = et.employee_id "
-					+ "WHERE et.employee_type_id IN (?, ?)";
+			String sql = "SELECT e.employee_id, username, first_name, last_name, email, password, supervisor_id"
+					+ " FROM employee e inner join employee_employee_type et On e.employee_id = et.employee_id"
+					+ " WHERE et.employee_type_id IN (?, ?)";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, EmployeeType.Direct_Supervisor.getValue());
@@ -278,7 +278,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting employees that are supervisors." + e.getMessage());
+			LogUtilities.error("Error. getAllSupervisors. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -288,7 +288,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public List<Employee> getEmployeesUnderSupervisorId(int supervisorId) {
-		LogUtilities.trace("Getting employees under supervisor with id " + supervisorId);
+		LogUtilities.trace("getEmployeesUnderSupervisorId. " + supervisorId);
 
 		List<Employee> employees = new ArrayList<>();
 
@@ -297,8 +297,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_id, username, first_name, last_name, supervisor_id " + "FROM employee e "
-					+ "WHERE e.supervisor_id = ?";
+			String sql = baseSql + " WHERE e.supervisor_id = ?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, supervisorId);
@@ -313,7 +312,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting employees under supervisor." + e.getMessage());
+			LogUtilities.error("Error. getEmployeesUnderSupervisorId. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -323,7 +322,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public List<Integer> getEmployeesIdsUnderSupervisorId(int supervisorId) {
-		LogUtilities.trace("Getting employees ids that are under supervisor. Id " + supervisorId);
+		LogUtilities.trace("getEmployeesIdsUnderSupervisorId. " + supervisorId);
 
 		List<Integer> employeeIds = new ArrayList<>();
 
@@ -332,7 +331,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT employee_id " + "FROM employee e " + "WHERE e.supervisor_id=?";
+			String sql = "SELECT employee_id FROM employee e WHERE e.supervisor_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, supervisorId);
@@ -345,7 +344,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting employees ids that are under supervisor." + e.getMessage());
+			LogUtilities.error("Error. getEmployeesIdsUnderSupervisorId. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -355,7 +354,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public Employee getEmployeeSupervisor(Integer employeeId) {
-		LogUtilities.trace("Getting supervisor for employee with id " + employeeId);
+		LogUtilities.trace("getEmployeeSupervisor. " + employeeId);
 
 		Employee employee = null;
 
@@ -379,7 +378,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting employee's supervisor. " + e.getMessage());
+			LogUtilities.error("Error. getEmployeeSupervisor. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
@@ -389,7 +388,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 	@Override
 	public List<Integer> getEmployeesUnderSupervisorIdList(List<Integer> employeeListIds) {
-		LogUtilities.trace("Getting employees ids that are under supervisor Id lists.");
+		LogUtilities.trace("getEmployeesUnderSupervisorIdList.");
 
 		List<Integer> employeeIds = new ArrayList<>();
 
@@ -420,7 +419,7 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			LogUtilities.error("Error getting employees ids that are under supervisor list." + e.getMessage());
+			LogUtilities.error("Error. getEmployeesUnderSupervisorIdList. " + e.getMessage());
 		} finally {
 			closeResources(rs, ps, null);
 		}
