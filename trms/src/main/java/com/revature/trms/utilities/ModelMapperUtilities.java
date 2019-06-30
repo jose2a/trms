@@ -3,7 +3,7 @@ package com.revature.trms.utilities;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.revature.trms.pojos.ApprovalStage;
+import com.revature.trms.pojos.AttachmentApprovalType;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EvaluationResult;
@@ -24,7 +24,7 @@ public class ModelMapperUtilities {
 		attachment.setDateSubmitted(rs.getDate("date_submitted").toLocalDate());
 		attachment.setApprovalDoc(rs.getBoolean("approval_doc"));
 		attachment.setFileContent(rs.getBytes("file_content"));
-		attachment.setApprovalStage(ApprovalStage.valueOf(rs.getInt("approval_stage_id")));
+		attachment.setApprovalStage(AttachmentApprovalType.valueOf(rs.getInt("approval_stage_id")));
 		attachment.setEventId(rs.getInt("event_id"));
 	}
 

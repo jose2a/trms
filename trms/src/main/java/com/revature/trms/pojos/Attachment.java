@@ -11,7 +11,7 @@ public class Attachment {
 	private LocalDate dateSubmitted;
 	private boolean isApprovalDoc;
 	private byte[] fileContent;
-	private ApprovalStage approvalStage;
+	private AttachmentApprovalType approvalStage;
 	
 	private Integer eventId;
 
@@ -20,7 +20,7 @@ public class Attachment {
 	}
 
 	public Attachment(String fileName, LocalDate dateSubmitted, boolean isApprovalDoc, byte[] fileContent,
-			ApprovalStage approvalStage, int eventId) {
+			AttachmentApprovalType approvalStage, int eventId) {
 		super();
 		this.fileName = fileName;
 		this.dateSubmitted = dateSubmitted;
@@ -70,11 +70,11 @@ public class Attachment {
 		this.fileContent = fileContent;
 	}
 
-	public ApprovalStage getApprovalStage() {
+	public AttachmentApprovalType getApprovalStage() {
 		return approvalStage;
 	}
 
-	public void setApprovalStage(ApprovalStage approvalStage) {
+	public void setApprovalStage(AttachmentApprovalType approvalStage) {
 		this.approvalStage = approvalStage;
 	}
 
