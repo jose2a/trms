@@ -71,6 +71,16 @@
   </servlet-mapping>
   <servlet>
     <description></description>
+    <display-name>EventByEmployeeIdServlet</display-name>
+    <servlet-name>EventByEmployeeIdServlet</servlet-name>
+    <servlet-class>com.revature.trms.servlets.EventByEmployeeIdServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EventByEmployeeIdServlet</servlet-name>
+    <url-pattern>/event/employee/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
     <display-name>EventTypeServlet</display-name>
     <servlet-name>EventTypeServlet</servlet-name>
     <servlet-class>com.revature.trms.servlets.EventTypeServlet</servlet-class>
