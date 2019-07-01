@@ -78,9 +78,13 @@ public abstract class BaseServlet extends HttpServlet {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 
-		pathInfoParts = request.getPathInfo().split("/");
+		if (request.getPathInfo() != null) {
+			pathInfoParts = request.getPathInfo().split("/");
+		} else {
+			pathInfoParts = new String[0];
+		}
 
-		LogUtilities.trace("Path info parts: " + String.join("", pathInfoParts));
+		LogUtilities.trace("Path info parts: " + String.join(", ", pathInfoParts));
 
 		doGetMethodImpl.get(request, response);
 	}

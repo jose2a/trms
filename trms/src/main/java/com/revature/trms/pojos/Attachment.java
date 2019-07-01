@@ -9,6 +9,7 @@ public class Attachment {
 	private String fileName;
 	private LocalDate dateSubmitted;
 	private byte[] fileContent;
+	private String contentType;
 	private AttachmentDocType documentType;
 
 	private Integer eventId;
@@ -17,12 +18,11 @@ public class Attachment {
 		super();
 	}
 
-	public Attachment(String fileName, LocalDate dateSubmitted, byte[] fileContent, AttachmentDocType documentType,
+	public Attachment(String fileName, LocalDate dateSubmitted, AttachmentDocType documentType,
 			int eventId) {
 		super();
 		this.fileName = fileName;
 		this.dateSubmitted = dateSubmitted;
-		this.fileContent = fileContent;
 		this.documentType = documentType;
 		this.eventId = eventId;
 	}
@@ -57,6 +57,14 @@ public class Attachment {
 
 	public void setFileContent(byte[] fileContent) {
 		this.fileContent = fileContent;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	public AttachmentDocType getDocumentType() {

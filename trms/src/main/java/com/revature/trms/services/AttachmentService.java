@@ -10,7 +10,7 @@ public interface AttachmentService {
 
 	public boolean addAttachment(Attachment attachment) throws PojoValidationException, IllegalParameterException;
 
-	public Attachment getAttachmentById(Integer attachmentId) throws PojoValidationException, IllegalParameterException;
+	public Attachment getAttachmentById(Integer attachmentId) throws IllegalParameterException;
 
 	public List<Attachment> getAttachmentsByEventId(Integer eventId) throws IllegalParameterException;
 }

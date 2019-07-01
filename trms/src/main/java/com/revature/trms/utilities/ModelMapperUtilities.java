@@ -25,6 +25,7 @@ public class ModelMapperUtilities {
 		attachment.setFileContent(rs.getBytes("file_content")); // file_content
 		attachment.setDocumentType(AttachmentDocType.valueOf(rs.getInt("attachment_type_id"))); // attachment_type_id
 		attachment.setEventId(rs.getInt("event_id")); // event_id
+		attachment.setContentType(rs.getString("content_type"));
 	}
 
 	// Mapping ResultSet to Employee
