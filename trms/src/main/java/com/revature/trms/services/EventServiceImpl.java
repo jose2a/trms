@@ -827,4 +827,18 @@ public class EventServiceImpl extends BaseService implements EventService {
 		return events;
 	}
 
+	@Override
+	public List<Event> getEventsByEmployeeId(Integer employeeId) throws IllegalParameterException {
+		LogUtilities.trace("getEventsByEmployeeId");
+
+		if (employeeId == null) {
+			throw new IllegalParameterException(
+					"getEventsByEmployeeId - employeeId should not be empty");
+		}
+
+		List<Event> events = null;// = eventDao.getEventById(employeeId);
+
+		return events;
+	}
+
 }

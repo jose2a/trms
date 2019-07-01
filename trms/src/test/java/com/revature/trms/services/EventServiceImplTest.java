@@ -222,10 +222,11 @@ public class EventServiceImplTest {
 		ev3Emp12019Denied.setHdEventStatus(EventStatus.Pending);
 		ev3Emp12019Denied.setBencoEventStatus(EventStatus.Pending);
 
-		attPDF = new Attachment("pdf.png", LocalDate.now().plusDays(15), null, null, newEventId);
-		attDSApproval = new Attachment("dsApp.png", LocalDate.now().plusDays(15), null,
+		attPDF = new Attachment("pdf.png", LocalDate.now().plusDays(15), AttachmentDocType.Direct_Supervisor_Approval,
+				newEventId);
+		attDSApproval = new Attachment("dsApp.png", LocalDate.now().plusDays(15),
 				AttachmentDocType.Direct_Supervisor_Approval, newEventId);
-		attHDAppr = new Attachment("hdApp.png", LocalDate.now().plusDays(15), null,
+		attHDAppr = new Attachment("hdApp.png", LocalDate.now().plusDays(15),
 				AttachmentDocType.Department_Head_Approval, newEventId);
 	}
 
@@ -516,7 +517,7 @@ public class EventServiceImplTest {
 
 		eventService.changeReimbursementAmount(ev2Emp12019Pending.getEventId(), 800,
 				"This would benefit the business.");
-		
+
 		assertTrue(ev2Emp12019Pending.getAcceptedAmountReimbursed() == 800);
 
 		verify(eventDao).getEventById(ev2Emp12019Pending.getEventId());
@@ -535,17 +536,17 @@ public class EventServiceImplTest {
 		events.add(ev2Emp12019Pending);
 		ev3Emp12019Denied.setEmployeeId(emp2.getEmployeeId());
 		events.add(ev3Emp12019Denied);
-		
+
 		List<Integer> empIds = new ArrayList<>();
 		empIds.add(6);
-		
+
 		when(eventDao.getEventsPendingOfDirectSupervisorApproval()).thenReturn(events);
 		when(employeeService.getEmployeesIdsUnderSupervisorId(Mockito.anyInt())).thenReturn(empIds);
-		
+
 		List<Event> result = eventService.getEventsPendingOfDirectSupervisorApproval(emp1.getSupervisorId());
-		
+
 		assertEquals(2, result.size());
-		
+
 		verify(eventDao).getEventsPendingOfDirectSupervisorApproval();
 		verify(employeeService).getEmployeesIdsUnderSupervisorId(Mockito.anyInt());
 	}

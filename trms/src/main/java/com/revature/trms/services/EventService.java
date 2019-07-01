@@ -80,6 +80,8 @@ public interface EventService {
 			throws NotFoundRecordException, PojoValidationException, IllegalParameterException;
 
 	public Event getEventById(Integer eventId) throws IllegalParameterException;
+	
+	public List<Event> getEventsByEmployeeId(Integer employeeId) throws IllegalParameterException;
 
 	public List<Event> getEventsPendingOfDirectSupervisorApproval(Integer employeeId)
 			throws PojoValidationException, IllegalParameterException;

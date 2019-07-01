@@ -157,6 +157,43 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 		return event;
 	}
+	
+	@Override
+	public List<Event> getEventsByEmployeeId(Integer employeeId) {
+		LogUtilities.trace("getEventsByEmployeeId.");
+
+		List<Event> events = new ArrayList<>();
+
+		PreparedStatement ps = null; // Creates the prepared statement from the query
+		ResultSet rs = null; // Queries the database
+
+		try (Connection conn = ConnectionUtilities.getConnection();) {
+
+			String sql = selectQuery + " WHERE employee_id = ?";
+
+			LogUtilities.trace(sql);
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, employeeId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				Event event = new Event();
+				ModelMapperUtilities.mapRsToEvent(rs, event);
+
+				events.add(event);
+			}
+
+		} catch (SQLException e) {
+			LogUtilities.error("Error. getEventsByEmployeeId. " + e.getMessage());
+		} finally {
+			closeResources(rs, ps, null);
+		}
+
+		return events;
+	}
 
 	@Override
 	public List<Event> getEventsNotDeniedByEmployeeAndYear(Integer employeeId, int year) {

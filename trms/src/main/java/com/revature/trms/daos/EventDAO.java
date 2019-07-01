@@ -14,6 +14,8 @@ public interface EventDAO {
 
 	public Event getEventById(int eventId);
 	
+	public List<Event> getEventsByEmployeeId(Integer employeeId);
+	
 	public List<Event> getEventsNotDeniedByEmployeeAndYear(Integer employeeId, int year);
 
 	public List<Event> getEventsPendingOfDirectSupervisorApproval();
