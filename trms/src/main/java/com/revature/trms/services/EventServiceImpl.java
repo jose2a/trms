@@ -836,7 +836,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 					"getEventsByEmployeeId - employeeId should not be empty");
 		}
 
-		List<Event> events = null;// = eventDao.getEventById(employeeId);
+		List<Event> events = eventDao.getEventsByEmployeeId(employeeId);
 
 		return events;
 	}
