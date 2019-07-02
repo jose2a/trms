@@ -113,11 +113,13 @@ public class EventServiceImpl extends BaseService implements EventService {
 		boolean added = eventDao.addEvent(event);
 
 		if (added) {
-			addAttachmentsToEvent(event, attachments);
+			if (attachments != null) {
+				addAttachmentsToEvent(event, attachments);
 
-			LogUtilities.trace("Event added sucessfully");
+				LogUtilities.trace("Event added sucessfully");
+			}
 
-			return false;
+			return true;
 		}
 
 		LogUtilities.error("Event was not added to the system.");
@@ -499,7 +501,8 @@ public class EventServiceImpl extends BaseService implements EventService {
 		eventsPendingOfApproval = eventDao.getEventsPendingOfDirectSupervisorApproval();
 
 		for (Event event : eventsPendingOfApproval) {
-			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate()).getDays();
+			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate())
+					.getDays();
 
 			if (daysBeforeStartOfEvent < Period.ofDays(DAYS_UNTIL_AUTOAPPROVED_REQUEST).getDays()) {
 				event.setDsEventStatus(EventStatus.Approved);
@@ -512,7 +515,8 @@ public class EventServiceImpl extends BaseService implements EventService {
 		eventsPendingOfApproval = eventDao.getEventsPendingOfHeadDepartmentApproval();
 
 		for (Event event : eventsPendingOfApproval) {
-			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate()).getDays();
+			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate())
+					.getDays();
 
 			if (daysBeforeStartOfEvent < Period.ofDays(DAYS_UNTIL_AUTOAPPROVED_REQUEST).getDays()) {
 				event.setHdEventStatus(EventStatus.Approved);
@@ -526,7 +530,8 @@ public class EventServiceImpl extends BaseService implements EventService {
 		eventsPendingOfApproval = eventDao.getEventsPendingOfBenefitsCoordinatorApproval();
 
 		for (Event event : eventsPendingOfApproval) {
-			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate()).getDays();
+			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate())
+					.getDays();
 
 			if (daysBeforeStartOfEvent < Period.ofDays(DAYS_UNTIL_AUTOAPPROVED_REQUEST).getDays()) {
 				LogUtilities.trace("Sending email to BenCo's suppervisor");
@@ -718,7 +723,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 			LogUtilities.trace("Awarded amount was not changed. Assigning projected amount.");
 			event.setAcceptedAmountReimbursed(event.getProjectedAmountReimbused());
 		}
-		
+
 		if (successful) {
 			event.setSuccessfulPresentationProvided(EvaluationResult.Yes);
 			event.setReimbursementStatus(EventStatus.Approved);
@@ -747,8 +752,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public List<Event> getEventsPendingOfDirectSupervisorApproval(Integer employeeId)
-			throws IllegalParameterException {
+	public List<Event> getEventsPendingOfDirectSupervisorApproval(Integer employeeId) throws IllegalParameterException {
 		LogUtilities.trace("getEventsPendingOfDirectSupervisorApproval");
 
 		if (employeeId == null) {
@@ -832,8 +836,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 		LogUtilities.trace("getEventsByEmployeeId");
 
 		if (employeeId == null) {
-			throw new IllegalParameterException(
-					"getEventsByEmployeeId - employeeId should not be empty");
+			throw new IllegalParameterException("getEventsByEmployeeId - employeeId should not be empty");
 		}
 
 		List<Event> events = eventDao.getEventsByEmployeeId(employeeId);

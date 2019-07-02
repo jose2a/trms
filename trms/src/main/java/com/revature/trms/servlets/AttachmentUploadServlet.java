@@ -15,10 +15,12 @@ import javax.servlet.http.Part;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.trms.exceptions.IllegalParameterException;
+import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.AttachmentDocType;
 import com.revature.trms.services.AttachmentService;
+import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
@@ -31,6 +33,8 @@ public class AttachmentUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 7482661353345410340L;
 
 	private AttachmentService attachmentService;
+	private EventService eventService;
+
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -39,8 +43,10 @@ public class AttachmentUploadServlet extends HttpServlet {
 		LogUtilities.trace("AttachmentServlet - post");
 
 		attachmentService = ServiceUtilities.getAttachmentService();
+		eventService = ServiceUtilities.getEventService();
 
 		String id = request.getParameter("eventId");
+		String finalGrade = request.getParameter("finalGrade");
 
 		LogUtilities.trace("id: " + id);
 
@@ -87,7 +93,18 @@ public class AttachmentUploadServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 
 		try {
-			boolean isSuccess = attachmentService.addAttachment(attachment);
+			boolean isSuccess = false;
+
+			if (attachment.getDocumentType() == AttachmentDocType.Direct_Supervisor_Approval
+					|| attachment.getDocumentType() == AttachmentDocType.Department_Head_Approval) {
+
+				isSuccess = attachmentService.addAttachment(attachment);
+			} else if (attachment.getDocumentType() == AttachmentDocType.Presentation_Document) {
+				isSuccess = eventService.uploadEventPresentation(eventId, attachment);
+			} else if (attachment.getDocumentType() == AttachmentDocType.Grade_Document) {
+
+				isSuccess = eventService.uploadFinalGrade(eventId, finalGrade, attachment);
+			}
 
 			if (isSuccess) {
 				attachment.setFileContent(null);
@@ -104,6 +121,10 @@ public class AttachmentUploadServlet extends HttpServlet {
 
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("AttachmentUploadServlet. " + e.getMessage());
+		} catch (NotFoundRecordException e) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			response.getWriter().append(e.getMessage());
+			return;
 		}
 
 	}

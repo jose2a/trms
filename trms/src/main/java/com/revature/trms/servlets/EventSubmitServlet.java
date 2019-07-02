@@ -14,7 +14,7 @@ import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class EventSubmitServlet extends BaseServlet implements DoGetMethod, DoPostMethod {
+public class EventSubmitServlet extends BaseServlet implements DoPostMethod {
 
 	/**
 	 * 
@@ -23,18 +23,13 @@ public class EventSubmitServlet extends BaseServlet implements DoGetMethod, DoPo
 
 	private EventService eventService;
 
-	@Override
-	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-	}
-
 	// <url-pattern>/event/submit</url-pattern>
 	@Override
 	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("EventSubmitServlet - post");
 
 		eventService = ServiceUtilities.getEventService();
-		
+
 		Integer employeeId = 31; // Get this from session
 
 		EventWithGradingFmt eventWithGrading = objectMapper.readValue(body, EventWithGradingFmt.class);
