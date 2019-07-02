@@ -94,6 +94,17 @@
   
   <servlet>
     <description></description>
+    <display-name>EventCancelServlet</display-name>
+    <servlet-name>EventCancelServlet</servlet-name>
+    <servlet-class>com.revature.trms.servlets.EventCancelServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EventCancelServlet</servlet-name>
+    <url-pattern>/event/cancel/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
     <display-name>EventDSPendingServlet</display-name>
     <servlet-name>EventDSPendingServlet</servlet-name>
     <servlet-class>com.revature.trms.servlets.EventDSPendingServlet</servlet-class>
