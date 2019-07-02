@@ -13,7 +13,7 @@ import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
+public class EventBencoPendingServlet extends BaseServlet implements DoGetMethod {
 
 	/**
 	 * 
@@ -22,13 +22,13 @@ public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
 
 	private EventService eventService;
 
-	//<url-pattern>/event/ds/pending/*</url-pattern>
+	// <url-pattern>/event/benco/pending/*</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LogUtilities.trace("EventDSPendingServlet - get");
+		LogUtilities.trace("EventBencoPendingServlet - get");
 
 		eventService = ServiceUtilities.getEventService();
-		
+
 		Integer supervisorId = 5;
 
 		LogUtilities.trace("SupervisorId: " + supervisorId);
@@ -37,16 +37,16 @@ public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
 		List<Event> events = null;
 
 		try {
-			events = eventService.getEventsPendingOfDirectSupervisorApproval(supervisorId);
-			
+			events = eventService.getEventsPendingOfBenefitsCoordinatorApproval(supervisorId);
+
 		} catch (IllegalParameterException e) {
-			LogUtilities.error("Error. EventDSPendingServlet. " + e.getMessage());
+			LogUtilities.error("Error. EventBencoPendingServlet. " + e.getMessage());
 		}
 
 		eventsString = objectMapper.writeValueAsString(events);
 		response.getWriter().write(eventsString);
 	}
-	
+
 	@Override
 	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub

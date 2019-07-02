@@ -111,7 +111,29 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>EventDSPendingServlet</servlet-name>
-    <url-pattern>/event/dspending</url-pattern>
+    <url-pattern>/event/ds/pending</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>EventDHPendingServlet</display-name>
+    <servlet-name>EventDHPendingServlet</servlet-name>
+    <servlet-class>com.revature.trms.servlets.EventDHPendingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EventDHPendingServlet</servlet-name>
+    <url-pattern>/event/dh/pending</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>EventBencoPendingServlet</display-name>
+    <servlet-name>EventBencoPendingServlet</servlet-name>
+    <servlet-class>com.revature.trms.servlets.EventBencoPendingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EventBencoPendingServlet</servlet-name>
+    <url-pattern>/event/benco/pending</url-pattern>
   </servlet-mapping>
   
   <servlet>

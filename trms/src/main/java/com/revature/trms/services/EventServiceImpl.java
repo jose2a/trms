@@ -781,7 +781,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId)
-			throws PojoValidationException, IllegalParameterException {
+			throws IllegalParameterException {
 		LogUtilities.trace("getEventsPendingOfDirectSupervisorApproval");
 
 		if (employeeId == null) {
@@ -807,7 +807,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval(Integer employeeId)
-			throws PojoValidationException, IllegalParameterException {
+			throws IllegalParameterException {
 		LogUtilities.trace("getEventsPendingOfBenefitsCoordinatorApproval");
 
 		if (employeeId == null) {

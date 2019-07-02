@@ -87,10 +87,10 @@ public interface EventService {
 			throws IllegalParameterException;
 
 	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId)
-			throws PojoValidationException, IllegalParameterException;
+			throws IllegalParameterException;
 
 	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval(Integer employeeId)
-			throws PojoValidationException, IllegalParameterException;
+			throws IllegalParameterException;
 
 	public double getProjectedReimbursementForEvent(double cost, Integer eventTypeId) throws IllegalParameterException;
 
