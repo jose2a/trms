@@ -6,6 +6,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -136,8 +138,8 @@ public class EventServiceImplTest {
 
 		// Events
 		// Last year
-		ev1Emp12018 = new Event(LocalDate.now().minusYears(1), LocalTime.NOON, "FIU", "Python Course for beginners",
-				500d, "Python is needed to perform my analytics job.", false, "D");
+		ev1Emp12018 = new Event(Date.valueOf(LocalDate.now().minusYears(1)), Time.valueOf(LocalTime.NOON), "FIU",
+				"Python Course for beginners", 500d, "Python is needed to perform my analytics job.", false, "D");
 		ev1Emp12018.setEventId(1);
 
 		ev1Emp12018.setFinalGrade("B");
@@ -161,8 +163,8 @@ public class EventServiceImplTest {
 
 		// Event this year
 		// event approved
-		ev1Emp12019Approved = new Event(LocalDate.now().minusMonths(1), LocalTime.NOON, "USF",
-				"Java course for beginners", 300d, "Java is requied for my project.", false, "D");
+		ev1Emp12019Approved = new Event(Date.valueOf(LocalDate.now().minusMonths(1)), Time.valueOf(LocalTime.NOON),
+				"USF", "Java course for beginners", 300d, "Java is requied for my project.", false, "D");
 		ev1Emp12019Approved.setEventId(2);
 
 		ev1Emp12019Approved.setFinalGrade("A");
@@ -184,7 +186,7 @@ public class EventServiceImplTest {
 		ev1Emp12019Approved.setBencoEventStatus(EventStatus.Approved);
 
 		// event pending
-		ev2Emp12019Pending = new Event(LocalDate.now().plusWeeks(4), LocalTime.NOON, "USF",
+		ev2Emp12019Pending = new Event(Date.valueOf(LocalDate.now().plusWeeks(4)), Time.valueOf(LocalTime.NOON), "USF",
 				"Java 2 course for beginners", 400d, "Java2 is requied for project improvements.", false, "D");
 		ev2Emp12019Pending.setEventId(3);
 
@@ -207,8 +209,8 @@ public class EventServiceImplTest {
 		ev2Emp12019Pending.setBencoEventStatus(EventStatus.Pending);
 
 		// Denied
-		ev3Emp12019Denied = new Event(LocalDate.now().minusMonths(2), LocalTime.NOON, "UCF", "Personal grow", 300d,
-				"Personal grow is important", true, "");
+		ev3Emp12019Denied = new Event(Date.valueOf(LocalDate.now().minusMonths(2)), Time.valueOf(LocalTime.NOON), "UCF",
+				"Personal grow", 300d, "Personal grow is important", true, "");
 		ev3Emp12019Denied.setEventId(4);
 
 		ev3Emp12019Denied.setProjectedAmountReimbused(180);
@@ -222,11 +224,11 @@ public class EventServiceImplTest {
 		ev3Emp12019Denied.setHdEventStatus(EventStatus.Pending);
 		ev3Emp12019Denied.setBencoEventStatus(EventStatus.Pending);
 
-		attPDF = new Attachment("pdf.png", LocalDate.now().plusDays(15), AttachmentDocType.Direct_Supervisor_Approval,
-				newEventId);
-		attDSApproval = new Attachment("dsApp.png", LocalDate.now().plusDays(15),
+		attPDF = new Attachment("pdf.png", Date.valueOf(LocalDate.now().plusDays(15)),
 				AttachmentDocType.Direct_Supervisor_Approval, newEventId);
-		attHDAppr = new Attachment("hdApp.png", LocalDate.now().plusDays(15),
+		attDSApproval = new Attachment("dsApp.png", Date.valueOf(LocalDate.now().plusDays(15)),
+				AttachmentDocType.Direct_Supervisor_Approval, newEventId);
+		attHDAppr = new Attachment("hdApp.png", Date.valueOf(LocalDate.now().plusDays(15)),
 				AttachmentDocType.Department_Head_Approval, newEventId);
 	}
 
@@ -240,8 +242,8 @@ public class EventServiceImplTest {
 
 		List<Attachment> attachments = new ArrayList<Attachment>();
 
-		event = new Event(LocalDate.now().plusDays(12), LocalTime.NOON, "USF", "Advanced Java.", 500d,
-				"Advanced Java is needed to perform my job better.", false, "D");
+		event = new Event(Date.valueOf(LocalDate.now().plusDays(12)), Time.valueOf(LocalTime.NOON), "USF",
+				"Advanced Java.", 500d, "Advanced Java is needed to perform my job better.", false, "D");
 		event.setEventTypeId(evTCourse.getEventTypeId());
 		event.setGradingFormatId(gFPresentation.getGradingFormatId());
 		event.setEmployeeId(emp1.getEmployeeId());
@@ -272,8 +274,8 @@ public class EventServiceImplTest {
 
 		List<Attachment> attachments = new ArrayList<Attachment>();
 
-		event = new Event(LocalDate.now().plusDays(15), LocalTime.NOON, "USF", "Advanced Java.", 600d,
-				"Advanced Java is needed to perform my job better.", false, "D");
+		event = new Event(Date.valueOf(LocalDate.now().plusDays(15)), Time.valueOf(LocalTime.NOON), "USF",
+				"Advanced Java.", 600d, "Advanced Java is needed to perform my job better.", false, "D");
 		event.setEventTypeId(evTCourse.getEventTypeId());
 		event.setGradingFormatId(gFPresentation.getGradingFormatId());
 		event.setEmployeeId(emp1.getEmployeeId());
@@ -304,8 +306,8 @@ public class EventServiceImplTest {
 
 		List<Attachment> attachments = new ArrayList<Attachment>();
 
-		event = new Event(LocalDate.now().plusDays(15), LocalTime.NOON, "USF", "Advanced Java.", 600d,
-				"Advanced Java is needed to perform my job better.", false, "D");
+		event = new Event(Date.valueOf(LocalDate.now().plusDays(15)), Time.valueOf(LocalTime.NOON), "USF",
+				"Advanced Java.", 600d, "Advanced Java is needed to perform my job better.", false, "D");
 		event.setEventTypeId(evTCourse.getEventTypeId());
 		event.setEmployeeId(emp1.getEmployeeId());
 
@@ -338,8 +340,8 @@ public class EventServiceImplTest {
 		attachments.add(attPDF);
 		attachments.add(attDSApproval);
 
-		event = new Event(LocalDate.now().plusDays(15), LocalTime.NOON, "USF", "Advanced Java.", 600d,
-				"Advanced Java is needed to perform my job better.", false, "D");
+		event = new Event(Date.valueOf(LocalDate.now().plusDays(15)), Time.valueOf(LocalTime.NOON), "USF",
+				"Advanced Java.", 600d, "Advanced Java is needed to perform my job better.", false, "D");
 		event.setEventTypeId(evTCourse.getEventTypeId());
 		event.setEmployeeId(emp1.getEmployeeId());
 		event.setGradingFormatId(gFtoA.getGradingFormatId());
@@ -377,8 +379,8 @@ public class EventServiceImplTest {
 		attachments.add(attDSApproval);
 		attachments.add(attHDAppr);
 
-		event = new Event(LocalDate.now().plusDays(15), LocalTime.NOON, "USF", "Advanced Java.", 600d,
-				"Advanced Java is needed to perform my job better.", false, "D");
+		event = new Event(Date.valueOf(LocalDate.now().plusDays(15)), Time.valueOf(LocalTime.NOON), "USF",
+				"Advanced Java.", 600d, "Advanced Java is needed to perform my job better.", false, "D");
 		event.setEventTypeId(evTCourse.getEventTypeId());
 		event.setEmployeeId(emp1.getEmployeeId());
 		event.setGradingFormatId(gFtoA.getGradingFormatId());

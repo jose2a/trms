@@ -200,7 +200,7 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 
 	@Override
 	public List<Integer> getEmployeesIdsUnderSupervisorId(Integer supervisorId)
-			throws PojoValidationException, IllegalParameterException {
+			throws IllegalParameterException {
 		LogUtilities.trace("getEmployeesIdsUnderSupervisorId");
 
 		if (supervisorId == null) {

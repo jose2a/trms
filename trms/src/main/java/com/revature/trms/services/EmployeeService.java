@@ -34,7 +34,7 @@ public interface EmployeeService {
 			throws PojoValidationException, IllegalParameterException;
 
 	public List<Integer> getEmployeesIdsUnderSupervisorId(Integer supervisorId)
-			throws PojoValidationException, IllegalParameterException;
+			throws IllegalParameterException;
 
 	public List<Integer> getEmployeesUnderSupervisorIdList(List<Integer> employeeListIds);
 }

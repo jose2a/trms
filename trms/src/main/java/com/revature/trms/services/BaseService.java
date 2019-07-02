@@ -114,11 +114,11 @@ public abstract class BaseService {
 	 * @param gradingFormat The grading format
 	 */
 	protected void validateGradingFormat(GradingFormat gradingFormat, PojoValidationException validationException) {
-		if (gradingFormat.getFromRange().equals("") || gradingFormat.getFromRange().isEmpty()) {
+		if (gradingFormat.getFromRange() == null || gradingFormat.getFromRange().isEmpty()) {
 			validationException.addError("From should not be empty.");
 		}
 
-		if (gradingFormat.getToRange().equals("") || gradingFormat.getToRange().isEmpty()) {
+		if (gradingFormat.getToRange() == null || gradingFormat.getToRange().isEmpty()) {
 			validationException.addError("To should not be empty.");
 		}
 	}
@@ -131,7 +131,7 @@ public abstract class BaseService {
 	protected void validateInformationRequired(InformationRequired informationRequired,
 			PojoValidationException validationException) {
 
-		if (informationRequired.getInformation().equals("") || informationRequired.getInformation().isEmpty()) {
+		if (informationRequired.getInformation() == null || informationRequired.getInformation().isEmpty()) {
 			validationException.addError("Please provide the information.");
 		}
 	}
@@ -143,7 +143,7 @@ public abstract class BaseService {
 	 */
 	protected void validateReasonDenied(ReasonDenied reasonDenied, PojoValidationException validationException) {
 
-		if (reasonDenied.getReason().equals("") || reasonDenied.getReason().isEmpty()) {
+		if (reasonDenied.getReason() == null || reasonDenied.getReason().isEmpty()) {
 			validationException.addError("Please provide the reason why this request was denied.");
 		}
 	}
@@ -156,7 +156,7 @@ public abstract class BaseService {
 	protected void validateReasonExceeding(ReasonExceeding reasonExceeding,
 			PojoValidationException validationException) {
 
-		if (reasonExceeding.getReason().equals("") || reasonExceeding.getReason().isEmpty()) {
+		if (reasonExceeding.getReason() == null || reasonExceeding.getReason().isEmpty()) {
 			validationException.addError("Please provide the reason why the amount for this request was exceeding.");
 		}
 	}
@@ -180,16 +180,20 @@ public abstract class BaseService {
 			validationException.addError("Time of the event is required.");
 		}
 
-		if (event.getLocation().equals("") || event.getLocation().isEmpty()) {
+		if (event.getLocation() == null || event.getLocation().isEmpty()) {
 			validationException.addError("Location of the event is required.");
 		}
 
-		if (event.getDescription().equals("") || event.getDescription().isEmpty()) {
+		if (event.getDescription() == null || event.getDescription().isEmpty()) {
 			validationException.addError("Description of the event is required.");
 		}
 
 		if (event.getCost() <= 0) {
 			validationException.addError("Cost of the event should be greater than 0.");
+		}
+		
+		if (event.getGradeCutoff() == null || event.getGradeCutoff().isEmpty()) {
+			validationException.addError("Grade cutoff is required");
 		}
 
 		if (event.getEventTypeId() == null) {
@@ -197,14 +201,14 @@ public abstract class BaseService {
 		}
 
 		if (event.getGradingFormatId() == null) {
-			if (from.equals("") || from.isEmpty() || (to.equals("") || to.isEmpty())) {
+			if (from == null|| from.isEmpty() || (to == null || to.isEmpty())) {
 				LogUtilities.trace("The employee did not provide a gradding format or the grade for this event.");
 				validationException
 						.addError("You should select a grading format or enter a grading range [from - to].");
 			}
 		}
 
-		if (event.getWorkJustification().equals("") || event.getWorkJustification().isEmpty()) {
+		if (event.getWorkJustification() == null|| event.getWorkJustification().isEmpty()) {
 			validationException.addError("Work-related justification is required.");
 		}
 
@@ -224,13 +228,13 @@ public abstract class BaseService {
 			validationException.addError("Amount should not be less than 0.");
 		}
 
-		if (reason.equals("") || reason.isEmpty()) {
+		if (reason == null || reason.isEmpty()) {
 			validationException.addError("Reason for changin the projected amount is required.");
 		}
 	}
 
 	protected void validateConfirmPassingGrade(Event event, PojoValidationException validationException) {
-		if (!event.isRequiredPresentation() && !event.getFinalGrade().equals("") || !event.getFinalGrade().isEmpty()) {
+		if (!event.isRequiredPresentation() && event.getFinalGrade() == null || !event.getFinalGrade().isEmpty()) {
 			LogUtilities.trace("Grade has not been provided.");
 			validationException.addError("A passing grade has not been provided.");
 		}

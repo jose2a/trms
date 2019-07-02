@@ -1,13 +1,13 @@
 package com.revature.trms.pojos;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class Attachment {
 
 	private Integer attachmentId;
 
 	private String fileName;
-	private LocalDate dateSubmitted;
+	private Date dateSubmitted;
 	private byte[] fileContent;
 	private String contentType;
 	private AttachmentDocType documentType;
@@ -18,7 +18,7 @@ public class Attachment {
 		super();
 	}
 
-	public Attachment(String fileName, LocalDate dateSubmitted, AttachmentDocType documentType,
+	public Attachment(String fileName, Date dateSubmitted, AttachmentDocType documentType,
 			int eventId) {
 		super();
 		this.fileName = fileName;
@@ -43,11 +43,11 @@ public class Attachment {
 		this.fileName = fileName;
 	}
 
-	public LocalDate getDateSubmitted() {
+	public Date getDateSubmitted() {
 		return dateSubmitted;
 	}
 
-	public void setDateSubmitted(LocalDate dateSubmitted) {
+	public void setDateSubmitted(Date dateSubmitted) {
 		this.dateSubmitted = dateSubmitted;
 	}
 

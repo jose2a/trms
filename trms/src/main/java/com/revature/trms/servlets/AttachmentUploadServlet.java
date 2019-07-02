@@ -3,6 +3,7 @@ package com.revature.trms.servlets;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 import java.time.LocalDate;
 
 import javax.servlet.ServletException;
@@ -52,7 +53,7 @@ public class AttachmentUploadServlet extends HttpServlet {
 
 		Attachment attachment = new Attachment();
 		attachment.setFileName(content.getSubmittedFileName());
-		attachment.setDateSubmitted(LocalDate.now());
+		attachment.setDateSubmitted(Date.valueOf(LocalDate.now()));
 		attachment.setEventId(eventId);
 		attachment.setDocumentType(docType);
 		attachment.setContentType(content.getContentType());

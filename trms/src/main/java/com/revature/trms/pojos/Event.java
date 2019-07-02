@@ -1,16 +1,23 @@
 package com.revature.trms.pojos;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.revature.trms.utilities.SqlTimeDeserializer;
 
 public class Event {
 
 	private Integer eventId;
 
 	// Required information from employee
-	private LocalDate dateOfEvent;
-	private LocalTime timeOfEvent;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date dateOfEvent;
+	@JsonFormat(pattern = "HH:mm")
+	@JsonDeserialize(using = SqlTimeDeserializer.class)
+	private Time timeOfEvent;
 	private String location;
 	private String description;
 	private Double cost;
@@ -69,7 +76,7 @@ public class Event {
 	 * @param gradeCutoff          Grade which is the minimum required to pass the
 	 *                             event
 	 */
-	public Event(LocalDate dateOfEvent, LocalTime timeOfEvent, String location, String description, Double cost,
+	public Event(Date dateOfEvent, Time timeOfEvent, String location, String description, Double cost,
 			String workJustification, boolean requiredPresentation, String gradeCutoff) {
 		super();
 		this.dateOfEvent = dateOfEvent;
@@ -105,7 +112,7 @@ public class Event {
 	 * 
 	 * @return The date
 	 */
-	public LocalDate getDateOfEvent() {
+	public Date getDateOfEvent() {
 		return dateOfEvent;
 	}
 
@@ -114,7 +121,7 @@ public class Event {
 	 * 
 	 * @param dateOfEvent The date
 	 */
-	public void setDateOfEvent(LocalDate dateOfEvent) {
+	public void setDateOfEvent(Date dateOfEvent) {
 		this.dateOfEvent = dateOfEvent;
 	}
 
@@ -123,7 +130,7 @@ public class Event {
 	 * 
 	 * @return The time
 	 */
-	public LocalTime getTimeOfEvent() {
+	public Time getTimeOfEvent() {
 		return timeOfEvent;
 	}
 
@@ -132,7 +139,7 @@ public class Event {
 	 * 
 	 * @param timeOfEvent The time
 	 */
-	public void setTimeOfEvent(LocalTime timeOfEvent) {
+	public void setTimeOfEvent(Time timeOfEvent) {
 		this.timeOfEvent = timeOfEvent;
 	}
 

@@ -3,6 +3,8 @@ package com.revature.trms.daos;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -40,8 +42,8 @@ public class EventDAOImplTest {
 		EventType eventT = eventTypeDao.getEventTypeById(2);
 		Employee emp = empDao.getEmployeeById(27);
 
-		Event event = new Event(LocalDate.now().plusWeeks(3l), LocalTime.now(), "FIU", "Python Course for beginners",
-				500d, "Python is needed to perform my job.", true, "D");
+		Event event = new Event(Date.valueOf(LocalDate.now().plusWeeks(3l)), Time.valueOf(LocalTime.now()), "FIU",
+				"Python Course for beginners", 500d, "Python is needed to perform my job.", true, "D");
 
 		event.setPassingGradeProvided(EvaluationResult.Pending);
 		event.setSuccessfulPresentationProvided(EvaluationResult.Pending);

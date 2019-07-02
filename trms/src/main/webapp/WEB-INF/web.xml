@@ -69,6 +69,18 @@
     <servlet-name>EmployeeTypeServlet</servlet-name>
     <url-pattern>/role/*</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>EventSubmitServlet</display-name>
+    <servlet-name>EventSubmitServlet</servlet-name>
+    <servlet-class>com.revature.trms.servlets.EventSubmitServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EventSubmitServlet</servlet-name>
+    <url-pattern>/event/submit</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>EventByEmployeeIdServlet</display-name>
@@ -79,6 +91,18 @@
     <servlet-name>EventByEmployeeIdServlet</servlet-name>
     <url-pattern>/event/employee/*</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>EventDSPendingServlet</display-name>
+    <servlet-name>EventDSPendingServlet</servlet-name>
+    <servlet-class>com.revature.trms.servlets.EventDSPendingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EventDSPendingServlet</servlet-name>
+    <url-pattern>/event/dspending</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>EventTypeServlet</display-name>

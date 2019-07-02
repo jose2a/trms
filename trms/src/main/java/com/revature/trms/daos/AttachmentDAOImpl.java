@@ -1,7 +1,6 @@
 package com.revature.trms.daos;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,7 +31,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			ps.setString(1, attachment.getFileName());
-			ps.setDate(2, Date.valueOf(attachment.getDateSubmitted()));
+			ps.setDate(2, attachment.getDateSubmitted());
 			ps.setBytes(3, attachment.getFileContent());
 			ps.setInt(4, attachment.getDocumentType().getValue());
 			ps.setInt(5, attachment.getEventId());

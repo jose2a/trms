@@ -21,7 +21,7 @@ public class ModelMapperUtilities {
 	public static void mapRsToAttachment(ResultSet rs, Attachment attachment) throws SQLException {
 		attachment.setAttachmentId(rs.getInt("attachment_id")); // attachment_id
 		attachment.setFileName(rs.getString("file_name")); // file_name
-		attachment.setDateSubmitted(rs.getDate("date_submitted").toLocalDate()); // date_submitted
+		attachment.setDateSubmitted(rs.getDate("date_submitted")); // date_submitted
 		attachment.setFileContent(rs.getBytes("file_content")); // file_content
 		attachment.setDocumentType(AttachmentDocType.valueOf(rs.getInt("attachment_type_id"))); // attachment_type_id
 		attachment.setEventId(rs.getInt("event_id")); // event_id
@@ -79,8 +79,8 @@ public class ModelMapperUtilities {
 	// Mapping ResultSet to Event
 	public static void mapRsToEvent(ResultSet rs, Event event) throws SQLException {
 		event.setEventId(rs.getInt("event_id"));
-		event.setDateOfEvent(rs.getDate("date_of_event").toLocalDate());
-		event.setTimeOfEvent(rs.getTime("time_of_event").toLocalTime());
+		event.setDateOfEvent(rs.getDate("date_of_event"));
+		event.setTimeOfEvent(rs.getTime("time_of_event"));
 		event.setLocation(rs.getString("location"));
 		event.setDescription(rs.getString("description"));
 		event.setCost(rs.getDouble("cost"));

@@ -13,7 +13,7 @@ import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class EventByEmployeeIdServlet extends BaseServlet implements DoGetMethod {
+public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
 
 	/**
 	 * 
@@ -22,32 +22,25 @@ public class EventByEmployeeIdServlet extends BaseServlet implements DoGetMethod
 
 	private EventService eventService;
 
-	// <url-pattern>/event/employee/*</url-pattern>
+	//<url-pattern>/event/dspending/*</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LogUtilities.trace("EventByEmployeeIdServlet - get");
+		LogUtilities.trace("EventDSPendingServlet - get");
 
 		eventService = ServiceUtilities.getEventService();
-
-		if (pathInfoParts.length == 0 || pathInfoParts[1].trim().equals("")) {
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
 		
-		String id = (pathInfoParts.length > 0) ? pathInfoParts[1] : null;
-		
-		Integer employeeId = Integer.parseInt(id);
+		Integer supervisorId = 5;
 
-		LogUtilities.trace("EmployeeId: " + employeeId);
+		LogUtilities.trace("SupervisorId: " + supervisorId);
 
 		String eventsString = "";
 		List<Event> events = null;
 
 		try {
-			events = eventService.getEventsByEmployeeId(employeeId);
+			events = eventService.getEventsPendingOfDirectSupervisorApproval(supervisorId);
 			
 		} catch (IllegalParameterException e) {
-			LogUtilities.error("Error. EventByEmployeeIdServlet. " + e.getMessage());
+			LogUtilities.error("Error. EventDSPendingServlet. " + e.getMessage());
 		}
 
 		eventsString = objectMapper.writeValueAsString(events);

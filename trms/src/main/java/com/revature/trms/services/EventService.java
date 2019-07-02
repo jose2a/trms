@@ -84,7 +84,7 @@ public interface EventService {
 	public List<Event> getEventsByEmployeeId(Integer employeeId) throws IllegalParameterException;
 
 	public List<Event> getEventsPendingOfDirectSupervisorApproval(Integer employeeId)
-			throws PojoValidationException, IllegalParameterException;
+			throws IllegalParameterException;
 
 	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId)
 			throws PojoValidationException, IllegalParameterException;

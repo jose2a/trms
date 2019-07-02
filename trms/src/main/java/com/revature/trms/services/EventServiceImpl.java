@@ -62,7 +62,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 			throw new IllegalParameterException("completeTuitionReimbursementForm - employeeId should not be empty.");
 		}
 
-		int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent()).getDays();
+		int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate()).getDays();
 
 		LogUtilities.trace("Days before start: " + daysBeforeStartOfEvent);
 
@@ -499,7 +499,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 		eventsPendingOfApproval = eventDao.getEventsPendingOfDirectSupervisorApproval();
 
 		for (Event event : eventsPendingOfApproval) {
-			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent()).getDays();
+			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate()).getDays();
 
 			if (daysBeforeStartOfEvent < Period.ofDays(DAYS_UNTIL_AUTOAPPROVED_REQUEST).getDays()) {
 				event.setDsEventStatus(EventStatus.Approved);
@@ -512,7 +512,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 		eventsPendingOfApproval = eventDao.getEventsPendingOfHeadDepartmentApproval();
 
 		for (Event event : eventsPendingOfApproval) {
-			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent()).getDays();
+			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate()).getDays();
 
 			if (daysBeforeStartOfEvent < Period.ofDays(DAYS_UNTIL_AUTOAPPROVED_REQUEST).getDays()) {
 				event.setHdEventStatus(EventStatus.Approved);
@@ -526,7 +526,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 		eventsPendingOfApproval = eventDao.getEventsPendingOfBenefitsCoordinatorApproval();
 
 		for (Event event : eventsPendingOfApproval) {
-			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent()).getDays();
+			int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate()).getDays();
 
 			if (daysBeforeStartOfEvent < Period.ofDays(DAYS_UNTIL_AUTOAPPROVED_REQUEST).getDays()) {
 				LogUtilities.trace("Sending email to BenCo's suppervisor");
@@ -748,7 +748,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public List<Event> getEventsPendingOfDirectSupervisorApproval(Integer employeeId)
-			throws PojoValidationException, IllegalParameterException {
+			throws IllegalParameterException {
 		LogUtilities.trace("getEventsPendingOfDirectSupervisorApproval");
 
 		if (employeeId == null) {

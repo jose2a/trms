@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -360,8 +359,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 	}
 
 	private void setEventToPreparedStatement(Event event, PreparedStatement ps) throws SQLException {
-		ps.setDate(1, Date.valueOf(event.getDateOfEvent())); // date_of_event
-		ps.setTime(2, Time.valueOf(event.getTimeOfEvent())); // time_of_event
+		ps.setDate(1, event.getDateOfEvent()); // date_of_event
+		ps.setTime(2, event.getTimeOfEvent()); // time_of_event
 		ps.setString(3, event.getLocation()); // location
 		ps.setString(4, event.getDescription()); // description
 		ps.setDouble(5, event.getCost()); // cost
