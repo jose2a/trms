@@ -42,6 +42,7 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 		}
 	}
 
+	// <url-pattern>/attachment/event</url-pattern>
 	private void getByEventId(int eventId, HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		LogUtilities.trace("AttachmentServlet - getByEventId");
@@ -62,6 +63,7 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 
 	}
 
+	// <url-pattern>/attachment/*</url-pattern>
 	private void getByAttachmentId(int attachmentId, HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		LogUtilities.trace("AttachmentServlet - getByAttachmentId");

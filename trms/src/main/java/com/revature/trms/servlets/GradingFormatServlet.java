@@ -23,6 +23,7 @@ public class GradingFormatServlet extends BaseServlet implements DoGetMethod, Do
 
 	private GradingFormatService gradingFmtService;
 
+	// <url-pattern>/gradingformat/*</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		gradingFmtService = ServiceUtilities.getGradingFormatService();

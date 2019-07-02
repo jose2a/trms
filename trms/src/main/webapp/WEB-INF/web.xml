@@ -122,7 +122,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>EventTypeServlet</servlet-name>
-    <url-pattern>/eventtype/*</url-pattern>
+    <url-pattern>/event/type</url-pattern>
   </servlet-mapping>
   <servlet>
     <description></description>
@@ -134,6 +134,18 @@
     <servlet-name>GradingFormatServlet</servlet-name>
     <url-pattern>/gradingformat/*</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>InfoRequiredServlet</display-name>
+    <servlet-name>InfoRequiredServlet</servlet-name>
+    <servlet-class>com.revature.trms.servlets.InfoRequiredServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InfoRequiredServlet</servlet-name>
+    <url-pattern>/inforeq</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>AttachmentUploadServlet</display-name>
@@ -142,6 +154,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>AttachmentUploadServlet</servlet-name>
-    <url-pattern>/postattachment</url-pattern>
+    <url-pattern>/upload/attachment</url-pattern>
   </servlet-mapping>
 </web-app>

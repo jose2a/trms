@@ -35,8 +35,9 @@ public class AttachmentUploadServlet extends HttpServlet {
 	private AttachmentService attachmentService;
 	private EventService eventService;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private ObjectMapper objectMapper;
 
+	// <url-pattern>/upload/attachment</url-pattern>
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -44,6 +45,8 @@ public class AttachmentUploadServlet extends HttpServlet {
 
 		attachmentService = ServiceUtilities.getAttachmentService();
 		eventService = ServiceUtilities.getEventService();
+
+		objectMapper = new ObjectMapper();
 
 		String id = request.getParameter("eventId");
 		String finalGrade = request.getParameter("finalGrade");
