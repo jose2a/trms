@@ -1,7 +1,9 @@
-package com.revature.trms.pojos;
+package com.revature.trms.viewmodels;
+
+import com.revature.trms.pojos.Event;
 
 /**
- * Auxiliar class to get extra grading format data when submitting the event.
+ * Helper class to get extra grading format data when submitting the event.
  *
  */
 public class EventWithGradingFmt {

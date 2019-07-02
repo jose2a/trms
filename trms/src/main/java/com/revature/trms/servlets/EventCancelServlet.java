@@ -46,8 +46,13 @@ public class EventCancelServlet extends BaseServlet implements DoGetMethod {
 
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EventCancelServlet. " + e.getMessage());
+
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+			return;
 		}
 
 		if (isSuccess) {

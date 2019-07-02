@@ -37,11 +37,11 @@ public class AttachmentUploadServlet extends HttpServlet {
 
 	private ObjectMapper objectMapper;
 
-	// <url-pattern>/upload/attachment</url-pattern>
+	// <url-pattern>/attachment/upload</url-pattern>
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		LogUtilities.trace("AttachmentServlet - post");
+		LogUtilities.trace("AttachmentUploadServlet - post");
 
 		attachmentService = ServiceUtilities.getAttachmentService();
 		eventService = ServiceUtilities.getEventService();
@@ -118,15 +118,22 @@ public class AttachmentUploadServlet extends HttpServlet {
 			}
 
 		} catch (PojoValidationException e) {
-			LogUtilities.trace("AttachmentServlet - Validation errors");
+			LogUtilities.trace("AttachmentUploadServlet - Validation errors");
+			
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
+			
+			return;
 
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("AttachmentUploadServlet. " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			response.getWriter().append(e.getMessage());
+			
 			return;
 		}
 

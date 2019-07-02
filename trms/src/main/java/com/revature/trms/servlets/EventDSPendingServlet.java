@@ -29,7 +29,7 @@ public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
 
 		eventService = ServiceUtilities.getEventService();
 		
-		Integer supervisorId = 5;
+		Integer supervisorId = 16; // TODO: Getting this from session
 
 		LogUtilities.trace("SupervisorId: " + supervisorId);
 
@@ -41,6 +41,9 @@ public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
 			
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EventDSPendingServlet. " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 
 		eventsString = objectMapper.writeValueAsString(events);

@@ -7,14 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.revature.trms.exceptions.IllegalParameterException;
+import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
-import com.revature.trms.pojos.Event;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
-import com.revature.trms.viewmodels.EventWithGradingFmt;
+import com.revature.trms.viewmodels.ConfirmGradePresVM;
 
-public class EventSubmitServlet extends BaseServlet implements DoPostMethod {
+public class EventConfirmPresentationServlet extends BaseServlet implements DoPostMethod {
 
 	/**
 	 * 
@@ -26,19 +26,16 @@ public class EventSubmitServlet extends BaseServlet implements DoPostMethod {
 	// <url-pattern>/event/submit</url-pattern>
 	@Override
 	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LogUtilities.trace("EventSubmitServlet - post");
+		LogUtilities.trace("EventConfirmGradeServlet - post");
 
 		eventService = ServiceUtilities.getEventService();
 
-		Integer employeeId = 31; // TODO: Get this from session
-
-		EventWithGradingFmt eventWithGrading = objectMapper.readValue(body, EventWithGradingFmt.class);
-		Event event = eventWithGrading.getEvent();
-		event.setEmployeeId(employeeId);
+		ConfirmGradePresVM confirmGradePres = objectMapper.readValue(body, ConfirmGradePresVM.class);
 
 		try {
-			eventService.completeTuitionReimbursementForm(event, eventWithGrading.getFrom(), eventWithGrading.getTo(),
-					null);
+			eventService.confirmSuccessfulPresentation(confirmGradePres.getEventId(), confirmGradePres.isSuccessful());
+
+			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (PojoValidationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
@@ -49,14 +46,11 @@ public class EventSubmitServlet extends BaseServlet implements DoPostMethod {
 			
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
+		} catch (NotFoundRecordException e) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+			return;
 		}
-
-		String uri = getUri(request) + "/" + event.getEventId();
-
-		response.setHeader("Location", uri);
-
-		response.setStatus(HttpServletResponse.SC_CREATED);
-		response.getWriter().write(objectMapper.writeValueAsString(eventWithGrading));
 	}
 
 	@Override

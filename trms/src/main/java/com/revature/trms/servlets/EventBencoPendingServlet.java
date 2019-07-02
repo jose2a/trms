@@ -29,7 +29,7 @@ public class EventBencoPendingServlet extends BaseServlet implements DoGetMethod
 
 		eventService = ServiceUtilities.getEventService();
 
-		Integer supervisorId = 5;
+		Integer supervisorId = 5; // TODO Remove and get from Session
 
 		LogUtilities.trace("SupervisorId: " + supervisorId);
 
@@ -41,6 +41,9 @@ public class EventBencoPendingServlet extends BaseServlet implements DoGetMethod
 
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EventBencoPendingServlet. " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 
 		eventsString = objectMapper.writeValueAsString(events);

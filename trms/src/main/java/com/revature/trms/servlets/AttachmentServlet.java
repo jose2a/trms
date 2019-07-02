@@ -25,6 +25,7 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 
 	private AttachmentService attachmentService;
 
+	// <url-pattern>/attachment/*</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("AttachmentServlet - get");
@@ -56,6 +57,9 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 			attachmentsString = objectMapper.writeValueAsString(attachments);
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. AttachmentServlet. " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 
 		response.getWriter().append(attachmentsString);
@@ -80,6 +84,9 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. AttachmentServlet. getByAttachmentId " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 
 		response.setContentType(attachment.getContentType());

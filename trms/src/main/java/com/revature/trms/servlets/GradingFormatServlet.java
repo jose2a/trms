@@ -40,6 +40,9 @@ public class GradingFormatServlet extends BaseServlet implements DoGetMethod, Do
 				gradingFormatsString = objectMapper.writeValueAsString(gradingFormats);
 			} catch (JsonProcessingException e) {
 				LogUtilities.error("Error. GradingFormatServlet. " + e.getMessage());
+				
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				return;
 			}
 
 			response.getWriter().append(gradingFormatsString);
@@ -62,6 +65,9 @@ public class GradingFormatServlet extends BaseServlet implements DoGetMethod, Do
 			}
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. GradingFormatServlet. " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 
 		gradingFormatString = objectMapper.writeValueAsString(gradingFormat);

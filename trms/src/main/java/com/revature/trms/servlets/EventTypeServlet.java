@@ -33,6 +33,9 @@ public class EventTypeServlet extends BaseServlet implements DoGetMethod {
 			response.getWriter().append(objectMapper.writeValueAsString(eventTypes));
 		} catch (JsonProcessingException e) {
 			LogUtilities.error("Error. EventTypeServlet. " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 	}
 

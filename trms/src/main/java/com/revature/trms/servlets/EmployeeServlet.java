@@ -46,6 +46,9 @@ public class EmployeeServlet extends BaseServlet implements DoGetMethod {
 			LogUtilities.trace(employee.toString());
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EmployeeServlet. " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;

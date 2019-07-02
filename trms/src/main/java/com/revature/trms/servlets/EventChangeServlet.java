@@ -7,14 +7,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.revature.trms.exceptions.IllegalParameterException;
+import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
-import com.revature.trms.pojos.Event;
+import com.revature.trms.exceptions.PreexistingRecordException;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
-import com.revature.trms.viewmodels.EventWithGradingFmt;
+import com.revature.trms.viewmodels.ChangeAmountEventVM;
 
-public class EventSubmitServlet extends BaseServlet implements DoPostMethod {
+public class EventChangeServlet extends BaseServlet implements DoPostMethod {
 
 	/**
 	 * 
@@ -23,40 +24,39 @@ public class EventSubmitServlet extends BaseServlet implements DoPostMethod {
 
 	private EventService eventService;
 
-	// <url-pattern>/event/submit</url-pattern>
+	// <url-pattern>/event/changeamount</url-pattern>
 	@Override
 	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LogUtilities.trace("EventSubmitServlet - post");
+		LogUtilities.trace("EventChangeServlet - post");
 
 		eventService = ServiceUtilities.getEventService();
 
-		Integer employeeId = 31; // TODO: Get this from session
-
-		EventWithGradingFmt eventWithGrading = objectMapper.readValue(body, EventWithGradingFmt.class);
-		Event event = eventWithGrading.getEvent();
-		event.setEmployeeId(employeeId);
+		ChangeAmountEventVM changeAmountEventVM = objectMapper.readValue(body, ChangeAmountEventVM.class);
 
 		try {
-			eventService.completeTuitionReimbursementForm(event, eventWithGrading.getFrom(), eventWithGrading.getTo(),
-					null);
-		} catch (PojoValidationException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
-
+			eventService.changeReimbursementAmount(changeAmountEventVM.getEventId(), changeAmountEventVM.getNewAmount(),
+					changeAmountEventVM.getReason());
+			
+		} catch (NotFoundRecordException e1) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		} catch (IllegalParameterException e) {
 			LogUtilities.error(e.getMessage());
 			
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
+		} catch (PojoValidationException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
+
+			return;
+		} catch (PreexistingRecordException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().append(objectMapper.writeValueAsString(e.getMessage()));
+
+			return;
 		}
 
-		String uri = getUri(request) + "/" + event.getEventId();
-
-		response.setHeader("Location", uri);
-
-		response.setStatus(HttpServletResponse.SC_CREATED);
-		response.getWriter().write(objectMapper.writeValueAsString(eventWithGrading));
 	}
 
 	@Override
@@ -64,5 +64,4 @@ public class EventSubmitServlet extends BaseServlet implements DoPostMethod {
 		// TODO Auto-generated method stub
 		return true;
 	}
-
 }

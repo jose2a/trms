@@ -41,6 +41,9 @@ public class EventDHPendingServlet extends BaseServlet implements DoGetMethod {
 
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EventDSPendingServlet. " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 
 		eventsString = objectMapper.writeValueAsString(events);

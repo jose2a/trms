@@ -48,6 +48,9 @@ public class EventByEmployeeIdServlet extends BaseServlet implements DoGetMethod
 			
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EventByEmployeeIdServlet. " + e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 
 		eventsString = objectMapper.writeValueAsString(events);
