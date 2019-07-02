@@ -232,4 +232,26 @@
 		<servlet-name>ListEmployeeServlet</servlet-name>
 		<url-pattern>/admin/ListEmployee</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>LoginServlet</display-name>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.LoginServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>LogoutServlet</display-name>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
 </web-app>

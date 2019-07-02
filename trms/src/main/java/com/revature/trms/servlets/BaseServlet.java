@@ -8,9 +8,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.trms.utilities.LogUtilities;
+import com.revature.trms.utilities.SessionUtilities;
 
 public abstract class BaseServlet extends HttpServlet {
 
@@ -163,13 +165,22 @@ public abstract class BaseServlet extends HttpServlet {
 		boolean authorized = validateAuthorization(request, response);
 
 		if (!authorized) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			return;
 		}
 	}
 
+	/**
+	 * Validation if user is in the session, otherwise return Unauthorized ststus.
+	 * @param request The request
+	 * @param response The response
+	 */
+	// TODO Activate this when everything is tested
 	private void validateAuthentication(HttpServletRequest request, HttpServletResponse response) {
-		// TODO: Implement logic to validate authentication
+//		if (SessionUtilities.isEmployeeInSession(request)) {
+//			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//			return;
+//		}
 	}
 
 	protected String readRequestBody(HttpServletRequest request) throws IOException {
