@@ -60,7 +60,7 @@ public class InformationRequiredServiceImpl extends BaseService implements Infor
 
 		validateParams(informationRequired);
 
-		return informationRequiredDao.addInformationRequired(informationRequired);
+		return informationRequiredDao.updateInformationRequired(informationRequired);
 	}
 
 	@Override

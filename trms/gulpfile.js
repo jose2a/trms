@@ -5,6 +5,7 @@ const paths = {
     nodeModules: './node_modules/',
     scriptsDest: './src/main/webapp/resources/js/',
     stylesDest: './src/main/webapp/resources/css/',
+    fontsDest: './src/main/webapp/resources/fonts/',
     imgsDest: './src/main/webapp/resources/img/'
 };
 
@@ -42,4 +43,11 @@ gulp.task('copy:img', done => {
 	   done();
 });
 
-gulp.task('default', gulp.parallel('copy:css', 'copy:js', 'copy:img'))
+gulp.task('copy:fonts', done => {
+	   gulp.src(`${paths.nodeModules}bootstrap/dist/fonts/*.*`)
+	   .pipe(gulp.dest(`${paths.fontsDest}`));
+	   
+	   done();
+});
+
+gulp.task('default', gulp.parallel('copy:css', 'copy:js', 'copy:img', 'copy:fonts'))

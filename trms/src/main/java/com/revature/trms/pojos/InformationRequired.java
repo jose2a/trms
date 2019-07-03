@@ -10,7 +10,7 @@ public class InformationRequired {
 	private Integer requiredBy;
 
 	private Event event;
-	private Employee reuireBy;
+	private Employee requireBy;
 
 	public InformationRequired() {
 		super();
@@ -74,12 +74,12 @@ public class InformationRequired {
 		this.event = event;
 	}
 
-	public Employee getReuireBy() {
-		return reuireBy;
+	public Employee getRequireBy() {
+		return requireBy;
 	}
 
-	public void setReuireBy(Employee reuireBy) {
-		this.reuireBy = reuireBy;
+	public void setRequireBy(Employee requireBy) {
+		this.requireBy = requireBy;
 	}
 
 	@Override

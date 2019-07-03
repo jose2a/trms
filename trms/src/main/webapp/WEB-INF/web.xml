@@ -67,6 +67,17 @@
 		<servlet-name>EmployeeServlet</servlet-name>
 		<url-pattern>/employee/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>EmployeeSessionServlet</display-name>
+		<servlet-name>EmployeeSessionServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.EmployeeSessionServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EmployeeSessionServlet</servlet-name>
+		<url-pattern>/employeeinfo</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<description></description>
@@ -77,6 +88,28 @@
 	<servlet-mapping>
 		<servlet-name>EmployeeTypeServlet</servlet-name>
 		<url-pattern>/employee/types/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>EmptyServlet</display-name>
+		<servlet-name>EmptyServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.EmptyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EmptyServlet</servlet-name>
+		<url-pattern>/empty</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>EventApproveServlet</display-name>
+		<servlet-name>EventApproveServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.EventApproveServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EventApproveServlet</servlet-name>
+		<url-pattern>/event/approve</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

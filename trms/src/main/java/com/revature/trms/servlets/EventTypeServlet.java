@@ -25,12 +25,16 @@ public class EventTypeServlet extends BaseServlet implements DoGetMethod {
 	// <url-pattern>/event/type/</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		LogUtilities.trace("EventTypeServlet");
+		
 		eventTypeService = ServiceUtilities.getEventTypeService();
 
 		List<EventType> eventTypes = eventTypeService.getAllEventType();
 
 		try {
 			response.getWriter().append(objectMapper.writeValueAsString(eventTypes));
+			
+			return;
 		} catch (JsonProcessingException e) {
 			LogUtilities.error("Error. EventTypeServlet. " + e.getMessage());
 			
@@ -42,7 +46,7 @@ public class EventTypeServlet extends BaseServlet implements DoGetMethod {
 	@Override
 	boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }

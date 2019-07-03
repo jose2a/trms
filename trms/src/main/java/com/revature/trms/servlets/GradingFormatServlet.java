@@ -14,7 +14,7 @@ import com.revature.trms.services.GradingFormatService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class GradingFormatServlet extends BaseServlet implements DoGetMethod, DoPostMethod {
+public class GradingFormatServlet extends BaseServlet implements DoGetMethod {
 
 	/**
 	 * 
@@ -40,7 +40,7 @@ public class GradingFormatServlet extends BaseServlet implements DoGetMethod, Do
 				gradingFormatsString = objectMapper.writeValueAsString(gradingFormats);
 			} catch (JsonProcessingException e) {
 				LogUtilities.error("Error. GradingFormatServlet. " + e.getMessage());
-				
+
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				return;
 			}
@@ -65,25 +65,13 @@ public class GradingFormatServlet extends BaseServlet implements DoGetMethod, Do
 			}
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. GradingFormatServlet. " + e.getMessage());
-			
+
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
 		}
 
 		gradingFormatString = objectMapper.writeValueAsString(gradingFormat);
 		response.getWriter().write(gradingFormatString);
-	}
-
-	@Override
-	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		GradingFormat gradingFormat = objectMapper.readValue(body, GradingFormat.class);
-		gradingFormat.setGradingFormatId(7);
-
-		String uri = getUri(request) + "/" + gradingFormat.getGradingFormatId();
-
-		response.setHeader("Location", uri);
-		response.setStatus(HttpServletResponse.SC_CREATED);
-		response.getWriter().write(objectMapper.writeValueAsString(gradingFormat));
 	}
 
 	@Override

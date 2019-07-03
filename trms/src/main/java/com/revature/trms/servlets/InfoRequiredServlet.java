@@ -42,13 +42,13 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 
 		List<InformationRequired> infoRequiredList = null;
 
-		int employeeId = 25; // TODO: Remove it, get this from Session
+		int employeeId = 22; // TODO: Remove it, get this from Session
 
 		try {
 			infoRequiredList = infoReqService.getInformationRequiredByEmployeeId(employeeId);
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. InfoRequiredServlet. " + e.getMessage());
-			
+
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
 		}
@@ -79,14 +79,18 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 		InformationRequiredViewModel informationRequiredVM = objectMapper.readValue(body,
 				InformationRequiredViewModel.class);
 
+		EmployeeType eType = EmployeeType.valueOf(informationRequiredVM.getRequestInfoFrom());
+
+		LogUtilities.trace("Info from: " + informationRequiredVM.getRequestInfoFrom());
+
 		try {
-			if (informationRequiredVM.getRequestInfoFrom() == EmployeeType.Associate) { // Employee
+			if (eType == EmployeeType.Associate) { // Employee
 				eventService.requestInformationFromEmployee(informationRequiredVM.getEventId(),
 						informationRequiredVM.getInformation(), employee.getEmployeeId());
-			} else if (informationRequiredVM.getRequestInfoFrom() == EmployeeType.Direct_Supervisor) {
+			} else if (eType == EmployeeType.Direct_Supervisor) {
 				eventService.requestInformationFromDirectSupervisor(informationRequiredVM.getEventId(),
 						informationRequiredVM.getInformation(), employee.getEmployeeId());
-			} else if (informationRequiredVM.getRequestInfoFrom() == EmployeeType.Head_Department) {
+			} else if (eType == EmployeeType.Head_Department) {
 				eventService.requestInformationFromDepartmentHead(informationRequiredVM.getEventId(),
 						informationRequiredVM.getInformation(), employee.getEmployeeId());
 			}
@@ -122,7 +126,7 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 		eventService = ServiceUtilities.getEventService();
 
 		InformationRequired informationRequired = objectMapper.readValue(body, InformationRequired.class);
-		int employeeId = 25; // TODO: Remove it, get this from Session
+		int employeeId = 22; // TODO: Remove it, get this from Session
 
 		try {
 			eventService.confirmSentOfInformationRequired(informationRequired.getEventId(), employeeId);

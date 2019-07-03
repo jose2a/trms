@@ -159,14 +159,17 @@ public abstract class BaseServlet extends HttpServlet {
 		doDeleteMethodImpl.delete(request, response);
 	}
 
-	private void handleAuthenticationAndAuthorization(HttpServletRequest request, HttpServletResponse response) {
+	private void handleAuthenticationAndAuthorization(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		LogUtilities.trace("handleAuthenticationAndAuthorization");
 		validateAuthentication(request, response);
 
 		boolean authorized = validateAuthorization(request, response);
 
 		if (!authorized) {
+			LogUtilities.trace("Not authorized");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			return;
+			
+			request.getRequestDispatcher("/empty").forward(request, response);
 		}
 	}
 
@@ -179,7 +182,7 @@ public abstract class BaseServlet extends HttpServlet {
 	private void validateAuthentication(HttpServletRequest request, HttpServletResponse response) {
 //		if (SessionUtilities.isEmployeeInSession(request)) {
 //			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//			return;
+//			request.getRequestDispatcher("/empty").forward(request, response);
 //		}
 	}
 

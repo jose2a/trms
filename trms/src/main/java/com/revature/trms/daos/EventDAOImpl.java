@@ -291,6 +291,8 @@ public class EventDAOImpl extends BaseDAO implements EventDAO {
 
 			String sql = selectQuery
 					+ " WHERE ds_event_status_id=? AND hd_event_status_id=? AND reimbursement_awarded=?";
+			
+			LogUtilities.trace(sql);
 
 			ps = conn.prepareStatement(sql);
 

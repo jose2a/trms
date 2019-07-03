@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.revature.trms.exceptions.IllegalParameterException;
+import com.revature.trms.exceptions.NotFoundRecordException;
+import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.Event;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
@@ -22,13 +25,21 @@ public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
 
 	private EventService eventService;
 
-	//<url-pattern>/event/ds/pending/*</url-pattern>
+	// <url-pattern>/event/ds/pending</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("EventDSPendingServlet - get");
 
 		eventService = ServiceUtilities.getEventService();
-		
+
+		Employee employee = null;
+		try {
+			employee = ServiceUtilities.getEmployeeService().getEmployeeById(16);
+		} catch (NotFoundRecordException | IllegalParameterException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		Integer supervisorId = 16; // TODO: Getting this from session
 
 		LogUtilities.trace("SupervisorId: " + supervisorId);
@@ -37,11 +48,15 @@ public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
 		List<Event> events = null;
 
 		try {
-			events = eventService.getEventsPendingOfDirectSupervisorApproval(supervisorId);
-			
+			events = eventService.getEventsPendingOfDirectSupervisorApproval(employee.getEmployeeId());
+
+			if (employee.getEmployeeTypes().contains(EmployeeType.Head_Department)) {
+				events.addAll(eventService.getEventsPendingOfHeadDepartmentApproval(employee.getEmployeeId()));
+			}
+
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EventDSPendingServlet. " + e.getMessage());
-			
+
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
 		}
@@ -49,7 +64,7 @@ public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
 		eventsString = objectMapper.writeValueAsString(events);
 		response.getWriter().write(eventsString);
 	}
-	
+
 	@Override
 	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub

@@ -165,7 +165,7 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService 
 			employee.setEmployeeTypes(employeeTypeService.getEmployeeTypesForEmployee(employee.getEmployeeId()));
 		}
 
-		return null;
+		return employee;
 	}
 
 	@Override

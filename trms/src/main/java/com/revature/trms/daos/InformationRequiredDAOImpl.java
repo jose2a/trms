@@ -24,7 +24,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 		ResultSet rs = null;
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
-			String sql = "INSERT INTO info_required (event_id, employee_id, information, provided, required_by) VALUES(?, ?, ?, ?)";
+			String sql = "INSERT INTO info_required (event_id, employee_id, information, provided, required_by) VALUES(?, ?, ?, ?, ?)";
 
 			ps = conn.prepareStatement(sql);
 
@@ -113,7 +113,7 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 
 	@Override
 	public InformationRequired getInformationRequiredByEmployeeIdAndEventId(Integer employeeId, Integer eventId) {
-		LogUtilities.trace("getInformationRequiredByEmployeeIdAndEventId. " + employeeId);
+		LogUtilities.trace("getInformationRequiredByEmployeeIdAndEventId. " + employeeId + ", " + eventId);
 
 		InformationRequired informationRequired = null;
 
@@ -123,6 +123,8 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
 			String sql = baseSql + " WHERE employee_id=? AND event_id=?";
+			
+			LogUtilities.trace(sql);
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, employeeId);

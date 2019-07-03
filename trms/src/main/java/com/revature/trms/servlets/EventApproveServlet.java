@@ -8,16 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
-import com.revature.trms.exceptions.PojoValidationException;
-import com.revature.trms.exceptions.PreexistingRecordException;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EmployeeType;
-import com.revature.trms.pojos.ReasonDenied;
+import com.revature.trms.pojos.Event;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class EventDeniedServlet extends BaseServlet implements DoPostMethod {
+public class EventApproveServlet extends BaseServlet implements DoPutMethod {
 
 	/**
 	 * 
@@ -26,10 +24,10 @@ public class EventDeniedServlet extends BaseServlet implements DoPostMethod {
 
 	private EventService eventService;
 
-	// <url-pattern>/event/deny</url-pattern>
+	// <url-pattern>/event/approve</url-pattern>
 	@Override
-	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LogUtilities.trace("EventDeniedServlet - post");
+	public void put(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		LogUtilities.trace("EventApproveServlet - post");
 
 		eventService = ServiceUtilities.getEventService();
 
@@ -45,39 +43,28 @@ public class EventDeniedServlet extends BaseServlet implements DoPostMethod {
 			e1.printStackTrace();
 		}
 
-		ReasonDenied reasonDenied = objectMapper.readValue(body, ReasonDenied.class);
+		Event event = objectMapper.readValue(body, Event.class);
 
 		try {
 			if (employee.getEmployeeTypes().contains(EmployeeType.Direct_Supervisor)) { // Denied by DS
-				LogUtilities.trace("Denied by Direct Supervisor");
-				
-				eventService.denyTuitionReimbursementByDirectSupervisor(reasonDenied.getEventId(),
-						reasonDenied.getReason());
-				
+				LogUtilities.trace("Approved by Direct Supervisor");
+
+				eventService.approveTuitionReimbursementByDirectSupervisor(event.getEventId(),
+						employee.getEmployeeId());
+
 			} else if (employee.getEmployeeTypes().contains(EmployeeType.Head_Department)) { // Denied by DH
-				LogUtilities.trace("Denied by Head Department");
-				
-				eventService.denyTuitionReimbursementByHeadDepartment(reasonDenied.getEventId(),
-						reasonDenied.getReason());
-				
+				LogUtilities.trace("Approved by Head Department");
+
+				eventService.approveTuitionReimbursementByHeadDepartment(event.getEventId());
+
 			} else if (employee.getEmployeeTypes().contains(EmployeeType.Benefits_Coordinator)) { // Denied by Benco
-				LogUtilities.trace("Denied by Benco");
-				eventService.denyTuitionReimbursementByBenCo(reasonDenied.getEventId(), reasonDenied.getReason());
+				LogUtilities.trace("Approved by Benco");
+				eventService.approveTuitionReimbursementByBenCo(event.getEventId());
 			}
 		} catch (IllegalParameterException e) {
-			LogUtilities.error("Error. EventDeniedServlet. " + e.getMessage());
-			
+			LogUtilities.error("Error. EventApproveServlet. " + e.getMessage());
+
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
-		} catch (PojoValidationException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
-
-			return;
-		} catch (PreexistingRecordException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().append(objectMapper.writeValueAsString(e.getMessage()));
-
 			return;
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);

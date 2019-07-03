@@ -40,9 +40,11 @@ public class LoginServlet extends HttpServlet {
 		String password = req.getParameter("password");
 
 		Employee employee = null;
+		LogUtilities.trace("Username " + username + " - " + password);
 
 		try {
 			employee = employeeService.getEmployeeByUsernameAndPassword(username, password);
+			
 		} catch (PojoValidationException e) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
@@ -65,6 +67,10 @@ public class LoginServlet extends HttpServlet {
 		}
 
 		SessionUtilities.saveEmployeeToSession(req, employee);
+		
+		employee.setPassword("*******");
+		
+		resp.getWriter().append(objectMapper.writeValueAsString(employee));
 	}
 
 }

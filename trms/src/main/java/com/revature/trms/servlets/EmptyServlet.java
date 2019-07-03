@@ -8,19 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.revature.trms.utilities.LogUtilities;
-import com.revature.trms.utilities.SessionUtilities;
 
-public class LogoutServlet extends HttpServlet {
+public class EmptyServlet extends HttpServlet {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7752998924402336356L;
-
+	private static final long serialVersionUID = 2055135922873015658L;
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		LogUtilities.trace("Logging out the user");
-		SessionUtilities.logout(req);
+		LogUtilities.trace("EmptyServlet");
 	}
 
 }

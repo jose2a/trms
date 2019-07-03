@@ -415,6 +415,8 @@ public class EventServiceImpl extends BaseService implements EventService {
 		}
 
 		Employee directSupervisor = employeeService.getEmployeeSupervisor(event.getEmployeeId());
+		
+		LogUtilities.trace(directSupervisor.toString());
 
 		LogUtilities.trace("Sending request for information.");
 
@@ -477,11 +479,14 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 		InformationRequired informationRequired = informationRequiredService
 				.getInformationRequiredByEmployeeIdAndEventId(employeeId, eventId);
+		
+		LogUtilities.trace("confirmSentOfInformationRequired - " + informationRequired);
 
 		if (informationRequired == null) {
 			throw new NotFoundRecordException("We could not found this information.");
 		}
 
+		LogUtilities.trace("Updating Provided property of info");
 		informationRequired.setProvided(true);
 
 		informationRequiredService.updateInformationRequired(informationRequired);
@@ -779,21 +784,32 @@ public class EventServiceImpl extends BaseService implements EventService {
 	@Override
 	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId)
 			throws IllegalParameterException {
-		LogUtilities.trace("getEventsPendingOfDirectSupervisorApproval");
+		LogUtilities.trace("getEventsPendingOfHeadDepartmentApproval");
 
 		if (employeeId == null) {
 			throw new IllegalParameterException(
-					"getEventsPendingOfDirectSupervisorApproval - employeeId should not be empty");
+					"getEventsPendingOfHeadDepartmentApproval - employeeId should not be empty");
 		}
 
 		List<Event> events = new ArrayList<>();
 
-		// Getting events
-		List<Event> eventsPendingOfDirectSupervisorApproval = eventDao.getEventsPendingOfHeadDepartmentApproval();
+		// Getting all the pending events of department head approval
+		List<Event> eventsPendingOfHDApproval = eventDao.getEventsPendingOfHeadDepartmentApproval();
 		// Getting employees under this supervisor
-		List<Integer> employeesIdsUnderSup = employeeService.getEmployeesIdsUnderSupervisorId(employeeId);
+		List<Integer> employeesIdsUnderSup = new ArrayList<>();
+		
+		// looping the employee ladder
+		for (Integer id : employeeService.getEmployeesIdsUnderSupervisorId(employeeId)) {
+			employeesIdsUnderSup.add(id);
+			
+			for (Integer asoccId : employeeService.getEmployeesIdsUnderSupervisorId(id)) {
+				employeesIdsUnderSup.add(asoccId);
+			}
+		}
+		
+		LogUtilities.trace("emp Ids: " + employeesIdsUnderSup);
 
-		for (Event evt : eventsPendingOfDirectSupervisorApproval) {
+		for (Event evt : eventsPendingOfHDApproval) {
 			if (employeesIdsUnderSup.contains(evt.getEmployeeId())) {
 				events.add(evt);
 			}

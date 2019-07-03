@@ -198,6 +198,8 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
 			String sql = baseSql + " WHERE username=? AND password=?";
+			
+			LogUtilities.trace(sql);
 
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, username);
@@ -208,6 +210,8 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 			if (rs.next()) {
 				employee = new Employee();
 				ModelMapperUtilities.mapRsToEmployee(rs, employee);
+				
+				LogUtilities.trace("Emp: " + employee);
 			}
 
 		} catch (SQLException e) {
@@ -364,9 +368,11 @@ public class EmployeeDAOImpl extends BaseDAO implements EmployeeDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT e2.employee_id, e2.first_name, e2.last_name, e2.password, e2.supervisor_id"
+			String sql = "SELECT e2.employee_id, e2.username, e2.first_name, e2.last_name, e2.password, e2.email, e2.supervisor_id"
 					+ " FROM employee e1 INNER JOIN employee e2 ON e1.supervisor_id = e2.employee_id"
 					+ " WHERE e1.employee_id = ?";
+			
+			LogUtilities.trace("SQL: " + sql);
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, employeeId);

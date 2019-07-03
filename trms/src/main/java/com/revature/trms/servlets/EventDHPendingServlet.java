@@ -22,14 +22,15 @@ public class EventDHPendingServlet extends BaseServlet implements DoGetMethod {
 
 	private EventService eventService;
 
-	// <url-pattern>/event/dh/pending/*</url-pattern>
+	// <url-pattern>/event/dh/pending/</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("EventDHPendingServlet - get");
 
 		eventService = ServiceUtilities.getEventService();
 
-		Integer supervisorId = 5;
+		// TODO Remove this and use session
+		Integer supervisorId = 16;
 
 		LogUtilities.trace("SupervisorId: " + supervisorId);
 
