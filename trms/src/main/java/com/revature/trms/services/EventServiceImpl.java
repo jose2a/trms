@@ -732,9 +732,6 @@ public class EventServiceImpl extends BaseService implements EventService {
 			event.setReimbursementStatus(EventStatus.Denied);
 		}
 
-		event.setSuccessfulPresentationProvided(EvaluationResult.Yes);
-		event.setReimbursementStatus(EventStatus.Approved);
-
 		LogUtilities.trace("Successful presentation was presented.");
 
 		return eventDao.updateEvent(event);

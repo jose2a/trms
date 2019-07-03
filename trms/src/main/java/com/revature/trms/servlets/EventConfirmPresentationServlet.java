@@ -23,7 +23,7 @@ public class EventConfirmPresentationServlet extends BaseServlet implements DoPo
 
 	private EventService eventService;
 
-	// <url-pattern>/event/submit</url-pattern>
+	// <url-pattern>/event/confirm/presentation</url-pattern>
 	@Override
 	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("EventConfirmGradeServlet - post");
