@@ -89,8 +89,7 @@ public interface EventService {
 	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId)
 			throws IllegalParameterException;
 
-	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval(Integer employeeId)
-			throws IllegalParameterException;
+	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval();
 
 	public double getProjectedReimbursementForEvent(double cost, Integer eventTypeId) throws IllegalParameterException;
 

@@ -25,7 +25,7 @@ public class EmployeeTypeServlet extends BaseServlet implements DoGetMethod {
 	private EmployeeService employeeService;
 	private EmployeeTypeService employeeTypeService;
 
-	// <url-pattern>/role/*</url-pattern>
+	// <url-pattern>employee/types/*</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		employeeService = ServiceUtilities.getEmployeeService();

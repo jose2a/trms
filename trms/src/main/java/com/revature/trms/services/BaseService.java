@@ -234,7 +234,7 @@ public abstract class BaseService {
 	}
 
 	protected void validateConfirmPassingGrade(Event event, PojoValidationException validationException) {
-		if (!event.isRequiredPresentation() && event.getFinalGrade() == null || !event.getFinalGrade().isEmpty()) {
+		if (!event.isRequiredPresentation() && event.getFinalGrade() == null || event.getFinalGrade().isEmpty()) {
 			LogUtilities.trace("Grade has not been provided.");
 			validationException.addError("A passing grade has not been provided.");
 		}

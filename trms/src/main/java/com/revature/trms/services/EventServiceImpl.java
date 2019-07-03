@@ -806,29 +806,10 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval(Integer employeeId)
-			throws IllegalParameterException {
+	public List<Event> getEventsPendingOfBenefitsCoordinatorApproval() {
 		LogUtilities.trace("getEventsPendingOfBenefitsCoordinatorApproval");
 
-		if (employeeId == null) {
-			throw new IllegalParameterException(
-					"getEventsPendingOfBenefitsCoordinatorApproval - employeeId should not be empty");
-		}
-
-		List<Event> events = new ArrayList<>();
-
-		// Getting events
-		List<Event> eventsPendingOfDirectSupervisorApproval = eventDao.getEventsPendingOfBenefitsCoordinatorApproval();
-		// Getting employees under this supervisor
-		List<Integer> employeesIdsUnderSup = employeeService.getEmployeesIdsUnderSupervisorId(employeeId);
-
-		for (Event evt : eventsPendingOfDirectSupervisorApproval) {
-			if (employeesIdsUnderSup.contains(evt.getEmployeeId())) {
-				events.add(evt);
-			}
-		}
-
-		return events;
+		return eventDao.getEventsPendingOfBenefitsCoordinatorApproval();
 	}
 
 	@Override

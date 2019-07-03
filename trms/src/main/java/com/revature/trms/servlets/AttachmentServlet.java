@@ -54,6 +54,7 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 
 		try {
 			attachments = attachmentService.getAttachmentsByEventId(eventId);
+			removeFileContent(attachments);
 			attachmentsString = objectMapper.writeValueAsString(attachments);
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. AttachmentServlet. " + e.getMessage());
@@ -65,6 +66,18 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 		response.getWriter().append(attachmentsString);
 		return;
 
+	}
+	
+	/**
+	 * Remove file content from attachment not need to send it at this point.
+	 * @param attachments The attachment list
+	 */
+	private void removeFileContent(List<Attachment> attachments) {
+		LogUtilities.trace("Removing binary file from the attachments");
+		
+		for (Attachment attachment : attachments) {
+			attachment.setFileContent(null);
+		}
 	}
 
 	// <url-pattern>/attachment/*</url-pattern>

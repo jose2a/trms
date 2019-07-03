@@ -76,7 +76,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>EmployeeTypeServlet</servlet-name>
-		<url-pattern>/role/*</url-pattern>
+		<url-pattern>/employee/types/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

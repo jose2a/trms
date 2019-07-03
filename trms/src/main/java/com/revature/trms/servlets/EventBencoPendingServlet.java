@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.pojos.Event;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
@@ -22,29 +21,21 @@ public class EventBencoPendingServlet extends BaseServlet implements DoGetMethod
 
 	private EventService eventService;
 
-	// <url-pattern>/event/benco/pending/*</url-pattern>
+	// <url-pattern>/event/benco/pending</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("EventBencoPendingServlet - get");
 
 		eventService = ServiceUtilities.getEventService();
 
-		Integer supervisorId = 5; // TODO Remove and get from Session
+		Integer supervisorId = 16; // TODO Remove and get from Session
 
 		LogUtilities.trace("SupervisorId: " + supervisorId);
 
 		String eventsString = "";
 		List<Event> events = null;
 
-		try {
-			events = eventService.getEventsPendingOfBenefitsCoordinatorApproval(supervisorId);
-
-		} catch (IllegalParameterException e) {
-			LogUtilities.error("Error. EventBencoPendingServlet. " + e.getMessage());
-			
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
-		}
+		events = eventService.getEventsPendingOfBenefitsCoordinatorApproval();
 
 		eventsString = objectMapper.writeValueAsString(events);
 		response.getWriter().write(eventsString);
