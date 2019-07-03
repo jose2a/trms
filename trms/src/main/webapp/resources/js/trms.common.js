@@ -94,3 +94,8 @@ function isEmployeeInSession() {
 function deleteEmployeeFromSession() {
      sessionStorage.removeItem('employee');
 }
+
+function getUrlParamValue(variableName) {
+     let url = new URL(window.location.href);
+     return url.searchParams.get(variableName);
+}

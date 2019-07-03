@@ -36,7 +36,7 @@ public class EventByEmployeeIdServlet extends BaseServlet implements DoGetMethod
 		
 		String id = (pathInfoParts.length > 0) ? pathInfoParts[1] : null;
 		
-		Integer employeeId = Integer.parseInt(id);
+		Integer employeeId = 31;
 
 		LogUtilities.trace("EmployeeId: " + employeeId);
 
