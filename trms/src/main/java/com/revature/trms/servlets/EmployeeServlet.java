@@ -36,7 +36,6 @@ public class EmployeeServlet extends BaseServlet implements DoGetMethod {
 
 		LogUtilities.trace("EmployeeId: " + employeeId);
 
-		String employeString = "";
 		Employee employee = null;
 
 		try {
@@ -54,8 +53,7 @@ public class EmployeeServlet extends BaseServlet implements DoGetMethod {
 			return;
 		}
 
-		employeString = objectMapper.writeValueAsString(employee);
-		response.getWriter().write(employeString);
+		response.getWriter().write(objectMapper.writeValueAsString(employee));
 	}
 
 	@Override

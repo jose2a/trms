@@ -37,7 +37,6 @@ public class EmployeeTypeServlet extends BaseServlet implements DoGetMethod {
 
 		LogUtilities.trace("EmployeeId: " + employeeId);
 
-		String employeTypesString = "";
 		List<EmployeeType> employeeTypes = null;
 
 		try {
@@ -55,8 +54,7 @@ public class EmployeeTypeServlet extends BaseServlet implements DoGetMethod {
 			return;
 		}
 
-		employeTypesString = objectMapper.writeValueAsString(employeeTypes);
-		response.getWriter().write(employeTypesString);
+		response.getWriter().write(objectMapper.writeValueAsString(employeeTypes));
 	}
 
 	@Override

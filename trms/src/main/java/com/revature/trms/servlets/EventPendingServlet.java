@@ -1,6 +1,7 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -16,7 +17,7 @@ import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
+public class EventPendingServlet extends BaseServlet implements DoGetMethod {
 
 	/**
 	 * 
@@ -34,24 +35,30 @@ public class EventDSPendingServlet extends BaseServlet implements DoGetMethod {
 
 		Employee employee = null;
 		try {
-			employee = ServiceUtilities.getEmployeeService().getEmployeeById(16);
+			employee = ServiceUtilities.getEmployeeService().getEmployeeById(22);
 		} catch (NotFoundRecordException | IllegalParameterException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		Integer supervisorId = 16; // TODO: Getting this from session
-
-		LogUtilities.trace("SupervisorId: " + supervisorId);
-
 		String eventsString = "";
-		List<Event> events = null;
+		List<Event> events = new ArrayList<>();
+		
+		LogUtilities.trace(employee.toString());
+		
+		LogUtilities.trace(employee.getEmployeeTypes().toString());
 
 		try {
-			events = eventService.getEventsPendingOfDirectSupervisorApproval(employee.getEmployeeId());
-
-			if (employee.getEmployeeTypes().contains(EmployeeType.Head_Department)) {
-				events.addAll(eventService.getEventsPendingOfHeadDepartmentApproval(employee.getEmployeeId()));
+			if (employee.getEmployeeTypes().contains(EmployeeType.Direct_Supervisor)) {
+				events = eventService.getEventsPendingOfDirectSupervisorApproval(employee.getEmployeeId());
+				
+				if (employee.getEmployeeTypes().contains(EmployeeType.Head_Department)) {
+					events.addAll(eventService.getEventsPendingOfHeadDepartmentApproval(employee.getEmployeeId()));
+				}				
+			} else if (employee.getEmployeeTypes().contains(EmployeeType.Head_Department)) {
+				events = eventService.getEventsPendingOfHeadDepartmentApproval(employee.getEmployeeId());
+			} else if (employee.getEmployeeTypes().contains(EmployeeType.Benefits_Coordinator)) {
+				events = eventService.getEventsPendingOfBenefitsCoordinatorApproval();
 			}
 
 		} catch (IllegalParameterException e) {

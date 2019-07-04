@@ -12,7 +12,7 @@ import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class EventCancelServlet extends BaseServlet implements DoGetMethod {
+public class EventCancelServlet extends BaseServlet implements DoPutMethod {
 
 	/**
 	 * 
@@ -23,7 +23,7 @@ public class EventCancelServlet extends BaseServlet implements DoGetMethod {
 
 	// <url-pattern>/event/cancel/*</url-pattern>
 	@Override
-	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void put(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("EventCancelServlet - get");
 
 		eventService = ServiceUtilities.getEventService();

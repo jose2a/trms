@@ -56,6 +56,35 @@ function ajaxGetRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, syn
 
 }
 
+function ajaxPutRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, syn) {
+     $.ajax(url, {
+          type: "PUT",
+          data: paramObj,
+          async: syn || true,
+          statusCode: {
+               200: function (response) {
+                    // OK
+                    callbackFuncSucc(response);
+               },
+               400: function (response) {
+                    // Bad Request (Validation errors)
+                    callbackFuncBadReq(response);
+               },
+               401: function (response) {
+                    // Unauthorized
+               },
+               403: function (response) {
+                    // Forbidden
+               },
+               404: function (response) {
+                    // Not Found
+                    console.log(response);
+               }
+          }
+     });
+
+}
+
 function ajaxUploadFile(url, data, uploadFileSucc, uploadAttachmentBadR) {
      $.ajax({
           url: url,
@@ -75,7 +104,17 @@ function ajaxUploadFile(url, data, uploadFileSucc, uploadAttachmentBadR) {
 }
 
 function redirect(url) {
-     window.location = url;
+     var dialog = bootbox.dialog({
+          closeButton: false,
+          message: '<p><i class="fa fa-spin fa-spinner"></i> Loading...</p>'
+     });
+
+     dialog.init(function () {
+          setTimeout(function () {
+               window.location = url;
+          }, 2000);
+     });
+     
 }
 
 function saveEmployeeToSession(employee) {

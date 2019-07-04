@@ -13,7 +13,7 @@ import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
-public class EventByEmployeeIdServlet extends BaseServlet implements DoGetMethod {
+public class EventByEmployeeServlet extends BaseServlet implements DoGetMethod {
 
 	/**
 	 * 
@@ -22,21 +22,14 @@ public class EventByEmployeeIdServlet extends BaseServlet implements DoGetMethod
 
 	private EventService eventService;
 
-	// <url-pattern>/event/employee/*</url-pattern>
+	// <url-pattern>/event/employee</url-pattern>
 	@Override
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("EventByEmployeeIdServlet - get");
 
 		eventService = ServiceUtilities.getEventService();
-
-		if (pathInfoParts.length == 0 || pathInfoParts[1].trim().equals("")) {
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
 		
-		String id = (pathInfoParts.length > 0) ? pathInfoParts[1] : null;
-		
-		Integer employeeId = 31;
+		Integer employeeId = 31; // TODO REmove and get from session
 
 		LogUtilities.trace("EmployeeId: " + employeeId);
 

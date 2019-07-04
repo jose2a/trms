@@ -179,20 +179,22 @@
 								</div>
 							</div>
 							<div class="box-body">
-								<dl class="dl-horizontal">
-									<dt>First Name</dt>
-									<dd>
-										<span id="emp_firstname"></span>
-									</dd>
-									<dt>Last Name</dt>
-									<dd>
-										<span id="emp_lastname"></span>
-									</dd>
-									<dt>Email</dt>
-									<dd>
-										<span id="emp_email"></span>
-									</dd>
-								</dl>
+								<!-- text input -->
+													<div class="form-group">
+														<label>First Name </label> <input type="text"
+															id="emp_firstname" name="emp_firstname"
+															class="form-control" disabled>
+													</div>
+													<div class="form-group">
+														<label>Last Name </label> <input type="text"
+															id="emp_lastname" name="emp_lastname"
+															class="form-control" disabled>
+													</div>
+
+													<div class="form-group">
+														<label>Email </label> <input type="text" id="emp_lastname"
+															name="emp_email" class="form-control" disabled>
+													</div>
 							</div>
 						</div>
 					</div>
@@ -290,7 +292,7 @@
 									<!-- text input -->
 									<div class="form-group">
 										<label>Work time that will be missed (days)</label> <input
-											type="text" id="event_worktimemissed" class="form-control">
+											type="text" id="event_worktimemissed" class="form-control" value="0">
 									</div>
 
 									<!-- checkbox -->

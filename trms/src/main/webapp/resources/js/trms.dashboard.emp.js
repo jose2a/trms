@@ -3,7 +3,7 @@ $(document).ready(function () {
      let events = [];
 
      function getEventsForCustomers() {
-          ajaxGetRequest("./event/employee/31", {}, successfulGetEventsForEmployee);
+          ajaxGetRequest("./event/employee", {}, successfulGetEventsForEmployee);
      }
 
      getEventsForCustomers();

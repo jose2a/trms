@@ -34,8 +34,6 @@ public class EventConfirmPresentationServlet extends BaseServlet implements DoPo
 
 		try {
 			eventService.confirmSuccessfulPresentation(confirmGradePres.getEventId(), confirmGradePres.isSuccessful());
-
-			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (PojoValidationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));

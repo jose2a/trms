@@ -14,8 +14,9 @@ import com.revature.trms.pojos.Event;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
+import com.revature.trms.viewmodels.ApproveEventVM;
 
-public class EventApproveServlet extends BaseServlet implements DoPutMethod {
+public class EventApproveServlet extends BaseServlet implements DoPostMethod {
 
 	/**
 	 * 
@@ -26,8 +27,8 @@ public class EventApproveServlet extends BaseServlet implements DoPutMethod {
 
 	// <url-pattern>/event/approve</url-pattern>
 	@Override
-	public void put(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LogUtilities.trace("EventApproveServlet - post");
+	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		LogUtilities.trace("EventApproveServlet - put");
 
 		eventService = ServiceUtilities.getEventService();
 
@@ -42,10 +43,14 @@ public class EventApproveServlet extends BaseServlet implements DoPutMethod {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		LogUtilities.trace(body);
 
-		Event event = objectMapper.readValue(body, Event.class);
+		ApproveEventVM vm = objectMapper.readValue(body, ApproveEventVM.class);
 
 		try {
+			Event event = eventService.getEventById(vm.getEventId());
+			
 			if (employee.getEmployeeTypes().contains(EmployeeType.Direct_Supervisor)) { // Denied by DS
 				LogUtilities.trace("Approved by Direct Supervisor");
 

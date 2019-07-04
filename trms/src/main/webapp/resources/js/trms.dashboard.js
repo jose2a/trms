@@ -3,7 +3,7 @@ $(document).ready(function () {
      let events = [];
 
      function getEventsForCustomers() {
-          ajaxGetRequest("./event/employee/31", {}, successfulGetEventsForEmployee);
+          ajaxGetRequest("./event/pending", {}, successfulGetEventsForEmployee);
      }
 
      getEventsForCustomers();
@@ -38,28 +38,10 @@ $(document).ready(function () {
                         "mData": null,
                         "bSortable": false,
                         "mRender": function (e) {
-                             let cancel = ``;
-
-                             if (e.acceptedAmountReimbursed !== 0 && e.reimbursementStatus !== "Denied") {
-                                  cancel = `<a class="btn btn-md btn-danger" href=#/?eventId=${e.eventId}>
-                                       <i class="fa fa-edit"></i> Cancel Req.
-                                  </a>`;
-                             }
                              
-                             if (e.requiredPresentation && e.reimbursementStatus === "Approved") {
-                                  return `<a class="btn btn-md btn-primary" href=#/?eventId=${e.eventId}>
-                                       <i class="fa fa-edit"></i> Upload Pres.
-                                  </a>
-                                  ${cancel}`;
-                             } else if (!e.requiredPresentation && e.reimbursementStatus === "Approved") {
-
-                             return `<a class="btn btn-md btn-primary" href=#/?eventId=${e.eventId}>
-                                       <i class="fa fa-edit"></i> Upload Grade
-                                  </a>
-                                  ${cancel}`;
-                             }
-
-                             return "";
+                                  return `<a class="btn btn-md btn-primary" href=./reviewEvent.html?eventId=${e.eventId}>
+                                       <i class="fa fa-edit"></i> Review Request
+                                  </a>`;
                          }
                    }
                ]

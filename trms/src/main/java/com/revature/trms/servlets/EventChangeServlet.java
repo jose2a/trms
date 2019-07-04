@@ -15,7 +15,7 @@ import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 import com.revature.trms.viewmodels.ChangeAmountEventVM;
 
-public class EventChangeServlet extends BaseServlet implements DoPostMethod {
+public class EventChangeServlet extends BaseServlet implements DoPutMethod {
 
 	/**
 	 * 
@@ -26,7 +26,7 @@ public class EventChangeServlet extends BaseServlet implements DoPostMethod {
 
 	// <url-pattern>/event/changeamount</url-pattern>
 	@Override
-	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void put(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("EventChangeServlet - post");
 
 		eventService = ServiceUtilities.getEventService();

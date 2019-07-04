@@ -44,6 +44,8 @@ public class EventDeniedServlet extends BaseServlet implements DoPostMethod {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		LogUtilities.trace(body);
 
 		ReasonDenied reasonDenied = objectMapper.readValue(body, ReasonDenied.class);
 

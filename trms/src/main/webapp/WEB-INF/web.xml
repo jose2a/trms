@@ -114,24 +114,24 @@
 
 	<servlet>
 		<description></description>
-		<display-name>EventBencoPendingServlet</display-name>
-		<servlet-name>EventBencoPendingServlet</servlet-name>
-		<servlet-class>com.revature.trms.servlets.EventBencoPendingServlet</servlet-class>
+		<display-name>EventByEmployeeServlet</display-name>
+		<servlet-name>EventByEmployeeServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.EventByEmployeeServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>EventBencoPendingServlet</servlet-name>
-		<url-pattern>/event/benco/pending</url-pattern>
+		<servlet-name>EventByEmployeeServlet</servlet-name>
+		<url-pattern>/event/employee</url-pattern>
 	</servlet-mapping>
-
+	
 	<servlet>
 		<description></description>
-		<display-name>EventByEmployeeIdServlet</display-name>
-		<servlet-name>EventByEmployeeIdServlet</servlet-name>
-		<servlet-class>com.revature.trms.servlets.EventByEmployeeIdServlet</servlet-class>
+		<display-name>EventByIdServlet</display-name>
+		<servlet-name>EventByIdServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.EventByIdServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>EventByEmployeeIdServlet</servlet-name>
-		<url-pattern>/event/employee/*</url-pattern>
+		<servlet-name>EventByIdServlet</servlet-name>
+		<url-pattern>/event/id/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -191,24 +191,13 @@
 
 	<servlet>
 		<description></description>
-		<display-name>EventDHPendingServlet</display-name>
-		<servlet-name>EventDHPendingServlet</servlet-name>
-		<servlet-class>com.revature.trms.servlets.EventDHPendingServlet</servlet-class>
+		<display-name>EventPendingServlet</display-name>
+		<servlet-name>EventPendingServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.EventPendingServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>EventDHPendingServlet</servlet-name>
-		<url-pattern>/event/dh/pending</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<description></description>
-		<display-name>EventDSPendingServlet</display-name>
-		<servlet-name>EventDSPendingServlet</servlet-name>
-		<servlet-class>com.revature.trms.servlets.EventDSPendingServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>EventDSPendingServlet</servlet-name>
-		<url-pattern>/event/ds/pending</url-pattern>
+		<servlet-name>EventPendingServlet</servlet-name>
+		<url-pattern>/event/pending</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
