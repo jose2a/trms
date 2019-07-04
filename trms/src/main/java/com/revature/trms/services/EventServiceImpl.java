@@ -62,12 +62,15 @@ public class EventServiceImpl extends BaseService implements EventService {
 			throw new IllegalParameterException("completeTuitionReimbursementForm - employeeId should not be empty.");
 		}
 
-		int daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate()).getDays();
+		int daysBeforeStartOfEvent = 0;
 
-		LogUtilities.trace("Days before start: " + daysBeforeStartOfEvent);
+		if (event.getDateOfEvent() != null) {
+			daysBeforeStartOfEvent = Period.between(LocalDate.now(), event.getDateOfEvent().toLocalDate()).getDays();
+			LogUtilities.trace("Days before start: " + daysBeforeStartOfEvent);
+		}
 
-		// Validating the data for the event
 		pojoValException = PojoValidationException.getInstance();
+		// Validating the data for the event
 		validateEvent(event, daysBeforeStartOfEvent, from, to, pojoValException);
 		checkValidationResults(pojoValException);
 
@@ -415,7 +418,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 		}
 
 		Employee directSupervisor = employeeService.getEmployeeSupervisor(event.getEmployeeId());
-		
+
 		LogUtilities.trace(directSupervisor.toString());
 
 		LogUtilities.trace("Sending request for information.");
@@ -479,7 +482,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 		InformationRequired informationRequired = informationRequiredService
 				.getInformationRequiredByEmployeeIdAndEventId(employeeId, eventId);
-		
+
 		LogUtilities.trace("confirmSentOfInformationRequired - " + informationRequired);
 
 		if (informationRequired == null) {
@@ -782,8 +785,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 	}
 
 	@Override
-	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId)
-			throws IllegalParameterException {
+	public List<Event> getEventsPendingOfHeadDepartmentApproval(Integer employeeId) throws IllegalParameterException {
 		LogUtilities.trace("getEventsPendingOfHeadDepartmentApproval");
 
 		if (employeeId == null) {
@@ -797,16 +799,16 @@ public class EventServiceImpl extends BaseService implements EventService {
 		List<Event> eventsPendingOfHDApproval = eventDao.getEventsPendingOfHeadDepartmentApproval();
 		// Getting employees under this supervisor
 		List<Integer> employeesIdsUnderSup = new ArrayList<>();
-		
+
 		// looping the employee ladder
 		for (Integer id : employeeService.getEmployeesIdsUnderSupervisorId(employeeId)) {
 			employeesIdsUnderSup.add(id);
-			
+
 			for (Integer asoccId : employeeService.getEmployeesIdsUnderSupervisorId(id)) {
 				employeesIdsUnderSup.add(asoccId);
 			}
 		}
-		
+
 		LogUtilities.trace("emp Ids: " + employeesIdsUnderSup);
 
 		for (Event evt : eventsPendingOfHDApproval) {

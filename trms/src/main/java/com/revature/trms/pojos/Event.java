@@ -26,7 +26,7 @@ public class Event {
 	private String gradeCutoff;
 
 	// User (optional)
-	private int workTimeMissed;
+	private Integer workTimeMissed;
 
 	// Used for business logic
 	private String finalGrade;
@@ -185,11 +185,11 @@ public class Event {
 		this.workJustification = workJustification;
 	}
 
-	public int getWorkTimeMissed() {
+	public Integer getWorkTimeMissed() {
 		return workTimeMissed;
 	}
 
-	public void setWorkTimeMissed(int workTimeMissed) {
+	public void setWorkTimeMissed(Integer workTimeMissed) {
 		this.workTimeMissed = workTimeMissed;
 	}
 

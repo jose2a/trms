@@ -29,8 +29,11 @@ gulp.task('copy:js', () => {
         `${paths.nodeModules}jquery/dist/jquery.min.js`,
         `${paths.nodeModules}datatables.net/js/jquery.dataTables.min.js`,
         `${paths.nodeModules}datatables.net-bs/js/dataTables.bootstrap.min.js`,
-        `${paths.nodeModules}toastr/build/toastr.min.js`
-    ];
+        `${paths.nodeModules}toastr/build/toastr.min.js`,
+	`${paths.nodeModules}jquery-validation/dist/jquery.validate.min.js`,
+	`${paths.nodeModules}bootbox/dist/bootbox.min.js`,
+	`${paths.nodeModules}bootbox/dist/bootbox.locales.min.js`    
+];
 
     return gulp.src(javascriptToCopy)
         .pipe(gulp.dest(`${paths.scriptsDest}`));

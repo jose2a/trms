@@ -21,7 +21,7 @@ $(document).ready(function () {
                password: $("[name='password']").val()
           };
 
-          ajaxPostRequest(url, paramObj, showSucessfulLoginResponse);
+          ajaxPostRequest(url, paramObj, showSucessfulLoginResponse, showBadRequestLoginResponse);
      });
 
      let showSucessfulLoginResponse = function (employee) {
@@ -31,9 +31,12 @@ $(document).ready(function () {
           redirectEmployee(employee);
      }
 
+     let showBadRequestLoginResponse = function (response) {
+          showArrayOfErrorsInUL('errors_ul', response);
+     }
+
      function redirectEmployee(employee) {
           for (const role of employee.employeeTypes) {
-               console.log(role);
 
                if (role === "Direct_Supervisor"
                     || role == "Head_Department"
