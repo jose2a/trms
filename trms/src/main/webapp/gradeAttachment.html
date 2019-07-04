@@ -90,7 +90,7 @@
 				<ul class="sidebar-menu" data-widget="tree">
 					<li class="header">MAIN NAVIGATION</li>
 
-					<li class="active treeview"><a href=""> <i
+					<li class="active treeview"><a href="./dashboardEmp.html"> <i
 							class="fa fa-dashboard"></i> <span>Dashboard</span>
 					</a></li>
 
@@ -98,50 +98,68 @@
 			</section>
 			<!-- /.sidebar -->
 		</aside>
+
 		<!-- =============================================== -->
 
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
 			<!-- Content Header (Page header) -->
 			<section class="content-header">
-				<h1>Pending Reimbursement</h1>
-
+				<h1>Upload Approval Attachment</h1>
 			</section>
 
 			<!-- Main content -->
 			<section class="content">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="box">
-							<div class="box-header"></div>
-							<!-- /.box-header -->
-							<div class="box-body">
-								<table id="events" class="table table-bordered table-striped">
-									<thead>
-										<tr>
-											<th>Id</th>
-											<th>Date of Event</th>
-											<th>Time of event</th>
-											<th>Location</th>
-											<th>Description</th>
-											<th>Pres. Req.</th>
-											<th>Cost</th>
-											<th>Projected Amt.</th>
-											<th>Accepte Amt.</th>
-											<th>Approval status</th>
-											<th></th>
-										</tr>
-									</thead>
-								</table>
-							</div>
-							<!-- /.box-body -->
-						</div>
-						<!-- /.box -->
-					</div>
-					<!-- /.col -->
-				</div>
-				<!-- /.row -->
+						<form name="approval_attachment_form"
+							id="approval_attachment_form" action="./attachment/upload"
+							method="post" role="form">
 
+							<input type="hidden" name="eventId" id="eventId">
+							<!-- general form elements disabled -->
+							<div class="box box-default">
+								<div class="box-header with-border">
+									<h3 class="box-title">Attachment Information</h3>
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body">
+									<div class="text-red">
+										<ul id="errors_ul"></ul>
+									</div>
+									
+									<div>
+										<p>
+											<span class="text-red">*</span> Information required.
+										</p>
+									</div>
+
+									<div class="form-group">
+										<label for="exampleInputFile">Final Grade</label> <input
+											type="text" name="finalGrade" id="finalGrade">
+
+										<p class="help-block">Enter your final grade for this event.</p>
+									</div>
+
+									<div class="form-group">
+										<label for="fileContent">File input</label> <input
+											type="file" name="fileContent" id="fileContent">
+
+										<p class="help-block">Select the file you want to attach.</p>
+									</div>
+								</div>
+								<!-- /.box-body -->
+								<div class="box-footer">
+									<a href="./dashboardEmp.html" class="btn btn-default">Cancel</a>
+									<button type="submit" class="btn btn-info pull-right">Upload
+										Grade</button>
+								</div>
+							</div>
+							<!-- /.box -->
+						</form>
+					</div>
+				</div>
+				<!-- / .row -->
 			</section>
 			<!-- /.content -->
 		</div>
@@ -162,14 +180,17 @@
 
 	<!-- jQuery 3 -->
 	<script src="./resources/js/jquery.min.js"></script>
+	<script src="./resources/js/jquery.validate.min.js"></script>
 	<!-- Bootstrap 3.3.7 -->
 	<script src="./resources/js/bootstrap.min.js"></script>
+	<script src="./resources/js/bootstrap-datepicker.min.js"></script>
+	<script src="./resources/js/bootstrap-timepicker.min.js"></script>
+	<script src="./resources/js/toastr.min.js"></script>
+	<script src="./resources/js/bootbox.min.js"></script>
+	<script src="./resources/js/bootbox.locales.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="./resources/js/adminlte.min.js"></script>
-	<script src="./resources/js/jquery.dataTables.min.js"></script>
-	<script src="./resources/js/dataTables.bootstrap.min.js"></script>
 	<script src="./resources/js/trms.common.js"></script>
-	<script src="./resources/js/trms.dashboard.js"></script>
-
+	<script src="./resources/js/trms.attachment.grade.upload.js"></script>
 </body>
 </html>

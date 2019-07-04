@@ -13,6 +13,20 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.html</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/500.html</location>
+	</error-page>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/500.html</location>
+	</error-page>
+
 	<servlet>
 		<description></description>
 		<display-name>AddEmployeeServlet</display-name>
@@ -67,7 +81,7 @@
 		<servlet-name>EmployeeServlet</servlet-name>
 		<url-pattern>/employee/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<description></description>
 		<display-name>EmployeeSessionServlet</display-name>
@@ -89,7 +103,7 @@
 		<servlet-name>EmployeeTypeServlet</servlet-name>
 		<url-pattern>/employee/types/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<description></description>
 		<display-name>EmptyServlet</display-name>
@@ -100,7 +114,7 @@
 		<servlet-name>EmptyServlet</servlet-name>
 		<url-pattern>/empty</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<description></description>
 		<display-name>EventApproveServlet</display-name>
@@ -122,7 +136,7 @@
 		<servlet-name>EventByEmployeeServlet</servlet-name>
 		<url-pattern>/event/employee</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<description></description>
 		<display-name>EventByIdServlet</display-name>
@@ -254,7 +268,7 @@
 		<servlet-name>ListEmployeeServlet</servlet-name>
 		<url-pattern>/admin/ListEmployee</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<description></description>
 		<display-name>LoginServlet</display-name>
@@ -265,7 +279,7 @@
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<description></description>
 		<display-name>LogoutServlet</display-name>
