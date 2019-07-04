@@ -615,6 +615,19 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 		return eventDao.updateEvent(event);
 	}
+	
+	@Override
+	public void uploadEventApprovalAttachment(Integer eventId, Attachment attachment)
+			throws NotFoundRecordException, PojoValidationException, IllegalParameterException {
+		LogUtilities.trace("uploadEventApprovalAttachment");
+		
+		Event event = eventDao.getEventById(eventId);
+		List<Attachment> attachments = new ArrayList<>();
+		attachments.add(attachment);
+		
+		
+		addAttachmentsToEvent(event, attachments);
+	}
 
 	@Override
 	public boolean uploadFinalGrade(Integer eventId, String finalGrade, Attachment attachment)

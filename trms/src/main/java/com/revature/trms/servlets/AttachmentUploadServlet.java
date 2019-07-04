@@ -8,45 +8,36 @@ import java.time.LocalDate;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.AttachmentDocType;
-import com.revature.trms.services.AttachmentService;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
 
 @MultipartConfig
-public class AttachmentUploadServlet extends HttpServlet {
+public class AttachmentUploadServlet extends BaseServlet {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7482661353345410340L;
 
-	private AttachmentService attachmentService;
 	private EventService eventService;
 
-	private ObjectMapper objectMapper;
-
 	// <url-pattern>/attachment/upload</url-pattern>
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		LogUtilities.trace("AttachmentUploadServlet - post");
 
-		attachmentService = ServiceUtilities.getAttachmentService();
 		eventService = ServiceUtilities.getEventService();
-
-		objectMapper = new ObjectMapper();
 
 		String id = request.getParameter("eventId");
 		String finalGrade = request.getParameter("finalGrade");
@@ -101,7 +92,8 @@ public class AttachmentUploadServlet extends HttpServlet {
 			if (attachment.getDocumentType() == AttachmentDocType.Direct_Supervisor_Approval
 					|| attachment.getDocumentType() == AttachmentDocType.Department_Head_Approval) {
 
-				isSuccess = attachmentService.addAttachment(attachment);
+				eventService.uploadEventApprovalAttachment(eventId, attachment);
+				isSuccess = true;
 			} else if (attachment.getDocumentType() == AttachmentDocType.Presentation_Document) {
 				isSuccess = eventService.uploadEventPresentation(eventId, attachment);
 			} else if (attachment.getDocumentType() == AttachmentDocType.Grade_Document) {
@@ -112,7 +104,7 @@ public class AttachmentUploadServlet extends HttpServlet {
 			if (isSuccess) {
 				attachment.setFileContent(null);
 
-				response.setStatus(HttpServletResponse.SC_CREATED);
+				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().append(objectMapper.writeValueAsString(attachment));
 				return;
 			}
@@ -137,5 +129,11 @@ public class AttachmentUploadServlet extends HttpServlet {
 			return;
 		}
 
+	}
+
+	@Override
+	boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

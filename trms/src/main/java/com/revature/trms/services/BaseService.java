@@ -36,7 +36,7 @@ public abstract class BaseService {
 	 * @param attachment The attachment
 	 */
 	protected void validateAttachment(Attachment attachment, PojoValidationException validationException) {
-		if (attachment.getFileName().equals("") || attachment.getFileName().isEmpty()) {
+		if (attachment.getFileName() == null || attachment.getFileName().isEmpty()) {
 			validationException.addError("File name should not be empty.");
 		}
 

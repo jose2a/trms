@@ -56,6 +56,24 @@ function ajaxGetRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, syn
 
 }
 
+function ajaxUploadFile(url, data, uploadFileSucc, uploadAttachmentBadR) {
+     $.ajax({
+          url: url,
+          type: 'post',
+          data: data,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+               if (response != 0) {
+                    uploadFileSucc(response);
+               } 
+          },
+          error: function (response) {
+               uploadAttachmentBadR(response);
+          }
+     });
+}
+
 function redirect(url) {
      window.location = url;
 }
@@ -100,18 +118,18 @@ function makeEventForSubmit(event_date, event_time, event_location, event_descri
      event_gradingFormatId, event_workTimeMissed, event_gradeCutoff, grade_from, grade_to) {
 
      return {
-               dateOfEvent: "" || event_date,
-               timeOfEvent: event_time || "",
-               location: event_location || "",
-               description: event_description || "",
-               cost:  event_cost || "",
-               workJustification: event_workJustification || "",
-               requiredPresentation: event_requiredPresentation || "",
-               eventTypeId: event_eventTypeId || "",
-               gradingFormatId: event_gradingFormatId || "",
-               workTimeMissed: event_workTimeMissed || "",
-               gradeCutoff: event_gradeCutoff || "",
-          from: grade_from || "",
+          dateOfEvent: event_date,
+          timeOfEvent: event_time,
+          location: event_location,
+          description: event_description,
+          cost:  event_cost,
+          workJustification: event_workJustification,
+          requiredPresentation: event_requiredPresentation,
+          eventTypeId: event_eventTypeId,
+          gradingFormatId: event_gradingFormatId,
+          workTimeMissed: event_workTimeMissed,
+          gradeCutoff: event_gradeCutoff,
+          from: grade_from,
           to: grade_to
      };
 }

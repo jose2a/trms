@@ -67,6 +67,9 @@ public interface EventService {
 	public boolean cancelReimbursementRequest(Integer eventId)
 			throws NotFoundRecordException, IllegalParameterException;
 
+	public void uploadEventApprovalAttachment(Integer eventId, Attachment attachment)
+			throws NotFoundRecordException, PojoValidationException, IllegalParameterException;
+			
 	public boolean uploadFinalGrade(Integer eventId, String finalGrade, Attachment attachment)
 			throws NotFoundRecordException, PojoValidationException, IllegalParameterException;
 

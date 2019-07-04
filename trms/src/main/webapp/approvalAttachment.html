@@ -22,7 +22,11 @@
        folder instead of downloading all of them to reduce the load. -->
 <link rel="stylesheet" href="./resources/css/_all-skins.min.css">
 <link rel="stylesheet"
-	href="./resources/css/dataTables.bootstrap.min.css">
+	href="./resources/css/bootstrap-datepicker.min.css">
+<link rel="stylesheet"
+	href="./resources/css/bootstrap-timepicker.min.css">
+<link rel="stylesheet" href="./resources/css/toastr.min.css">
+<link rel="stylesheet" href="./resources/css/style.css">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -53,12 +57,10 @@
 
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
-						
 						<!-- User Account: style can be found in dropdown.less -->
 						<li class="dropdown user user-menu"><a href="#"
-							class="dropdown-toggle" data-toggle="dropdown"> <span
-								class="hidden-xs">Alexander Pierce</span>
-						</a>
+							class="dropdown-toggle" data-toggle="dropdown"><span
+								class="hidden-xs">Alexander Pierce</span> </a>
 							<ul class="dropdown-menu">
 								<!-- User image -->
 								<li class="user-header"><img
@@ -71,7 +73,7 @@
 									</p></li>
 								<li class="user-footer">
 									<div class="pull-right">
-										<a href="#" class="btn btn-default btn-flat">Sign out</a>
+										<a href="#" class="btn btn-default btn-flat">Log out</a>
 									</div>
 								</li>
 							</ul></li>
@@ -158,81 +160,96 @@
 		<div class="content-wrapper">
 			<!-- Content Header (Page header) -->
 			<section class="content-header">
-				<h1>Reimbursement</h1>
-				<ol class="breadcrumb">
-					<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-					<li><a href="#">Examples</a></li>
-					<li class="active">Blank page</li>
-				</ol>
+				<h1>Upload Approval Attachment</h1>
 			</section>
 
 			<!-- Main content -->
 			<section class="content">
-				<div class="box">
-					<div class="box-header">
-						<div class="btn-toolbar">
-							<div class="btn-group">
-								<a href="./newrequest.htm" class="btn btn-primary btn-md"><i
-									class="glyphicon glyphicon-plus"></i> New reimbursement request</a>
-							</div>
-						</div>
-					</div>
-					<!-- /.box-header -->
-					<div class="box-body">
-						<table id="events" class="table table-bordered table-striped">
-							<thead>
-								<tr>
-									<th>Id</th>
-									<th>Date of Event</th>
-									<th>Time of event</th>
-									<th>Location</th>
-									<th>Description</th>
-									<th>Pres. Req.</th>
-									<th>Cost</th>
-									<th>Projected Amt.</th>
-									<th>Accepte Amt.</th>
-									<th>Approval status</th>
-									<th></th>
-								</tr>
-							</thead>
-						</table>
-					</div>
-					<!-- /.box-body -->
-				</div>
-				<!-- /.box -->
-		</div>
-		<!-- /.col -->
-	</div>
-	<!-- /.row -->
+				<div class="row">
+					<div class="col-md-12">
+						<form name="approval_attachment_form" id="approval_attachment_form" action="./attachment/upload"
+							method="post" role="form">
 
-	</section>
-	<!-- /.content -->
-	</div>
-	<!-- /.content-wrapper -->
-	<footer class="main-footer">
-		<div class="pull-right hidden-xs">
-			<b>Version</b> 2.4.0
+							<input type="hidden" name="eventId" id="eventId">
+							<!-- general form elements disabled -->
+							<div class="box box-default">
+								<div class="box-header with-border">
+									<h3 class="box-title">Attachment Information</h3>
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body">
+									<div class="text-red">
+										<ul id="errors_ul"></ul>
+									</div>
+									<div>
+										<p>
+											<span>*</span> You can upload many attachments as you need. Once you are done, click finish.
+										</p>
+									</div>
+									<div>
+										<p>
+											<span class="text-red">*</span> Information required.
+										</p>
+									</div>
+
+									<div class="form-group">
+										<label for="exampleInputFile">File input</label> <input
+											type="file" name="fileContent" id="fileContent">
+
+										<p class="help-block">Select the file you want to attach.</p>
+									</div>
+
+									<div class="form-group">
+										<label>Type of approval <span class="text-red">*</span></label>
+										<select name="documentType" id="documentType"
+											class="form-control">
+											<option value="1">Direct Supervisor Approval</option>
+											<option value="2">Department Head Approval</option>
+										</select>
+									</div>
+								</div>
+								<!-- /.box-body -->
+								<div class="box-footer">
+									<a href="./dashboardEmp.html" class="btn btn-default">Finish uploading</a>
+									<button type="submit" class="btn btn-info pull-right">Upload Attachment</button>
+								</div>
+							</div>
+							<!-- /.box -->
+						</form>
+					</div>
+				</div>
+				<!-- / .row -->
+			</section>
+			<!-- /.content -->
 		</div>
-		<strong>Copyright &copy; 2014-2016 <a
-			href="https://adminlte.io">Almsaeed Studio</a>.
-		</strong> All rights reserved.
-	</footer>
-	<!-- Add the sidebar's background. This div must be placed
+		<!-- /.content-wrapper -->
+		<footer class="main-footer">
+			<div class="pull-right hidden-xs">
+				<b>Version</b> 2.4.0
+			</div>
+			<strong>Copyright &copy; 2014-2016 <a
+				href="https://adminlte.io">Almsaeed Studio</a>.
+			</strong> All rights reserved.
+		</footer>
+		<!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
-	<div class="control-sidebar-bg"></div>
+		<div class="control-sidebar-bg"></div>
 	</div>
 	<!-- ./wrapper -->
 
 	<!-- jQuery 3 -->
 	<script src="./resources/js/jquery.min.js"></script>
+	<script src="./resources/js/jquery.validate.min.js"></script>
 	<!-- Bootstrap 3.3.7 -->
 	<script src="./resources/js/bootstrap.min.js"></script>
+	<script src="./resources/js/bootstrap-datepicker.min.js"></script>
+	<script src="./resources/js/bootstrap-timepicker.min.js"></script>
+	<script src="./resources/js/toastr.min.js"></script>
+	<script src="./resources/js/bootbox.min.js"></script>
+	<script src="./resources/js/bootbox.locales.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="./resources/js/adminlte.min.js"></script>
-	<script src="./resources/js/jquery.dataTables.min.js"></script>
-	<script src="./resources/js/dataTables.bootstrap.min.js"></script>
 	<script src="./resources/js/trms.common.js"></script>
-	<script src="./resources/js/trms.dashboard.emp.js"></script>
-
+	<script src="./resources/js/trms.attachment.upload.js"></script>
 </body>
 </html>
