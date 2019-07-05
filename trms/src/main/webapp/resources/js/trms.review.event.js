@@ -67,7 +67,7 @@ $(document).ready(function() {
                $("#confirm_btng").hide();
           }
 
-          if (event.reimbursementStatus === "Approved") {
+          if (event.bencoEventStatus === "Approved") {
                $("#approval_denial_btng").hide();
                $("#confirm_btng").show();
                $("#additional_inf_btng").hide();
@@ -124,9 +124,11 @@ $(document).ready(function() {
 
           bootbox.prompt({
                title: "Enter the reason why you are denying this request.",
-               centerVertical: true,
                callback: function (result) {
-                    if (result === true) {
+            	   
+            	   console.log(result);
+            	   
+                    if (result) {
                          let objParam = {
                               eventId: eventId,
                               reason: result
@@ -146,8 +148,12 @@ $(document).ready(function() {
           e.preventDefault();
 
           console.log("Conf. presentation");
+          
+          let objParam = {
+        		eventId: eventId
+          };
 
-          ajaxPutRequest($(this).attr("href"), { eventId: eventId }, function () {
+          ajaxPostRequest($(this).attr("href"), JSON.stringify(objParam), function () {
                redirect("./dashboard.html");
           }, showBadFormRequestResponse);
 
@@ -157,8 +163,12 @@ $(document).ready(function() {
           e.preventDefault();
 
           console.log("Conf. grade");
+          
+          let objParam = {
+          		eventId: eventId
+            };
 
-          ajaxPutRequest($(this).attr("href"), { eventId: eventId }, function () {
+          ajaxPostRequest($(this).attr("href"), JSON.stringify(objParam), function () {
                redirect("./dashboard.html");
           }, showBadFormRequestResponse);
 

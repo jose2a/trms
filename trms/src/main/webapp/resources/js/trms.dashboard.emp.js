@@ -46,12 +46,12 @@ $(document).ready(function () {
                                   </a>`;
                              }
                              
-                             if (e.requiredPresentation && e.reimbursementStatus === "Approved") {
+                             if (e.requiredPresentation && e.bencoEventStatus === "Approved") {
                                   return `<a class="btn btn-md btn-primary" href="presentationAttachment.html?eventId=${e.eventId}">
                                        <i class="fa fa-file"></i> Upload Pres.
                                   </a>
                                   ${cancel}`;
-                             } else if (!e.requiredPresentation && e.finalGrade === null && e.reimbursementStatus === "Approved") {
+                             } else if (!e.requiredPresentation && e.finalGrade === null && e.bencoEventStatus === "Approved") {
 
                              return `<a class="btn btn-md btn-primary" href="gradeAttachment.html?eventId=${e.eventId}">
                                        <i class="fa fa-file"></i> Upload Grade
