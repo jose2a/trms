@@ -27,7 +27,7 @@ $(document).ready(function () {
 
           toastr.success(`Your grade was received successfully.`);
 
-          redirect("dashboardEmpl.html");
+          redirect("dashboardEmp.html");
      }
 
      let uploadAttachmentBadReq = function(response) {

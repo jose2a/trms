@@ -12,7 +12,7 @@ $(document).ready(function() {
      }
 
      $(".att > a").click(function() {
-          console.log('Click tab 2');
+    	 $(this).unbind('click');
           getAttachments();
      });
      

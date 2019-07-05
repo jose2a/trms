@@ -1,38 +1,37 @@
-let statusCodeObj = {
-     200: function (response) {
-          // OK
-          callbackFuncSucc(response);
-     },
-     400: function (response) {
-          // Bad Request (Validation errors)
-          callbackFuncBadReq(response);
-     },
-     401: function (response) {
-          // Unauthorized
-          console.log(response);
-          redirect("./");
-     },
-     403: function (response) {
-          // Forbidden
-          console.log(response);
-          // redirect("index.html");
-     },
-     404: function (response) {
-          // Not Found
-          console.log(response);
-          redirect("404.html");
-     },
-     500: function (response) {
-          redirect("500.html");
-     }
-};
 
 function ajaxPostRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, sync) {
      $.ajax(url, {
           type: "post",
           data: paramObj,
           async: sync || true,
-          statusCode: statusCodeObj
+          statusCode: {
+        	     200: function (response) {
+        	          // OK
+        	          callbackFuncSucc(response);
+        	     },
+        	     400: function (response) {
+        	          // Bad Request (Validation errors)
+        	          callbackFuncBadReq(response);
+        	     },
+        	     401: function (response) {
+        	          // Unauthorized
+        	          console.log(response);
+        	          redirect("./");
+        	     },
+        	     403: function (response) {
+        	          // Forbidden
+        	          console.log(response);
+        	          // redirect("index.html");
+        	     },
+        	     404: function (response) {
+        	          // Not Found
+        	          console.log(response);
+        	          redirect("404.html");
+        	     },
+        	     500: function (response) {
+        	          redirect("500.html");
+        	     }
+        	}
      });
      
 }
@@ -42,7 +41,34 @@ function ajaxGetRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, syn
           type: "GET",
           data: paramObj,
           async: syn || true,
-          statusCode: statusCodeObj
+          statusCode: {
+        	     200: function (response) {
+        	          // OK
+        	          callbackFuncSucc(response);
+        	     },
+        	     400: function (response) {
+        	          // Bad Request (Validation errors)
+        	          callbackFuncBadReq(response);
+        	     },
+        	     401: function (response) {
+        	          // Unauthorized
+        	          console.log(response);
+        	          redirect("./");
+        	     },
+        	     403: function (response) {
+        	          // Forbidden
+        	          console.log(response);
+        	          // redirect("index.html");
+        	     },
+        	     404: function (response) {
+        	          // Not Found
+        	          console.log(response);
+        	          redirect("404.html");
+        	     },
+        	     500: function (response) {
+        	          redirect("500.html");
+        	     }
+        	}
      });
 
 }
@@ -52,7 +78,34 @@ function ajaxPutRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, syn
           type: "PUT",
           data: paramObj,
           async: syn || true,
-          statusCode: statusCodeObj
+          statusCode: {
+        	     200: function (response) {
+        	          // OK
+        	          callbackFuncSucc(response);
+        	     },
+        	     400: function (response) {
+        	          // Bad Request (Validation errors)
+        	          callbackFuncBadReq(response);
+        	     },
+        	     401: function (response) {
+        	          // Unauthorized
+        	          console.log(response);
+        	          redirect("./");
+        	     },
+        	     403: function (response) {
+        	          // Forbidden
+        	          console.log(response);
+        	          // redirect("index.html");
+        	     },
+        	     404: function (response) {
+        	          // Not Found
+        	          console.log(response);
+        	          redirect("404.html");
+        	     },
+        	     500: function (response) {
+        	          redirect("500.html");
+        	     }
+        	}
      });
 
 }
@@ -123,11 +176,16 @@ function showArrayOfErrorsInUL(ulEle, response) {
      }
 }
 
-function checkEmployeeIsLoggedIn() {
-     ajaxGetRequest("./employeeinfo", {}, function() {}, function (response) {
-          console.log(response);
-     });
-}
+(function checkEmployeeIsLoggedIn() {
+	if (!window.location.href.endsWith("trms/")) {
+		console.log(window.location.href);
+	     ajaxGetRequest("./employeeinfo", {}, function(emp) {
+	    	 $(".fullname").text(`${emp.firstName} ${emp.lastName}`);
+	     }, function (response) {
+	          
+	     });
+	}
+}());
 
 function makeEventForSubmit(event_date, event_time, event_location, event_description,
      event_cost, event_workJustification, event_requiredPresentation, event_eventTypeId,

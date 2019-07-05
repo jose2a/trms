@@ -30,9 +30,9 @@ $(document).ready(function() {
      }
 
      function displayEmployee(employee) {
-          $("#emp_firstname").text(employee.firstName);
-          $("#emp_lastname").text(employee.lastName);
-          $("#emp_email").text(employee.email);
+          $("#emp_firstname").val(employee.firstName);
+          $("#emp_lastname").val(employee.lastName);
+          $("#emp_email").val(employee.email);
      }
 
      function displayEventTypes(eventTypes) {

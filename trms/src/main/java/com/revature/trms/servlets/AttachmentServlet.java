@@ -56,6 +56,8 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 			removeFileContent(attachments);
 			response.getWriter().append(objectMapper.writeValueAsString(attachments));
 			
+			LogUtilities.trace("Attachments for event " + eventId);
+			
 			return;
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. AttachmentServlet. " + e.getMessage());

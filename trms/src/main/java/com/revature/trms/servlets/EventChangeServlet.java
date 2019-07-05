@@ -37,6 +37,10 @@ public class EventChangeServlet extends BaseServlet implements DoPutMethod {
 
 		try {
 			eventService.changeReimbursementAmount(vm.getEventId(), vm.getNewAmount(), vm.getReason());
+			
+			LogUtilities.trace("Changed the amount for the event");
+			
+			return;
 		} catch (NotFoundRecordException e1) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (IllegalParameterException e) {

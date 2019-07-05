@@ -61,7 +61,7 @@ $(document).ready(function() {
      }
 
      function renderButtons(event) {
-          //reimbursementStatus
+          // reimbursementStatus
           if (event.reimbursementStatus === "Pending") {
                $("#approval_denial_btng").show();
                $("#confirm_btng").hide();
@@ -80,6 +80,14 @@ $(document).ready(function() {
                     $("#conf_pres_btn").hide();
                }
           }
+          
+          ajaxGetRequest("./employeeinfo", {}, function(employee) {
+        	  if(!employee.employeeTypes.includes("Benefits_Coordinator")) {
+        		  $("#change_amt").hide();
+        	  }
+ 	     }, function (response) {
+ 	          
+ 	     });
 
      }
 
@@ -115,7 +123,7 @@ $(document).ready(function() {
           let url = $(this).attr("href");
 
           bootbox.prompt({
-               title: "Enter the resson why you are denying this request.",
+               title: "Enter the reason why you are denying this request.",
                centerVertical: true,
                callback: function (result) {
                     if (result === true) {

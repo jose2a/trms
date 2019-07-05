@@ -41,19 +41,19 @@ $(document).ready(function () {
                              let cancel = ``;
 
                              if (e.acceptedAmountReimbursed !== 0 && e.reimbursementStatus !== "Denied") {
-                                  cancel = `<a class="btn btn-md btn-danger" href=./event/cancel/${e.eventId}>
-                                       <i class="fa fa-edit"></i> Cancel Req.
+                                  cancel = `<a class="btn btn-md btn-danger" href="./event/cancel/${e.eventId}">
+                                       <i class="fa fa-remove"></i> Cancel Req.
                                   </a>`;
                              }
                              
                              if (e.requiredPresentation && e.reimbursementStatus === "Approved") {
-                                  return `<a class="btn btn-md btn-primary" href=presentationAttachment.html/?eventId=${e.eventId}>
+                                  return `<a class="btn btn-md btn-primary" href="presentationAttachment.html?eventId=${e.eventId}">
                                        <i class="fa fa-file"></i> Upload Pres.
                                   </a>
                                   ${cancel}`;
-                             } else if (!e.requiredPresentation && e.reimbursementStatus === "Approved") {
+                             } else if (!e.requiredPresentation && e.finalGrade === null && e.reimbursementStatus === "Approved") {
 
-                             return `<a class="btn btn-md btn-primary" href=gradeAttachment.html/?eventId=${e.eventId}>
+                             return `<a class="btn btn-md btn-primary" href="gradeAttachment.html?eventId=${e.eventId}">
                                        <i class="fa fa-file"></i> Upload Grade
                                   </a>
                                   ${cancel}`;

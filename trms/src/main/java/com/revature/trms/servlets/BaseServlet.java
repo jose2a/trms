@@ -75,19 +75,23 @@ public abstract class BaseServlet extends HttpServlet {
 			return;
 		}
 
-		handleAuthenticationAndAuthorization(request, response);
+		if (handleAuthenticationAndAuthorization(request, response)) {
 
-		setJsonResponseHeaders(response);
+			setJsonResponseHeaders(response);
 
-		if (request.getPathInfo() != null) {
-			pathInfoParts = request.getPathInfo().split("/");
+			if (request.getPathInfo() != null) {
+				pathInfoParts = request.getPathInfo().split("/");
+			} else {
+				pathInfoParts = new String[0];
+			}
+
+			LogUtilities.trace("Path info parts: " + String.join(", ", pathInfoParts));
+
+			doGetMethodImpl.get(request, response);
 		} else {
-			pathInfoParts = new String[0];
+
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		}
-
-		LogUtilities.trace("Path info parts: " + String.join(", ", pathInfoParts));
-
-		doGetMethodImpl.get(request, response);
 	}
 
 	@Override
@@ -102,13 +106,17 @@ public abstract class BaseServlet extends HttpServlet {
 			return;
 		}
 
-		handleAuthenticationAndAuthorization(request, response);
+		if (handleAuthenticationAndAuthorization(request, response)) {
 
-		setJsonResponseHeaders(response);
+			setJsonResponseHeaders(response);
 
-		body = readRequestBody(request);
+			body = readRequestBody(request);
 
-		doPostMethodImpl.post(request, response);
+			doPostMethodImpl.post(request, response);
+		} else {
+
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		}
 	}
 
 	@Override
@@ -123,13 +131,17 @@ public abstract class BaseServlet extends HttpServlet {
 			return;
 		}
 
-		handleAuthenticationAndAuthorization(request, response);
+		if (handleAuthenticationAndAuthorization(request, response)) {
 
-		setJsonResponseHeaders(response);
+			setJsonResponseHeaders(response);
 
-		body = readRequestBody(request);
+			body = readRequestBody(request);
 
-		doPutMethodImpl.put(request, response);
+			doPutMethodImpl.put(request, response);
+		} else {
+
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		}
 	}
 
 	@Override
@@ -144,36 +156,50 @@ public abstract class BaseServlet extends HttpServlet {
 			return;
 		}
 
-		handleAuthenticationAndAuthorization(request, response);
+		if (handleAuthenticationAndAuthorization(request, response)) {
 
-		setJsonResponseHeaders(response);
+			setJsonResponseHeaders(response);
 
-		pathInfoParts = request.getPathInfo().split("/");
+			pathInfoParts = request.getPathInfo().split("/");
 
-		LogUtilities.trace("Path info parts: " + String.join("", pathInfoParts));
+			LogUtilities.trace("Path info parts: " + String.join("", pathInfoParts));
 
-		doDeleteMethodImpl.delete(request, response);
+			doDeleteMethodImpl.delete(request, response);
+		} else {
+
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		}
 	}
 
-	private void handleAuthenticationAndAuthorization(HttpServletRequest request, HttpServletResponse response)
+	private boolean handleAuthenticationAndAuthorization(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		LogUtilities.trace("handleAuthenticationAndAuthorization");
-		validateAuthentication(request, response);
 
+		boolean authenticate = validateAuthentication(request, response);
 		boolean authorized = false;
-		
-		if (SessionUtilities.isEmployeeInSession(request)) {
-			List<EmployeeType> employeeTypes = SessionUtilities.getEmployeeFromSession(request).getEmployeeTypes();
-			
-			authorized = validateAuthorization(employeeTypes);
+
+		if (authenticate) {
+
+			if (SessionUtilities.isEmployeeInSession(request)) {
+				List<EmployeeType> employeeTypes = SessionUtilities.getEmployeeFromSession(request).getEmployeeTypes();
+
+				authorized = validateAuthorization(employeeTypes);
+
+				if (!authorized) {
+					LogUtilities.trace("Not authorized");
+					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				}
+			}
 		}
 
-		if (!authorized) {
-			LogUtilities.trace("Not authorized");
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+		if (!authorized || !authenticate) {
+			LogUtilities.info("Not authenticated or not authorized");
 
-			request.getRequestDispatcher("/empty").forward(request, response);
+			return false;
+
 		}
+
+		return true;
 	}
 
 	// Setting Json response content type
@@ -191,12 +217,19 @@ public abstract class BaseServlet extends HttpServlet {
 	 * @throws ServletException
 	 */
 	// TODO Activate this when everything is tested
-	private void validateAuthentication(HttpServletRequest request, HttpServletResponse response)
+	private boolean validateAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		if (SessionUtilities.isEmployeeInSession(request)) {
+		if (!SessionUtilities.isEmployeeInSession(request)) {
+
+			LogUtilities.trace("Employee not in session");
+
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			request.getRequestDispatcher("/empty").forward(request, response);
+			// request.getRequestDispatcher("/empty").forward(request, response);
+
+			return false;
 		}
+
+		return true;
 	}
 
 	protected String readRequestBody(HttpServletRequest request) throws IOException {

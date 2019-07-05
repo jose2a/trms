@@ -26,8 +26,7 @@ $(document).ready(function () {
 
      let showSucessfulLoginResponse = function (employee) {
           console.log(employee);
-
-          saveEmployeeToSession(employee);
+          
           redirectEmployee(employee);
      }
 

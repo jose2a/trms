@@ -22,7 +22,11 @@
        folder instead of downloading all of them to reduce the load. -->
 <link rel="stylesheet" href="./resources/css/_all-skins.min.css">
 <link rel="stylesheet"
-	href="./resources/css/dataTables.bootstrap.min.css">
+	href="./resources/css/bootstrap-datepicker.min.css">
+<link rel="stylesheet"
+	href="./resources/css/bootstrap-timepicker.min.css">
+<link rel="stylesheet" href="./resources/css/toastr.min.css">
+<link rel="stylesheet" href="./resources/css/style.css">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -86,9 +90,16 @@
 				<ul class="sidebar-menu" data-widget="tree">
 					<li class="header">MAIN NAVIGATION</li>
 
-					<li class="active treeview"><a href=""> <i
-							class="fa fa-dashboard"></i> <span>Dashboard</span>
-					</a></li>
+					<li class="treeview"><a href="#"> <i
+							class="fa fa-dashboard"></i> <span>Dashboard</span> <span
+							class="pull-right-container"> <i
+								class="fa fa-angle-left pull-right"></i>
+						</span>
+					</a>
+						<ul class="treeview-menu" style="display: none;">
+							<li><a href="dashboardEmp.html"><i class="fa fa-circle-o"></i>
+									Dashboard</a></li>
+						</ul></li>
 
 				</ul>
 			</section>
@@ -172,6 +183,7 @@
 	<script src="./resources/js/adminlte.min.js"></script>
 	<script src="./resources/js/jquery.dataTables.min.js"></script>
 	<script src="./resources/js/dataTables.bootstrap.min.js"></script>
+	<script src="./resources/js/bootbox.min.js"></script>
 	<script src="./resources/js/trms.common.js"></script>
 	<script src="./resources/js/trms.dashboard.emp.js"></script>
 

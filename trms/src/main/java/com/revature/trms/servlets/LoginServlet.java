@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Employee;
@@ -25,7 +24,6 @@ public class LoginServlet extends BaseServlet {
 	private static final long serialVersionUID = 9176769999044428691L;
 
 	private EmployeeService employeeService;
-	private ObjectMapper objectMapper;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -56,6 +54,9 @@ public class LoginServlet extends BaseServlet {
 			SessionUtilities.saveEmployeeToSession(req, employee);
 
 			employee.setPassword("*******");
+			employee.setEmail("");
+			
+			LogUtilities.info("Employee: " + employee.toString());
 
 			resp.getWriter().append(objectMapper.writeValueAsString(employee));
 		} catch (PojoValidationException e) {

@@ -127,7 +127,7 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = "SELECT attachment_id, file_name, date_submitted, attachment_type_id, event_id, content_type"
+			String sql = "SELECT attachment_id, file_name, date_submitted, file_content, attachment_type_id, event_id, content_type"
 					+ " FROM attachment WHERE event_id=?";
 
 			ps = conn.prepareStatement(sql);
