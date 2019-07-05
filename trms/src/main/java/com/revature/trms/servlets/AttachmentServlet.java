@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.pojos.Attachment;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.services.AttachmentService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
@@ -48,33 +49,31 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 			throws ServletException, IOException {
 		LogUtilities.trace("AttachmentServlet - getByEventId");
 
-		String attachmentsString = "";
-
 		List<Attachment> attachments;
 
 		try {
 			attachments = attachmentService.getAttachmentsByEventId(eventId);
 			removeFileContent(attachments);
-			attachmentsString = objectMapper.writeValueAsString(attachments);
+			response.getWriter().append(objectMapper.writeValueAsString(attachments));
+			
+			return;
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. AttachmentServlet. " + e.getMessage());
-			
+
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
 		}
 
-		response.getWriter().append(attachmentsString);
-		return;
-
 	}
-	
+
 	/**
 	 * Remove file content from attachment not need to send it at this point.
+	 * 
 	 * @param attachments The attachment list
 	 */
 	private void removeFileContent(List<Attachment> attachments) {
 		LogUtilities.trace("Removing binary file from the attachments");
-		
+
 		for (Attachment attachment : attachments) {
 			attachment.setFileContent(null);
 		}
@@ -97,7 +96,7 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. AttachmentServlet. getByAttachmentId " + e.getMessage());
-			
+
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
 		}
@@ -123,12 +122,10 @@ public class AttachmentServlet extends BaseServlet implements DoGetMethod {
 		os.flush();
 		os.close();
 		is.close();
-
 	}
 
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
 		return true;
 	}
 

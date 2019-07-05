@@ -1,6 +1,7 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
@@ -30,31 +32,25 @@ public class EventConfirmPresentationServlet extends BaseServlet implements DoPo
 
 		eventService = ServiceUtilities.getEventService();
 
-		ConfirmGradePresVM confirmGradePres = objectMapper.readValue(body, ConfirmGradePresVM.class);
+		ConfirmGradePresVM vm = objectMapper.readValue(body, ConfirmGradePresVM.class);
 
 		try {
-			eventService.confirmSuccessfulPresentation(confirmGradePres.getEventId(), confirmGradePres.isSuccessful());
+			eventService.confirmSuccessfulPresentation(vm.getEventId(), vm.isSuccessful());
 		} catch (PojoValidationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
-
-			return;
 		} catch (IllegalParameterException e) {
 			LogUtilities.error(e.getMessage());
 			
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-
-			return;
 		}
 	}
 
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return true;
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
+		return employeeTypes.contains(EmployeeType.Direct_Supervisor);
 	}
 
 }

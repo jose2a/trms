@@ -1,6 +1,7 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.services.EmployeeService;
 import com.revature.trms.services.EmployeeTypeService;
 import com.revature.trms.utilities.LogUtilities;
@@ -42,24 +44,25 @@ public class EmployeeServlet extends BaseServlet implements DoGetMethod {
 			employee = employeeService.getEmployeeById(employeeId);
 			employee.setEmployeeTypes(employeeTypeService.getEmployeeTypesForEmployee(employeeId));
 
-			LogUtilities.trace(employee.toString());
+			response.getWriter().write(objectMapper.writeValueAsString(employee));
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EmployeeServlet. " + e.getMessage());
-			
+
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			return;
 		}
 
-		response.getWriter().write(objectMapper.writeValueAsString(employee));
 	}
 
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return true;
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
+		if (employeeTypes.contains(EmployeeType.Direct_Supervisor)
+				|| employeeTypes.contains(EmployeeType.Head_Department)
+				|| employeeTypes.contains(EmployeeType.Benefits_Coordinator)) {
+			return true;
+		}
+		return false;
 	}
 
 }

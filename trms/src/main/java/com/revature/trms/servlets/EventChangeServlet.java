@@ -1,6 +1,7 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.exceptions.PreexistingRecordException;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
@@ -31,37 +33,29 @@ public class EventChangeServlet extends BaseServlet implements DoPutMethod {
 
 		eventService = ServiceUtilities.getEventService();
 
-		ChangeAmountEventVM changeAmountEventVM = objectMapper.readValue(body, ChangeAmountEventVM.class);
+		ChangeAmountEventVM vm = objectMapper.readValue(body, ChangeAmountEventVM.class);
 
 		try {
-			eventService.changeReimbursementAmount(changeAmountEventVM.getEventId(), changeAmountEventVM.getNewAmount(),
-					changeAmountEventVM.getReason());
-			
+			eventService.changeReimbursementAmount(vm.getEventId(), vm.getNewAmount(), vm.getReason());
 		} catch (NotFoundRecordException e1) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			return;
 		} catch (IllegalParameterException e) {
 			LogUtilities.error(e.getMessage());
-			
+
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		} catch (PojoValidationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
 
-			return;
 		} catch (PreexistingRecordException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getMessage()));
-
-			return;
 		}
 
 	}
 
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return true;
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
+		return employeeTypes.contains(EmployeeType.Benefits_Coordinator);
 	}
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.EventType;
 import com.revature.trms.services.EventTypeService;
 import com.revature.trms.utilities.LogUtilities;
@@ -33,19 +34,15 @@ public class EventTypeServlet extends BaseServlet implements DoGetMethod {
 
 		try {
 			response.getWriter().append(objectMapper.writeValueAsString(eventTypes));
-			
-			return;
 		} catch (JsonProcessingException e) {
 			LogUtilities.error("Error. EventTypeServlet. " + e.getMessage());
 			
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		}
 	}
 
 	@Override
-	boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
 		return true;
 	}
 

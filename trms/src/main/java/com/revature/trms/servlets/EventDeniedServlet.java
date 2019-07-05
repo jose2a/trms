@@ -1,6 +1,7 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import com.revature.trms.pojos.ReasonDenied;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
+import com.revature.trms.utilities.SessionUtilities;
 
 public class EventDeniedServlet extends BaseServlet implements DoPostMethod {
 
@@ -33,19 +35,9 @@ public class EventDeniedServlet extends BaseServlet implements DoPostMethod {
 
 		eventService = ServiceUtilities.getEventService();
 
-		// TODO: Remove later, getting from session
-		Employee employee = null;
-		try {
-			employee = ServiceUtilities.getEmployeeService().getEmployeeById(16);
-		} catch (NotFoundRecordException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalParameterException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		Employee employee = SessionUtilities.getEmployeeFromSession(request);
 		
-		LogUtilities.trace(body);
+		LogUtilities.trace("Session: " + employee);
 
 		ReasonDenied reasonDenied = objectMapper.readValue(body, ReasonDenied.class);
 
@@ -70,26 +62,24 @@ public class EventDeniedServlet extends BaseServlet implements DoPostMethod {
 			LogUtilities.error("Error. EventDeniedServlet. " + e.getMessage());
 			
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		} catch (PojoValidationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
-
-			return;
 		} catch (PreexistingRecordException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getMessage()));
-
-			return;
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			return;
 		}
 	}
 
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return true;
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
+		if (employeeTypes.contains(EmployeeType.Direct_Supervisor)
+				|| employeeTypes.contains(EmployeeType.Head_Department)
+				|| employeeTypes.contains(EmployeeType.Benefits_Coordinator)) {
+			return true;
+		}
+		return false;
 	}
 }

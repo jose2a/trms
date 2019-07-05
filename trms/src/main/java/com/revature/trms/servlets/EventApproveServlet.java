@@ -1,6 +1,7 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import com.revature.trms.pojos.Event;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
+import com.revature.trms.utilities.SessionUtilities;
 import com.revature.trms.viewmodels.ApproveEventVM;
 
 public class EventApproveServlet extends BaseServlet implements DoPostMethod {
@@ -32,25 +34,15 @@ public class EventApproveServlet extends BaseServlet implements DoPostMethod {
 
 		eventService = ServiceUtilities.getEventService();
 
-		// TODO: Remove later, getting from session
-		Employee employee = null;
-		try {
-			employee = ServiceUtilities.getEmployeeService().getEmployeeById(16);
-		} catch (NotFoundRecordException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalParameterException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		LogUtilities.trace(body);
+		Employee employee = SessionUtilities.getEmployeeFromSession(request);
+
+		LogUtilities.trace("Session: " + employee.toString());
 
 		ApproveEventVM vm = objectMapper.readValue(body, ApproveEventVM.class);
 
 		try {
 			Event event = eventService.getEventById(vm.getEventId());
-			
+
 			if (employee.getEmployeeTypes().contains(EmployeeType.Direct_Supervisor)) { // Denied by DS
 				LogUtilities.trace("Approved by Direct Supervisor");
 
@@ -70,16 +62,19 @@ public class EventApproveServlet extends BaseServlet implements DoPostMethod {
 			LogUtilities.error("Error. EventApproveServlet. " + e.getMessage());
 
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		} catch (NotFoundRecordException e) {
+
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			return;
 		}
 	}
 
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return true;
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
+		if (employeeTypes.contains(EmployeeType.Direct_Supervisor)
+				|| employeeTypes.contains(EmployeeType.Head_Department)
+				|| employeeTypes.contains(EmployeeType.Benefits_Coordinator)) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -29,28 +29,6 @@
 
 	<servlet>
 		<description></description>
-		<display-name>AddEmployeeServlet</display-name>
-		<servlet-name>AddEmployeeServlet</servlet-name>
-		<servlet-class>com.revature.trms.servlets.AddEmployeeServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>AddEmployeeServlet</servlet-name>
-		<url-pattern>/admin/AddEmployee</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<description></description>
-		<display-name>AdminLteTestServlet</display-name>
-		<servlet-name>AdminLteTestServlet</servlet-name>
-		<servlet-class>com.revature.trms.servlets.AdminLteTestServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>AdminLteTestServlet</servlet-name>
-		<url-pattern>/AdminLteTestServlet</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<description></description>
 		<display-name>AttachmentServlet</display-name>
 		<servlet-name>AttachmentServlet</servlet-name>
 		<servlet-class>com.revature.trms.servlets.AttachmentServlet</servlet-class>
@@ -256,17 +234,6 @@
 	<servlet-mapping>
 		<servlet-name>InfoRequiredServlet</servlet-name>
 		<url-pattern>/inforeq</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<description></description>
-		<display-name>ListEmployeeServlet</display-name>
-		<servlet-name>ListEmployeeServlet</servlet-name>
-		<servlet-class>com.revature.trms.servlets.ListEmployeeServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ListEmployeeServlet</servlet-name>
-		<url-pattern>/admin/ListEmployee</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

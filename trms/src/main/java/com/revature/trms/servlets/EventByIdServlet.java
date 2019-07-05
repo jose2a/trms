@@ -1,6 +1,7 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.revature.trms.exceptions.IllegalParameterException;
 import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.Event;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
@@ -28,6 +30,8 @@ public class EventByIdServlet extends BaseServlet implements DoGetMethod {
 	public void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("EventByIdServlet - get");
 
+		eventService = ServiceUtilities.getEventService();
+
 		String id = (pathInfoParts.length > 0) ? pathInfoParts[1] : null;
 
 		if (id == null || id == "") {
@@ -39,10 +43,6 @@ public class EventByIdServlet extends BaseServlet implements DoGetMethod {
 		}
 
 		Integer eventId = Integer.parseInt(id);
-
-		LogUtilities.trace("EventId: " + eventId);
-
-		eventService = ServiceUtilities.getEventService();
 
 		Event event = null;
 
@@ -60,25 +60,23 @@ public class EventByIdServlet extends BaseServlet implements DoGetMethod {
 			// Setting event type
 			event.setEventType(ServiceUtilities.getEventTypeService().getEventTypeById(event.getEventTypeId()));
 
+			response.getWriter().write(objectMapper.writeValueAsString(event));
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EventByIdServlet. " + e.getMessage());
 
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		} catch (NotFoundRecordException e) {
 			LogUtilities.error("Error. EventByIdServlet. " + e.getMessage());
 
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			return;
 		}
-
-		response.getWriter().write(objectMapper.writeValueAsString(event));
 	}
 
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return true;
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
+		return employeeTypes.contains(EmployeeType.Direct_Supervisor)
+				|| employeeTypes.contains(EmployeeType.Head_Department)
+				|| employeeTypes.contains(EmployeeType.Benefits_Coordinator);
 	}
 
 }

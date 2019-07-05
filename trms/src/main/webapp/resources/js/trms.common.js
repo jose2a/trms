@@ -1,28 +1,38 @@
+let statusCodeObj = {
+     200: function (response) {
+          // OK
+          callbackFuncSucc(response);
+     },
+     400: function (response) {
+          // Bad Request (Validation errors)
+          callbackFuncBadReq(response);
+     },
+     401: function (response) {
+          // Unauthorized
+          console.log(response);
+          redirect("./");
+     },
+     403: function (response) {
+          // Forbidden
+          console.log(response);
+          // redirect("index.html");
+     },
+     404: function (response) {
+          // Not Found
+          console.log(response);
+          redirect("404.html");
+     },
+     500: function (response) {
+          redirect("500.html");
+     }
+};
+
 function ajaxPostRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, sync) {
      $.ajax(url, {
-          type: "POST",
+          type: "post",
           data: paramObj,
           async: sync || true,
-          statusCode: {
-               200: function (response) {
-                    // OK
-                    callbackFuncSucc(response);
-               },
-               400: function (response) {
-                    // Bad Request (Validation errors)
-                    callbackFuncBadReq(response);
-               },
-               401: function(response) {
-                    // Unauthorized
-               },
-               403: function(response) {
-                    // Forbidden
-               },
-               404: function (response) {
-                    // Not Found
-                    console.log(response);
-               }
-          }
+          statusCode: statusCodeObj
      });
      
 }
@@ -32,26 +42,7 @@ function ajaxGetRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, syn
           type: "GET",
           data: paramObj,
           async: syn || true,
-          statusCode: {
-               200: function (response) {
-                    // OK
-                    callbackFuncSucc(response);
-               },
-               400: function (response) {
-                    // Bad Request (Validation errors)
-                    callbackFuncBadReq(response);
-               },
-               401: function (response) {
-                    // Unauthorized
-               },
-               403: function (response) {
-                    // Forbidden
-               },
-               404: function (response) {
-                    // Not Found
-                    console.log(response);
-               }
-          }
+          statusCode: statusCodeObj
      });
 
 }
@@ -61,31 +52,12 @@ function ajaxPutRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, syn
           type: "PUT",
           data: paramObj,
           async: syn || true,
-          statusCode: {
-               200: function (response) {
-                    // OK
-                    callbackFuncSucc(response);
-               },
-               400: function (response) {
-                    // Bad Request (Validation errors)
-                    callbackFuncBadReq(response);
-               },
-               401: function (response) {
-                    // Unauthorized
-               },
-               403: function (response) {
-                    // Forbidden
-               },
-               404: function (response) {
-                    // Not Found
-                    console.log(response);
-               }
-          }
+          statusCode: statusCodeObj
      });
 
 }
 
-function ajaxUploadFile(url, data, uploadFileSucc, uploadAttachmentBadR) {
+function ajaxUploadFile(url, data, uploadFileSucc, uploadFileBadReq) {
      $.ajax({
           url: url,
           type: 'post',
@@ -98,7 +70,7 @@ function ajaxUploadFile(url, data, uploadFileSucc, uploadAttachmentBadR) {
                } 
           },
           error: function (response) {
-               uploadAttachmentBadR(response);
+               uploadFileBadReq(response);
           }
      });
 }
@@ -130,7 +102,6 @@ function getEmployeeFromSession() {
 function isEmployeeInSession() {
      let emp = getEmployeeFromSession();
 
-     console.log(emp);
      return emp !== null;
 }
 
@@ -150,6 +121,12 @@ function showArrayOfErrorsInUL(ulEle, response) {
           let li = $('<li>').html(err);
           ul.append(li);
      }
+}
+
+function checkEmployeeIsLoggedIn() {
+     ajaxGetRequest("./employeeinfo", {}, function() {}, function (response) {
+          console.log(response);
+     });
 }
 
 function makeEventForSubmit(event_date, event_time, event_location, event_description,

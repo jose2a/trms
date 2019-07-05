@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -17,6 +18,7 @@ import com.revature.trms.exceptions.NotFoundRecordException;
 import com.revature.trms.exceptions.PojoValidationException;
 import com.revature.trms.pojos.Attachment;
 import com.revature.trms.pojos.AttachmentDocType;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
@@ -41,8 +43,6 @@ public class AttachmentUploadServlet extends BaseServlet {
 
 		String id = request.getParameter("eventId");
 		String finalGrade = request.getParameter("finalGrade");
-
-		LogUtilities.trace("id: " + id);
 
 		int eventId = Integer.parseInt(id);
 		String documentTypeStr = request.getParameter("documentType");
@@ -83,8 +83,7 @@ public class AttachmentUploadServlet extends BaseServlet {
 				os.close();
 		}
 
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
+		setJsonResponseHeaders(response);
 
 		try {
 			boolean isSuccess = false;
@@ -104,36 +103,36 @@ public class AttachmentUploadServlet extends BaseServlet {
 			if (isSuccess) {
 				attachment.setFileContent(null);
 
-				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().append(objectMapper.writeValueAsString(attachment));
 				return;
 			}
 
 		} catch (PojoValidationException e) {
 			LogUtilities.trace("AttachmentUploadServlet - Validation errors");
-			
+
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
-			
-			return;
-
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("AttachmentUploadServlet. " + e.getMessage());
-			
+
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		} catch (NotFoundRecordException e) {
+			LogUtilities.trace("AttachmentUploadServlet - " + e.getMessage());
+
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			response.getWriter().append(e.getMessage());
-			
-			return;
 		}
 
 	}
 
 	@Override
-	boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
+		if (employeeTypes.contains(EmployeeType.Direct_Supervisor)
+				|| employeeTypes.contains(EmployeeType.Head_Department)
+				|| employeeTypes.contains(EmployeeType.Benefits_Coordinator)) {
+			return false;
+		}
+
 		return true;
 	}
+
 }

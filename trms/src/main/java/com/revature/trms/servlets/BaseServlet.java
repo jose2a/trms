@@ -8,9 +8,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.SessionUtilities;
 
@@ -39,7 +39,7 @@ public abstract class BaseServlet extends HttpServlet {
 	private DoPutMethod doPutMethodImpl;
 	private DoDeleteMethod doDeleteMethodImpl;
 
-	abstract boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response);
+	abstract boolean validateAuthorization(List<EmployeeType> employeeTypes);
 
 	public BaseServlet() {
 		LogUtilities.trace("BaseServlet - Constructor");
@@ -77,8 +77,7 @@ public abstract class BaseServlet extends HttpServlet {
 
 		handleAuthenticationAndAuthorization(request, response);
 
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
+		setJsonResponseHeaders(response);
 
 		if (request.getPathInfo() != null) {
 			pathInfoParts = request.getPathInfo().split("/");
@@ -105,8 +104,7 @@ public abstract class BaseServlet extends HttpServlet {
 
 		handleAuthenticationAndAuthorization(request, response);
 
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
+		setJsonResponseHeaders(response);
 
 		body = readRequestBody(request);
 
@@ -127,8 +125,7 @@ public abstract class BaseServlet extends HttpServlet {
 
 		handleAuthenticationAndAuthorization(request, response);
 
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
+		setJsonResponseHeaders(response);
 
 		body = readRequestBody(request);
 
@@ -138,7 +135,7 @@ public abstract class BaseServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		LogUtilities.trace("BaseServlet: GET");
+		LogUtilities.trace("BaseServlet: DELETE");
 
 		if (doDeleteMethodImpl == null) {
 			LogUtilities.trace("Not Implemented");
@@ -149,8 +146,7 @@ public abstract class BaseServlet extends HttpServlet {
 
 		handleAuthenticationAndAuthorization(request, response);
 
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
+		setJsonResponseHeaders(response);
 
 		pathInfoParts = request.getPathInfo().split("/");
 
@@ -159,31 +155,48 @@ public abstract class BaseServlet extends HttpServlet {
 		doDeleteMethodImpl.delete(request, response);
 	}
 
-	private void handleAuthenticationAndAuthorization(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	private void handleAuthenticationAndAuthorization(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
 		LogUtilities.trace("handleAuthenticationAndAuthorization");
 		validateAuthentication(request, response);
 
-		boolean authorized = validateAuthorization(request, response);
+		boolean authorized = false;
+		
+		if (SessionUtilities.isEmployeeInSession(request)) {
+			List<EmployeeType> employeeTypes = SessionUtilities.getEmployeeFromSession(request).getEmployeeTypes();
+			
+			authorized = validateAuthorization(employeeTypes);
+		}
 
 		if (!authorized) {
 			LogUtilities.trace("Not authorized");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			
+
 			request.getRequestDispatcher("/empty").forward(request, response);
 		}
 	}
 
+	// Setting Json response content type
+	protected void setJsonResponseHeaders(HttpServletResponse response) {
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+	}
+
 	/**
 	 * Validation if user is in the session, otherwise return Unauthorized ststus.
-	 * @param request The request
+	 * 
+	 * @param request  The request
 	 * @param response The response
+	 * @throws IOException
+	 * @throws ServletException
 	 */
 	// TODO Activate this when everything is tested
-	private void validateAuthentication(HttpServletRequest request, HttpServletResponse response) {
-//		if (SessionUtilities.isEmployeeInSession(request)) {
-//			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//			request.getRequestDispatcher("/empty").forward(request, response);
-//		}
+	private void validateAuthentication(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		if (SessionUtilities.isEmployeeInSession(request)) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			request.getRequestDispatcher("/empty").forward(request, response);
+		}
 	}
 
 	protected String readRequestBody(HttpServletRequest request) throws IOException {

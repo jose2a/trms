@@ -15,8 +15,6 @@ import com.revature.trms.utilities.ModelMapperUtilities;
 
 public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
-	private String baseSql = "SELECT attachment_id, file_name, date_submitted, file_content, attachment_type_id, event_id, content_type FROM attachment";
-
 	@Override
 	public boolean addAttachment(Attachment attachment) {
 		LogUtilities.trace("addAttachment");
@@ -96,7 +94,8 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = baseSql + " WHERE attachment_id=?";
+			String sql = "SELECT attachment_id, file_name, date_submitted, file_content, attachment_type_id, event_id, content_type"
+					+ " FROM attachment WHERE attachment_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, attachmentId);
@@ -128,7 +127,8 @@ public class AttachmentDAOImpl extends BaseDAO implements AttachmentDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection();) {
 
-			String sql = baseSql + " WHERE event_id=?";
+			String sql = "SELECT attachment_id, file_name, date_submitted, attachment_type_id, event_id, content_type"
+					+ " FROM attachment WHERE event_id=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, eventId);

@@ -1,11 +1,13 @@
 package com.revature.trms.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.SessionUtilities;
 
@@ -27,8 +29,7 @@ public class EmployeeSessionServlet extends BaseServlet implements DoGetMethod {
 	}
 
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
 		return true;
 	}
 

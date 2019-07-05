@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.revature.trms.exceptions.IllegalParameterException;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.GradingFormat;
 import com.revature.trms.services.GradingFormatService;
 import com.revature.trms.utilities.LogUtilities;
@@ -34,26 +35,23 @@ public class GradingFormatServlet extends BaseServlet implements DoGetMethod {
 
 			List<GradingFormat> gradingFormats = gradingFmtService.getAllGradingFormats();
 
-			String gradingFormatsString = "";
-
 			try {
-				gradingFormatsString = objectMapper.writeValueAsString(gradingFormats);
+				response.getWriter().append(objectMapper.writeValueAsString(gradingFormats));
+				
+				return;
 			} catch (JsonProcessingException e) {
 				LogUtilities.error("Error. GradingFormatServlet. " + e.getMessage());
 
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				
 				return;
 			}
-
-			response.getWriter().append(gradingFormatsString);
-			return;
 		}
 
 		Integer gradeId = Integer.parseInt(id);
 
 		LogUtilities.trace("GradingFormatId: " + gradeId);
 
-		String gradingFormatString = "";
 		GradingFormat gradingFormat = null;
 
 		try {
@@ -63,20 +61,19 @@ public class GradingFormatServlet extends BaseServlet implements DoGetMethod {
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
+			
+			response.getWriter().write(objectMapper.writeValueAsString(gradingFormat));
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. GradingFormatServlet. " + e.getMessage());
 
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		}
 
-		gradingFormatString = objectMapper.writeValueAsString(gradingFormat);
-		response.getWriter().write(gradingFormatString);
 	}
 
+
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
 		return true;
 	}
 

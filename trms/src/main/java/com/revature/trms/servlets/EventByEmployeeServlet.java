@@ -8,10 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.revature.trms.exceptions.IllegalParameterException;
+import com.revature.trms.pojos.Employee;
+import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.Event;
 import com.revature.trms.services.EventService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
+import com.revature.trms.utilities.SessionUtilities;
 
 public class EventByEmployeeServlet extends BaseServlet implements DoGetMethod {
 
@@ -29,31 +32,28 @@ public class EventByEmployeeServlet extends BaseServlet implements DoGetMethod {
 
 		eventService = ServiceUtilities.getEventService();
 		
-		Integer employeeId = 31; // TODO REmove and get from session
+		Employee employee = SessionUtilities.getEmployeeFromSession(request);
+		
+		LogUtilities.trace("Session: " + employee.toString());
 
-		LogUtilities.trace("EmployeeId: " + employeeId);
-
-		String eventsString = "";
 		List<Event> events = null;
 
 		try {
-			events = eventService.getEventsByEmployeeId(employeeId);
+			events = eventService.getEventsByEmployeeId(employee.getEmployeeId());
 			
+			response.getWriter().write(objectMapper.writeValueAsString(events));
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EventByEmployeeIdServlet. " + e.getMessage());
 			
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		}
-
-		eventsString = objectMapper.writeValueAsString(events);
-		response.getWriter().write(eventsString);
 	}
-	
+
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return true;
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
+		return !(employeeTypes.contains(EmployeeType.Direct_Supervisor) 
+				|| employeeTypes.contains(EmployeeType.Head_Department)
+				|| employeeTypes.contains(EmployeeType.Benefits_Coordinator));
 	}
 
 }

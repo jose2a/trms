@@ -14,12 +14,11 @@ import com.revature.trms.exceptions.PreexistingRecordException;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.InformationRequired;
-import com.revature.trms.services.EmployeeService;
-import com.revature.trms.services.EmployeeServiceImpl;
 import com.revature.trms.services.EventService;
 import com.revature.trms.services.InformationRequiredService;
 import com.revature.trms.utilities.LogUtilities;
 import com.revature.trms.utilities.ServiceUtilities;
+import com.revature.trms.utilities.SessionUtilities;
 import com.revature.trms.viewmodels.InformationRequiredViewModel;
 
 public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoPutMethod, DoPostMethod {
@@ -31,7 +30,6 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 
 	private InformationRequiredService infoReqService;
 	private EventService eventService;
-	private EmployeeService employeeServ = new EmployeeServiceImpl(); // To be remove
 
 	// <url-pattern>/inforeq</url-pattern>
 	@Override
@@ -42,18 +40,19 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 
 		List<InformationRequired> infoRequiredList = null;
 
-		int employeeId = 22; // TODO: Remove it, get this from Session
+		Employee employee = SessionUtilities.getEmployeeFromSession(request);
+
+		LogUtilities.info("Session: " + employee.toString());
 
 		try {
-			infoRequiredList = infoReqService.getInformationRequiredByEmployeeId(employeeId);
+			infoRequiredList = infoReqService.getInformationRequiredByEmployeeId(employee.getEmployeeId());
+
+			response.getWriter().append(objectMapper.writeValueAsString(infoRequiredList));
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. InfoRequiredServlet. " + e.getMessage());
 
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		}
-
-		response.getWriter().append(objectMapper.writeValueAsString(infoRequiredList));
 	}
 
 	@Override
@@ -64,59 +63,43 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 		eventService = ServiceUtilities.getEventService();
 
 		// Get employee from session
-		Employee employee = null; // TODO: Remove it, get this from Session
-		try {
-			employee = employeeServ.getEmployeeById(16);
-		} catch (NotFoundRecordException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalParameterException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		Employee employee = SessionUtilities.getEmployeeFromSession(request);
+
+		LogUtilities.info("Session: " + employee.toString());
 
 		// Create a helper class to get data from post
-		InformationRequiredViewModel informationRequiredVM = objectMapper.readValue(body,
-				InformationRequiredViewModel.class);
+		InformationRequiredViewModel vm = objectMapper.readValue(body, InformationRequiredViewModel.class);
 
-		EmployeeType eType = EmployeeType.valueOf(informationRequiredVM.getRequestInfoFrom());
+		EmployeeType eType = EmployeeType.valueOf(vm.getRequestInfoFrom());
 
-		LogUtilities.trace("Info from: " + informationRequiredVM.getRequestInfoFrom());
+		LogUtilities.trace("Info from: " + eType);
 
 		try {
 			if (eType == EmployeeType.Associate) { // Employee
-				eventService.requestInformationFromEmployee(informationRequiredVM.getEventId(),
-						informationRequiredVM.getInformation(), employee.getEmployeeId());
+				eventService.requestInformationFromEmployee(vm.getEventId(), vm.getInformation(),
+						employee.getEmployeeId());
 			} else if (eType == EmployeeType.Direct_Supervisor) {
-				eventService.requestInformationFromDirectSupervisor(informationRequiredVM.getEventId(),
-						informationRequiredVM.getInformation(), employee.getEmployeeId());
+				eventService.requestInformationFromDirectSupervisor(vm.getEventId(), vm.getInformation(),
+						employee.getEmployeeId());
 			} else if (eType == EmployeeType.Head_Department) {
-				eventService.requestInformationFromDepartmentHead(informationRequiredVM.getEventId(),
-						informationRequiredVM.getInformation(), employee.getEmployeeId());
+				eventService.requestInformationFromDepartmentHead(vm.getEventId(), vm.getInformation(),
+						employee.getEmployeeId());
 			}
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getMessage()));
-
-			return;
 		} catch (PojoValidationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
 
-			return;
 		} catch (PreexistingRecordException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getMessage()));
-
-			return;
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. InfoRequiredServlet. " + e.getMessage());
 
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		}
-
-		response.setStatus(HttpServletResponse.SC_CREATED);
 	}
 
 	@Override
@@ -126,31 +109,26 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 		eventService = ServiceUtilities.getEventService();
 
 		InformationRequired informationRequired = objectMapper.readValue(body, InformationRequired.class);
-		int employeeId = 22; // TODO: Remove it, get this from Session
+		
+		Employee employee = SessionUtilities.getEmployeeFromSession(request);
+		LogUtilities.info("Session: " + employee.toString());
 
 		try {
-			eventService.confirmSentOfInformationRequired(informationRequired.getEventId(), employeeId);
+			eventService.confirmSentOfInformationRequired(informationRequired.getEventId(), employee.getEmployeeId());
+			response.getWriter().append(objectMapper.writeValueAsString(informationRequired));
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. InfoRequiredServlet. " + e.getMessage());
 		} catch (PojoValidationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
-
-			return;
 		} catch (NotFoundRecordException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-
-			return;
 		}
-
-		response.setStatus(HttpServletResponse.SC_OK);
-		response.getWriter().append(objectMapper.writeValueAsString(informationRequired));
 
 	}
 
 	@Override
-	public boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
 		return true;
 	}
 }

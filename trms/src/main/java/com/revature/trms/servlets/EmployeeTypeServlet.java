@@ -42,24 +42,21 @@ public class EmployeeTypeServlet extends BaseServlet implements DoGetMethod {
 		try {
 			employeeService.getEmployeeById(employeeId);
 			employeeTypes = employeeTypeService.getEmployeeTypesForEmployee(employeeId);
-
-			LogUtilities.trace(employeeTypes.toString());
+			
+			response.getWriter().write(objectMapper.writeValueAsString(employeeTypes));
 		} catch (IllegalParameterException e) {
 			LogUtilities.error("Error. EmployeeTypeServlet. " + e.getMessage());
 			
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
 		} catch (NotFoundRecordException e) {
+			
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			return;
 		}
-
-		response.getWriter().write(objectMapper.writeValueAsString(employeeTypes));
+		
 	}
 
 	@Override
-	boolean validateAuthorization(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	boolean validateAuthorization(List<EmployeeType> employeeTypes) {
 		return true;
 	}
 
