@@ -46,7 +46,7 @@ $(document).ready(function () {
                                   </a>`;
                              }
                              
-                             if (e.requiredPresentation && e.bencoEventStatus === "Approved") {
+                             if (e.requiredPresentation && e.presentationUploaded === false && e.bencoEventStatus === "Approved") {
                                   return `<a class="btn btn-md btn-primary" href="presentationAttachment.html?eventId=${e.eventId}">
                                        <i class="fa fa-file"></i> Upload Pres.
                                   </a>

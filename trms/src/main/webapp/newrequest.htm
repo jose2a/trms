@@ -97,8 +97,8 @@
 						</span>
 					</a>
 						<ul class="treeview-menu" style="display: none;">
-							<li><a href="dashboardEmp.html"><i class="fa fa-circle-o"></i>
-									Dashboard</a></li>
+							<li><a href="dashboardEmp.html"><i
+									class="fa fa-circle-o"></i> Dashboard</a></li>
 						</ul></li>
 
 				</ul>
@@ -118,193 +118,211 @@
 			<!-- Main content -->
 			<section class="content">
 				<div class="row">
-					<div class="col-md-12 col-sm-12">
+					<div class="col-md-offset-1 col-md-10">
 
 						<div class="box box-default">
-							<div class="box-header with-border">
-								<h3 class="box-title">Employee</h3>
-								<div class="box-tools pull-right">
-									<button type="button" class="btn btn-box-tool"
-										data-widget="collapse">
-										<i class="fa fa-minus"></i>
-									</button>
-								</div>
-							</div>
 							<div class="box-body">
-								<!-- text input -->
-								<div class="form-group">
-									<label>First Name </label> <input type="text"
-										id="emp_firstname" name="emp_firstname" class="form-control"
-										disabled>
-								</div>
-								<div class="form-group">
-									<label>Last Name </label> <input type="text" id="emp_lastname"
-										name="emp_lastname" class="form-control" disabled>
+								<div class="row">
+									<div class="col-md-12">
+
+										<div class="box box-solid">
+											<div class="box-header with-border">
+												<h3 class="box-title">Employee</h3>
+												<div class="box-tools pull-right">
+													<button type="button" class="btn btn-box-tool"
+														data-widget="collapse">
+														<i class="fa fa-minus"></i>
+													</button>
+												</div>
+											</div>
+											<div class="box-body">
+												<!-- text input -->
+												<div class="form-group">
+													<label>First Name </label> <input type="text"
+														id="emp_firstname" name="emp_firstname"
+														class="form-control" disabled>
+												</div>
+												<div class="form-group">
+													<label>Last Name </label> <input type="text"
+														id="emp_lastname" name="emp_lastname" class="form-control"
+														disabled>
+												</div>
+
+												<div class="form-group">
+													<label>Email </label> <input type="text" id="emp_email"
+														name="emp_email" class="form-control" disabled>
+												</div>
+											</div>
+										</div>
+									</div>
+
+
 								</div>
 
-								<div class="form-group">
-									<label>Email </label> <input type="text" id="emp_email"
-										name="emp_email" class="form-control" disabled>
+								<div class="row">
+
+									<div class="col-md-12">
+										<form name="event_form" id="event_form"
+											action="./event/submit" method="post" role="form">
+											<!-- general form elements disabled -->
+											<div class="box box-solid">
+												<div class="box-header with-border">
+													<h3 class="box-title">Event Information</h3>
+												</div>
+												<!-- /.box-header -->
+												<div class="box-body">
+													<div class="text-red">
+														<ul id="errors_ul"></ul>
+													</div>
+													<div>
+														<p>
+															<span class="text-red">*</span> Information required.
+														</p>
+													</div>
+													<div class="row">
+														<div class="col-md-6">
+															<label>Date of event <span class="text-red">*</span></label>
+															<div class="input-group date">
+																<div class="input-group-addon">
+																	<i class="fa fa-calendar"></i>
+																</div>
+																<input type="text" name="event_date" id="event_date"
+																	data-date-format="yyyy-mm-dd" class="form-control">
+															</div>
+														</div>
+														<div class="col-md-6">
+															<label>Time of event <span class="text-red">*</span></label>
+															<div class="input-group">
+																<input type="text" name="event_time" id="event_time"
+																	class="form-control">
+
+																<div class="input-group-addon">
+																	<i class="fa fa-clock-o"></i>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<!-- text input -->
+													<div class="form-group">
+														<label>Location <span class="text-red">*</span></label> <input
+															type="text" id="event_location" name="event_location"
+															class="form-control">
+													</div>
+
+													<!-- text input -->
+													<div class="form-group">
+														<label>Description <span class="text-red">*</span></label>
+														<input type="text" name="event_description"
+															id="event_description" class="form-control">
+													</div>
+
+													<div class="row">
+														<div class="col-md-6">
+															<!-- text input -->
+															<div class="form-group">
+																<label>Cost <span class="text-red">*</span></label>
+																<div class="input-group">
+																	<span class="input-group-addon">$</span> <input
+																		type="text" name="event_cost" id="event_cost"
+																		class="form-control" value="0"> <span
+																		class="input-group-addon">.00</span>
+																</div>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<!-- text input -->
+															<div class="form-group">
+																<label>Projected Reimbursement</label>
+																<div class="input-group">
+																	<span class="input-group-addon">$</span> <input
+																		type="text" name="event_projected" id="event_cost"
+																		class="form-control" value="0" disabled> <span
+																		class="input-group-addon">.00</span>
+																</div>
+															</div>
+														</div>
+													</div>
+
+
+													<!-- text input -->
+													<div class="form-group">
+														<label>Work-related justification <span
+															class="text-red">*</span></label> <input type="text"
+															name="event_justification" id="event_justification"
+															class="form-control">
+													</div>
+
+													<!-- text input -->
+													<div class="form-group">
+														<label>Work time that will be missed (days)</label> <input
+															type="text" id="event_worktimemissed"
+															class="form-control" value="0">
+													</div>
+
+													<!-- checkbox -->
+													<div class="form-group">
+														<div class="checkbox">
+															<label> <input type="checkbox" id="event_reqpres">
+																Required Presentation
+															</label>
+														</div>
+													</div>
+
+													<!-- select -->
+													<div class="form-group">
+														<label>Select Grading</label> <select id="gradingFormatId"
+															class="form-control">
+														</select>
+
+														<p class="help-block">If grade is not in the system,
+															please enter the grade range in the following fields.</p>
+													</div>
+
+													<div class="row">
+														<div class="col-md-6">
+															<div class="form-group">
+																<label>From Grade: </label> <input type="text" id="from"
+																	class="form-control">
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div class="form-group">
+																<label>To Grade:</label> <input type="text" id="to"
+																	class="form-control">
+															</div>
+														</div>
+													</div>
+
+													<div class="form-group">
+														<label>Grade cutoff <span class="text-red">*</span>
+														</label> <input type="text" name="event_gradecutoff"
+															id="event_gradecutoff" class="form-control">
+													</div>
+
+													<div class="form-group">
+														<label>Select Event Type <span class="text-red">*</span></label>
+														<select name="eventTypeId" id="eventTypeId"
+															class="form-control">
+														</select>
+													</div>
+												</div>
+												<!-- /.box-body -->
+												<div class="box-footer">
+													<a href="./dashboardEmp.html" class="btn btn-default">Cancel</a>
+													<button type="submit" class="btn btn-info pull-right">Submit
+														reimbursement request</button>
+												</div>
+											</div>
+											<!-- /.box -->
+										</form>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-12">
-						<form name="event_form" id="event_form" action="./event/submit"
-							method="post" role="form">
-							<!-- general form elements disabled -->
-							<div class="box box-default">
-								<div class="box-header with-border">
-									<h3 class="box-title">Event Information</h3>
-								</div>
-								<!-- /.box-header -->
-								<div class="box-body">
-									<div class="text-red">
-										<ul id="errors_ul"></ul>
-									</div>
-									<div>
-										<p>
-											<span class="text-red">*</span> Information required.
-										</p>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<label>Date of event <span class="text-red">*</span></label>
-											<div class="input-group date">
-												<div class="input-group-addon">
-													<i class="fa fa-calendar"></i>
-												</div>
-												<input type="text" name="event_date" id="event_date"
-													data-date-format="yyyy-mm-dd" class="form-control">
-											</div>
-										</div>
-										<div class="col-md-6">
-											<label>Time of event <span class="text-red">*</span></label>
-											<div class="input-group">
-												<input type="text" name="event_time" id="event_time"
-													class="form-control">
-
-												<div class="input-group-addon">
-													<i class="fa fa-clock-o"></i>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<!-- text input -->
-									<div class="form-group">
-										<label>Location <span class="text-red">*</span></label> <input
-											type="text" id="event_location" name="event_location"
-											class="form-control">
-									</div>
-
-									<!-- text input -->
-									<div class="form-group">
-										<label>Description <span class="text-red">*</span></label> <input
-											type="text" name="event_description" id="event_description"
-											class="form-control">
-									</div>
-
-									<div class="row">
-										<div class="col-md-6">
-											<!-- text input -->
-											<div class="form-group">
-												<label>Cost <span class="text-red">*</span></label>
-												<div class="input-group">
-													<span class="input-group-addon">$</span> <input type="text"
-														name="event_cost" id="event_cost" class="form-control"
-														value="0"> <span class="input-group-addon">.00</span>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-6">
-											<!-- text input -->
-											<div class="form-group">
-												<label>Projected Reimbursement</label>
-												<div class="input-group">
-													<span class="input-group-addon">$</span> <input type="text"
-														name="event_projected" id="event_cost"
-														class="form-control" value="0" disabled> <span
-														class="input-group-addon">.00</span>
-												</div>
-											</div>
-										</div>
-									</div>
-
-
-									<!-- text input -->
-									<div class="form-group">
-										<label>Work-related justification <span
-											class="text-red">*</span></label> <input type="text"
-											name="event_justification" id="event_justification"
-											class="form-control">
-									</div>
-
-									<!-- text input -->
-									<div class="form-group">
-										<label>Work time that will be missed (days)</label> <input
-											type="text" id="event_worktimemissed" class="form-control"
-											value="0">
-									</div>
-
-									<!-- checkbox -->
-									<div class="form-group">
-										<div class="checkbox">
-											<label> <input type="checkbox" id="event_reqpres">
-												Required Presentation
-											</label>
-										</div>
-									</div>
-
-									<!-- select -->
-									<div class="form-group">
-										<label>Select Grading</label> <select id="gradingFormatId"
-											class="form-control">
-										</select>
-
-										<p class="help-block">If grade is not in the system,
-											please enter the grade range in the following fields.</p>
-									</div>
-
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group">
-												<label>From Grade: </label> <input type="text" id="from"
-													class="form-control">
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="form-group">
-												<label>To Grade:</label> <input type="text" id="to"
-													class="form-control">
-											</div>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label>Grade cutoff <span class="text-red">*</span>
-										</label> <input type="text" name="event_gradecutoff"
-											id="event_gradecutoff" class="form-control">
-									</div>
-
-									<div class="form-group">
-										<label>Select Event Type <span class="text-red">*</span></label>
-										<select name="eventTypeId" id="eventTypeId"
-											class="form-control">
-										</select>
-									</div>
-								</div>
-								<!-- /.box-body -->
-								<div class="box-footer">
-									<a href="./dashboardEmp.html" class="btn btn-default">Cancel</a>
-									<button type="submit" class="btn btn-info pull-right">Submit
-										reimbursement request</button>
-								</div>
-							</div>
-							<!-- /.box -->
-						</form>
-					</div>
 				</div>
+
 				<!-- / .row -->
 			</section>
 			<!-- /.content -->

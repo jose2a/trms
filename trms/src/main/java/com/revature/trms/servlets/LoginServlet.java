@@ -54,7 +54,6 @@ public class LoginServlet extends BaseServlet {
 			SessionUtilities.saveEmployeeToSession(req, employee);
 
 			employee.setPassword("*******");
-			employee.setEmail("");
 			
 			LogUtilities.info("Employee: " + employee.toString());
 

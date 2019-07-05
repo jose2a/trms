@@ -137,7 +137,7 @@ function redirect(url) {
      dialog.init(function () {
           setTimeout(function () {
                window.location = url;
-          }, 2000);
+          }, 1500);
      });
      
 }
