@@ -15,8 +15,7 @@ function ajaxPostRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, sy
         	     },
         	     401: function (response) {
         	          // Unauthorized
-        	          console.log(response);
-        	          redirect("./");
+        	    	 redirectIfNotLoginPage();
         	     },
         	     403: function (response) {
         	          // Forbidden
@@ -53,7 +52,7 @@ function ajaxGetRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, syn
         	     401: function (response) {
         	          // Unauthorized
         	          console.log(response);
-        	          redirect("./");
+        	          redirectIfNotLoginPage();
         	     },
         	     403: function (response) {
         	          // Forbidden
@@ -90,7 +89,7 @@ function ajaxPutRequest(url, paramObj, callbackFuncSucc, callbackFuncBadReq, syn
         	     401: function (response) {
         	          // Unauthorized
         	          console.log(response);
-        	          redirect("./");
+        	          redirectIfNotLoginPage();
         	     },
         	     403: function (response) {
         	          // Forbidden
@@ -128,6 +127,14 @@ function ajaxUploadFile(url, data, uploadFileSucc, uploadFileBadReq) {
      });
 }
 
+function redirectIfNotLoginPage() {
+	if (!window.location.href.endsWith("trms/")) {
+		redirect("./");
+	}
+	
+	console.log("Login page");
+}
+
 function redirect(url) {
      var dialog = bootbox.dialog({
           closeButton: false,
@@ -137,7 +144,7 @@ function redirect(url) {
      dialog.init(function () {
           setTimeout(function () {
                window.location = url;
-          }, 1500);
+          }, 1000);
      });
      
 }
@@ -177,15 +184,35 @@ function showArrayOfErrorsInUL(ulEle, response) {
 }
 
 (function checkEmployeeIsLoggedIn() {
-	if (!window.location.href.endsWith("trms/")) {
-		console.log(window.location.href);
-	     ajaxGetRequest("./employeeinfo", {}, function(emp) {
-	    	 $(".fullname").text(`${emp.firstName} ${emp.lastName}`);
-	     }, function (response) {
-	          
-	     });
-	}
+	ajaxGetRequest("./employeeinfo", {}, function(emp) {
+		console.log(emp);
+		
+		if (emp !== null) {
+			$(".fullname").text(`${emp.firstName} ${emp.lastName}`);
+			
+			if (window.location.href.endsWith("trms/")) {
+	    		redirectEmployee(emp);
+	    	     
+	    	}
+		}
+    }, function (response) {
+    });
+	
 }());
+
+function redirectEmployee(employee) {
+    for (const role of employee.employeeTypes) {
+
+         if (role === "Direct_Supervisor"
+              || role == "Head_Department"
+              || role == "Benefits_Coordinator") {
+              redirect("dashboard.html");
+         }
+         if (role == "Associate") {
+              redirect("dashboardEmp.html");
+         }
+    }
+}
 
 function makeEventForSubmit(event_date, event_time, event_location, event_description,
      event_cost, event_workJustification, event_requiredPresentation, event_eventTypeId,

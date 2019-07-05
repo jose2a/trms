@@ -191,6 +191,17 @@
 		<servlet-name>EventPendingServlet</servlet-name>
 		<url-pattern>/event/pending</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>EventProjectedAmtServlet</display-name>
+		<servlet-name>EventProjectedAmtServlet</servlet-name>
+		<servlet-class>com.revature.trms.servlets.EventProjectedAmtServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EventProjectedAmtServlet</servlet-name>
+		<url-pattern>/event/projectedamt</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<description></description>

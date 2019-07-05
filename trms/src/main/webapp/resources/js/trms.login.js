@@ -1,15 +1,15 @@
 $(document).ready(function () {
 
-     (function checkIfSessionIsLoggedIn() {
-          console.log('checking user in session');
-          console.log(isEmployeeInSession());
-
-          if (isEmployeeInSession()) {
-               console.log('Redirecting');
-
-               redirectEmployee(getEmployeeFromSession());
-          }
-     }());
+//     (function checkIfSessionIsLoggedIn() {
+//          console.log('checking user in session');
+//          console.log(isEmployeeInSession());
+//
+//          if (isEmployeeInSession()) {
+//               console.log('Redirecting');
+//
+//               redirectEmployee(getEmployeeFromSession());
+//          }
+//     }());
 
      $("#login_form").submit(function (e) {
           e.preventDefault();
@@ -32,19 +32,5 @@ $(document).ready(function () {
 
      let showBadRequestLoginResponse = function (response) {
           showArrayOfErrorsInUL('errors_ul', response);
-     }
-
-     function redirectEmployee(employee) {
-          for (const role of employee.employeeTypes) {
-
-               if (role === "Direct_Supervisor"
-                    || role == "Head_Department"
-                    || role == "Benefits_Coordinator") {
-                    redirect("dashboard.html");
-               }
-               if (role == "Associate") {
-                    redirect("dashboardEmp.html");
-               }
-          }
      }
 });

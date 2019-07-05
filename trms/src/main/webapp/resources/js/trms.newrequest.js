@@ -19,7 +19,29 @@ $(document).ready(function() {
      $("#gradingFormatId").click(function () {
           $(this).unbind('click');
           getGradingFormats();
-     })
+     });
+     
+     $("#event_cost").change(function() {
+    	 getProjected();
+     });
+     
+     $("#eventTypeId").change(function() {
+    	 getProjected();
+     });
+     
+     function getProjected() {
+    	 let paramObj = {
+    			 cost : $("#event_cost").val(),
+    			 eventTypeId: $("#eventTypeId").val()
+    	 };
+    	 
+    	 ajaxGetRequest("./event/projectedamt", paramObj, function(result) {
+    		 console.log("Projected Reimb");
+    		 $("#event_projected").val(result);
+    	 }, function(response) {
+    		 console.log(resp);
+    	 });
+     }
 
      function getEmployee() {
           ajaxGetRequest("./employeeinfo", {}, displayEmployee);
@@ -28,6 +50,7 @@ $(document).ready(function() {
      function getGradingFormats() {
           ajaxGetRequest("./gradingformat", {}, displayGradingFormats);
      }
+     
 
      function displayEmployee(employee) {
           $("#emp_firstname").val(employee.firstName);
