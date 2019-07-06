@@ -48,7 +48,8 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 
 	@Override
 	public boolean updateInformationRequired(InformationRequired informationRequired) {
-		LogUtilities.trace("updateInformationRequired.");
+		LogUtilities.debug("DAO - updateInformationRequired.");
+		LogUtilities.debug(informationRequired.toString());
 
 		PreparedStatement ps = null; // Creates the prepared statement from the query
 
@@ -59,12 +60,12 @@ public class InformationRequiredDAOImpl extends BaseDAO implements InformationRe
 
 			ps.setString(1, informationRequired.getInformation());
 			ps.setBoolean(2, informationRequired.isProvided());
-			ps.setInt(3, informationRequired.getEmployeeId());
-			ps.setInt(4, informationRequired.getRequiredBy());
+			ps.setInt(3, informationRequired.getRequiredBy());
+			ps.setInt(4, informationRequired.getEventId());
 			ps.setInt(5, informationRequired.getEmployeeId());
 
 			if (ps.executeUpdate() != 0) {
-				LogUtilities.trace("Information required updated.");
+				LogUtilities.debug("Information required updated.");
 
 				return true;
 			}

@@ -26,6 +26,10 @@
 		<error-code>500</error-code>
 		<location>/500.html</location>
 	</error-page>
+	
+	<listener>
+       <listener-class>com.revature.trms.listeners.AutoApproveEventListener</listener-class>
+    </listener>
 
 	<servlet>
 		<description></description>

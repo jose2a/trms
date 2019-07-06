@@ -4,11 +4,8 @@ $(document).ready(function() {
 
      function getAttachments () {
           let id =  $("#eventId").val();
-
-          console.log(id);
           
-          ajaxGetRequest(`./attachment/event/${id}`, {}, showSucessfulAttachmentResponse, 
-                         showBadRequestAttachmentResponse);
+          ajaxGetRequest(`./attachment/event/${id}`, {}, showSucessfulAttachmentResponse);
      }
 
      $(".att > a").click(function() {
@@ -18,8 +15,6 @@ $(document).ready(function() {
      
      let showSucessfulAttachmentResponse = function(list) {
           attachments = list || [];
-
-          console.log(attachments);
 
           $("#attach_table").DataTable({
                "bProcessing": true,
@@ -43,11 +38,5 @@ $(document).ready(function() {
                ]
           });
      }
-     
-     let showBadRequestAttachmentResponse = function(response) {
-          console.log(response);
-     };
-
-     // getAttachments();
 
 });

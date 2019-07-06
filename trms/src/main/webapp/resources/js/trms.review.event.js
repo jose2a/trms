@@ -1,240 +1,274 @@
 $(document).ready(function() {
 
      let eventId = 0;
-
-     function getEvent () {
-
-          eventId = getUrlParamValue("eventId");
-
-          $("#eventId").val(eventId);
-          
-          ajaxGetRequest(`./event/id/${eventId}`, {}, showSucessfulEventResponse, showBadRequestEventResponse);
-     }
-
      
-     let showSucessfulEventResponse = function(event) {
-          console.log(event);
-
-          renderEmployee(event.employee);
-          renderEvent(event);
-          renderGradingFormat(event.gradingFormat);
-          renderEventType(event.eventType);
-
-          renderButtons(event);
-     }
+     eventId = getUrlParamValue("eventId");
+     $("#eventId").val(eventId);
+          
+     ajaxGetRequest(`./event/id/${eventId}`, {}, showSucessfulEventResponse);
      
-     let showBadRequestEventResponse = function(response) {
-          console.log(response);
-     }
+});
 
-     function renderEmployee(employee) {
-               $("#emp_firstname").val(employee.firstName);
-               $("#emp_lastname").val(employee.lastName);
-               $("#emp_email").val(employee.email);
-     }
-     
-     function renderEvent(event) {
-          $("#event_date").val(event.dateOfEvent);
-          $("#event_time").val(event.timeOfEvent);
-          $("#event_location").val(event.location);
-          $("#event_description").val(event.description);
-          $("#event_cost").val(event.cost);
-          $("#event_justification").val(event.workJustification);
-          $("#event_worktimemissed").val(event.workTimeMissed);
-          $("#event_reqpres").prop('checked', event.requiredPresentation);
-          $("#event_gradecutoff").val(event.gradeCutoff);
-          $("#event_finalgrade").val(event.finalGrade);
-          $("#event_projected").val(event.projectedAmountReimbused);
-          $("#event_accepted").val(event.acceptedAmountReimbursed);
-          
-          if (!event.urgent) {
-               $("#event_isurgent").hide();
-          }
-     }
+let showSucessfulEventResponse = function(event) {
+    console.log(event);
 
-     function renderGradingFormat(gradingF) {
-          $("#gradingFormatId").val(`From: ${gradingF.fromRange}, To: ${gradingF.toRange}`);
-     }
+    renderEmployee(event.employee);
+    renderEvent(event);
+    renderGradingFormat(event.gradingFormat);
+    renderEventType(event.eventType);
 
-     function renderEventType(eventT) {
-          $("#eventTypeId").val(eventT.name);
-     }
+    renderButtons(event);
+    
+    renderWizard(event);
+    
+    renderAskInf(event);
+};
 
-     function renderButtons(event) {
-          // reimbursementStatus
-          if (event.reimbursementStatus === "Pending") {
-               $("#approval_denial_btng").show();
-               $("#confirm_btng").hide();
-          }
+function renderAskInf(event) {
+	 if(event.dsEventStatus === "Pending") {
+		 $("#req_inf_ds").hide();
+		 $("#req_inf_hd").hide();
+	 } else if(event.hdEventStatus === "Pending") {
+		 $("#req_inf_hd").hide();
+	 }
+}
 
-          if (event.bencoEventStatus === "Approved") {
-               $("#approval_denial_btng").hide();
-               $("#confirm_btng").show();
-               $("#additional_inf_btng").hide();
+function renderWizard(event) {
+	 if(event.dsEventStatus === "Pending") {
+		 $("#ds_step").addClass("btn-primary");
+	 } else if(event.hdEventStatus === "Pending") {
+		 $("#dh_step").addClass("btn-primary");
+	 } else if(event.bencoEventStatus === "Pending") {
+		 $("#benco_step").addClass("btn-primary");
+	 }
+}
 
-               if (event.presentationUploaded) {
-                    $("#conf_pres_btn").show();
-                    $("#conf_grade_btn").hide();
-               } else {
-                    $("#conf_grade_btn").show();
-                    $("#conf_pres_btn").hide();
-               }
-          }
-          
-          ajaxGetRequest("./employeeinfo", {}, function(employee) {
-        	  if(!employee.employeeTypes.includes("Benefits_Coordinator")) {
-        		  $("#change_amt").hide();
-        	  }
- 	     }, function (response) {
- 	          
- 	     });
+function renderEmployee(employee) {
+	 $("#emp_firstname").val(employee.firstName);
+	 $("#emp_lastname").val(employee.lastName);
+	 $("#emp_email").val(employee.email);
+}
 
-     }
+function renderEvent(event) {
+    $("#event_date").val(event.dateOfEvent);
+    $("#event_time").val(event.timeOfEvent);
+    $("#event_location").val(event.location);
+    $("#event_description").val(event.description);
+    $("#event_cost").val(event.cost);
+    $("#event_justification").val(event.workJustification);
+    $("#event_worktimemissed").val(event.workTimeMissed);
+    $("#event_reqpres").prop('checked', event.requiredPresentation);
+    $("#event_gradecutoff").val(event.gradeCutoff);
+    $("#event_finalgrade").val(event.finalGrade);
+    $("#event_projected").val(event.projectedAmountReimbused);
+    $("#event_accepted").val(event.acceptedAmountReimbursed);
+    
+    if (!event.urgent) {
+         $("#event_isurgent").hide();
+    }
+}
 
-     let showBadFormRequestResponse = function (response) {
-          showArrayOfErrorsInUL('errors_ul', response);
-     }
+function renderGradingFormat(gradingF) {
+    $("#gradingFormatId").val(`From: ${gradingF.fromRange}, To: ${gradingF.toRange}`);
+}
 
-     getEvent();
+function renderEventType(eventT) {
+    $("#eventTypeId").val(eventT.name);
+}
 
-     // =========================== Events =============================
+function renderButtons(event) {
+    // reimbursementStatus
+    if (event.reimbursementStatus === "Pending") {
+         $("#approval_denial_btng").show();
+         $("#confirm_btng").hide();
+    }
 
-     $("#approve_btn").click(function (e) {
-          e.preventDefault();
+    if (event.bencoEventStatus === "Approved") {
+         $("#approval_denial_btng").hide();
+         $("#confirm_btng").show();
+         $("#additional_inf_btng").hide();
 
-          console.log("Approving request");
+         if (event.presentationUploaded) {
+              $("#conf_pres_btn").show();
+              $("#conf_grade_btn").hide();
+         } else {
+              $("#conf_grade_btn").show();
+              $("#conf_pres_btn").hide();
+         }
+    }
+    
+    ajaxGetRequest("./employeeinfo", {}, function(employee) {
+  	  if(!employee.employeeTypes.includes("Benefits_Coordinator")) {
+  		  $("#change_amt").hide();
+  	  }
+    });
 
-          let objParam = {
-               eventId: eventId
-          };
+}
 
-          ajaxPostRequest($(this).attr("href"), JSON.stringify(objParam), function() {
-               toastr.success(`Request approved.`);
-               redirect("./dashboard.html");
-          }, showBadFormRequestResponse);
-          
-     });
+let showBadFormRequestResponse = function (response) {
+    showArrayOfErrorsInUL('errors_ul', response);
+};
 
-     $("#deny_btn").click(function (e) {
-          e.preventDefault();
+// =========================== Events =============================
 
-          console.log("Denying request");
+$("#approve_btn").click(function (e) {
+    e.preventDefault();
 
-          let url = $(this).attr("href");
+    console.log("Approving request");
 
-          bootbox.prompt({
-               title: "Enter the reason why you are denying this request.",
-               callback: function (result) {
-            	   
-            	   console.log(result);
-            	   
-                    if (result) {
-                         let objParam = {
-                              eventId: eventId,
-                              reason: result
-                         };
+    let objParam = {
+         eventId: eventId
+    };
 
-                         toastr.success(`Request denied.`);
+    ajaxPostRequest($(this).attr("href"), JSON.stringify(objParam), function() {
+         toastr.success(`Request approved.`);
+         redirect("./dashboard.html");
+    });
+    
+});
 
-                         ajaxPostRequest(url, JSON.stringify(objParam), function () {
-                              redirect("./dashboard.html");
-                         }, showBadFormRequestResponse);
-                    }
-               }
-          });
-     });
+$("#deny_btn").click(function (e) {
+    e.preventDefault();
 
-     $("#conf_pres_btn").click(function (e) {
-          e.preventDefault();
+    console.log("Denying request");
 
-          console.log("Conf. presentation");
-          
-          let objParam = {
-        		eventId: eventId
-          };
+    let url = $(this).attr("href");
 
-          ajaxPostRequest($(this).attr("href"), JSON.stringify(objParam), function () {
-               redirect("./dashboard.html");
-          }, showBadFormRequestResponse);
+    bootbox.prompt({
+         title: "Enter the reason why you are denying this request.",
+         callback: function (result) {
+      	   
+      	   console.log(result);
+      	   
+              if (result) {
+                   let objParam = {
+                        eventId: eventId,
+                        reason: result
+                   };
 
-     });
+                   ajaxPostRequest(url, JSON.stringify(objParam), function () {
+                  	 toastr.success(`Request denied.`);
+                        redirect("./dashboard.html");
+                   });
+              }
+         }
+    });
+});
 
-     $("#conf_grade_btn").click(function (e) {
-          e.preventDefault();
+$("#conf_pres_btn").click(function (e) {
+    e.preventDefault();
 
-          console.log("Conf. grade");
-          
-          let objParam = {
-          		eventId: eventId
-            };
+    console.log("Conf. presentation");
+    
+    let objParam = {
+  		eventId: eventId
+    };
 
-          ajaxPostRequest($(this).attr("href"), JSON.stringify(objParam), function () {
-               redirect("./dashboard.html");
-          }, showBadFormRequestResponse);
+    ajaxPostRequest($(this).attr("href"), JSON.stringify(objParam), function () {
+         redirect("./dashboard.html");
+    });
 
-     });
+});
 
-     $("#change_amt").click(function (e) {
-          e.preventDefault();
+$("#conf_grade_btn").click(function (e) {
+    e.preventDefault();
 
-          console.log("Change Amt.");
+    console.log("Conf. grade");
+    
+    let objParam = {
+    		eventId: eventId
+      };
 
-          let url = $(this).attr("href");
-          let oldAmt = $("#event_accepted").val();
+    ajaxPostRequest($(this).attr("href"), JSON.stringify(objParam), function () {
+         redirect("./dashboard.html");
+    });
 
-          bootbox.confirm(`<form id='amtInfo' action=''>
-                         <div class="form-group">
-                              <label>New Amount </label>
-                              <div class="input-group">
-                                   <span class="input-group-addon">$</span>
-                                   <input type="text" name="new_amount" id="new_amount" class="form-control" value="${oldAmt}" >
-                                   <span class="input-group-addon">.00</span>
-                              </div>
-                         </div>
-                         <div class="form-group">
-                              <label>Reason </label>
-                              <input name="new_reason" id="new_reason" class="form-control">
-                         </div>
-                         </form>
-                         `, function (result) {
-                    if (result) {
-                         if (result === true) {
-                              let newAmount = $('#new_amount').val();
+});
 
-                              let objParam = {
-                                   eventId: eventId,
-                                   newAmount: newAmount,
-                                   reason: $('#new_reason').val()
-                              };
-                              
-                              ajaxPutRequest(url, JSON.stringify(objParam), function() {
-                                   toastr.success(`The amount for this project was changed successfully.`);
-                                   $("#event_accepted").val(newAmount);
-                              }, showBadFormRequestResponse);
-                         }
-                    }
-               });
+$("#change_amt").click(function (e) {
+    e.preventDefault();
 
-     });
+    console.log("Change Amt.");
 
-     $("#req_inf_emp").click(function (e) {
-          e.preventDefault();
+    let url = $(this).attr("href");
+    let oldAmt = $("#event_accepted").val();
 
-          console.log("Request Inf Emp");
+    bootbox.confirm(`<form id='amtInfo' action=''>
+                   <div class="form-group">
+                        <label>New Amount </label>
+                        <div class="input-group">
+                             <span class="input-group-addon">$</span>
+                             <input type="text" name="new_amount" id="new_amount" class="form-control" value="${oldAmt}" >
+                             <span class="input-group-addon">.00</span>
+                        </div>
+                   </div>
+                   <div class="form-group">
+                        <label>Reason </label>
+                        <input name="new_reason" id="new_reason" class="form-control">
+                   </div>
+                   </form>
+                   `, function (result) {
+              if (result) {
+                   if (result === true) {
+                        let newAmount = $('#new_amount').val();
 
-     });
+                        let objParam = {
+                             eventId: eventId,
+                             newAmount: newAmount,
+                             reason: $('#new_reason').val()
+                        };
+                        
+                        ajaxPutRequest(url, JSON.stringify(objParam), function() {
+                             toastr.success(`The amount for this project was changed successfully.`);
+                             $("#event_accepted").val(newAmount);
+                        });
+                   }
+              }
+         });
 
-     $("#req_inf_ds").click(function (e) {
-          e.preventDefault();
+});
 
-          console.log("Request Inf DS");
+function reqInfoEmp(infoFrom) {
 
-     });
+   bootbox.prompt({
+        title: "Enter what information you required from this employee.",
+        callback: function (result) {
+     	   
+             if (result) {
+                  let objParam = {
+                  	requestInfoFrom: infoFrom,
+                       eventId: eventId,
+                       information: result
+                  };
 
-     $("#req_inf_hd").click(function (e) {
-          e.preventDefault();
+                  ajaxPostRequest("./inforeq", JSON.stringify(objParam), function () {
+                  	toastr.success(`Your request for additional information was sent successfuly.`);
+                  });
+             }
+        }
+   });
+}
 
-          console.log("Request Inf DH");
+$("#req_inf_emp").click(function (e) {
+    e.preventDefault();
 
-     });
+    console.log("Request Inf Emp");
+    
+    reqInfoEmp($(this).attr("href"));
+});
+
+$("#req_inf_ds").click(function (e) {
+    e.preventDefault();
+
+    console.log("Request Inf DS");
+
+    reqInfoEmp($(this).attr("href"));
+});
+
+$("#req_inf_hd").click(function (e) {
+    e.preventDefault();
+
+    console.log("Request Inf DH");
+
+    reqInfoEmp($(this).attr("href"));
 });

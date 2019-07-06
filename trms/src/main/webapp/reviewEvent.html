@@ -118,6 +118,29 @@
 
 			<!-- Main content -->
 			<section class="content">
+				<div class="row">
+					<div class="col-md-offset-1 col-md-10">
+
+						<div class="stepwizard">
+							<div class="stepwizard-row">
+								<div class="stepwizard-step">
+									<button id="ds_step" type="button" class="btn btn-default btn-circle">1</button>
+									<p>Direct Supervisor Approval</p>
+								</div>
+								<div class="stepwizard-step">
+									<button id="dh_step" type="button" class="btn btn-default btn-circle">2</button>
+									<p>Department Head Approval</p>
+								</div>
+								<div class="stepwizard-step">
+									<button id="benco_step" type="button" class="btn btn-default btn-circle"
+										disabled="disabled">3</button>
+									<p>Benefits Coordinator Approval</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<form name="event_form" id="event_form" method="post" role="form">
 
 					<input type="hidden" name="eventId" id="eventId">
@@ -339,12 +362,12 @@
 															</button>
 															<ul class="dropdown-menu" role="menu">
 																<li><a id="req_inf_emp"
-																	href="./inforeq?requestInfoFrom=1">Employee</a></li>
+																	href="1">Employee</a></li>
 																<li><a id="req_inf_ds"
-																	href="./inforeq?requestInfoFrom=2">Direct
+																	href="2">Direct
 																		Supervisor</a></li>
 																<li><a id="req_inf_hd"
-																	href="./inforeq?requestInfoFrom=3">Department Head</a></li>
+																	href="3">Department Head</a></li>
 															</ul>
 															<a id="change_amt" href="./event/changeamount"
 																class="btn btn-info">Change request amount</a>
@@ -362,7 +385,8 @@
 								</div>
 								<!-- /.tab-pane -->
 								<div class="tab-pane" id="tab_2">
-									<table id="attach_table" class="table table-bordered table-striped">
+									<table id="attach_table"
+										class="table table-bordered table-striped">
 										<thead>
 											<tr>
 												<th style="width: 10px">#</th>

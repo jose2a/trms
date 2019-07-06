@@ -1,16 +1,5 @@
 $(document).ready(function () {
 
-//     (function checkIfSessionIsLoggedIn() {
-//          console.log('checking user in session');
-//          console.log(isEmployeeInSession());
-//
-//          if (isEmployeeInSession()) {
-//               console.log('Redirecting');
-//
-//               redirectEmployee(getEmployeeFromSession());
-//          }
-//     }());
-
      $("#login_form").submit(function (e) {
           e.preventDefault();
 
@@ -25,8 +14,6 @@ $(document).ready(function () {
      });
 
      let showSucessfulLoginResponse = function (employee) {
-          console.log(employee);
-          
           redirectEmployee(employee);
      }
 

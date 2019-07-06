@@ -136,16 +136,20 @@ function redirectIfNotLoginPage() {
 }
 
 function redirect(url) {
-     var dialog = bootbox.dialog({
-          closeButton: false,
-          message: '<p><i class="fa fa-spin fa-spinner"></i> Loading...</p>'
-     });
+//     var dialog = bootbox.dialog({
+//          closeButton: false,
+//          message: '<p><i class="fa fa-spin fa-spinner"></i> Loading...</p>'
+//     });
 
-     dialog.init(function () {
-          setTimeout(function () {
-               window.location = url;
-          }, 1000);
-     });
+//     dialog.init(function () {
+//          setTimeout(function () {
+//               window.location = url;
+//          }, 800);
+//     });
+	
+	setTimeout(function () {
+        window.location = url;
+    }, 800);
      
 }
 
@@ -185,52 +189,71 @@ function showArrayOfErrorsInUL(ulEle, response) {
 
 (function checkEmployeeIsLoggedIn() {
 	ajaxGetRequest("./employeeinfo", {}, function(emp) {
-		console.log(emp);
 		
 		if (emp !== null) {
 			$(".fullname").text(`${emp.firstName} ${emp.lastName}`);
 			
 			if (window.location.href.endsWith("trms/")) {
 	    		redirectEmployee(emp);
-	    	     
 	    	}
 		}
-    }, function (response) {
     });
 	
 }());
 
-function redirectEmployee(employee) {
-    for (const role of employee.employeeTypes) {
-
-         if (role === "Direct_Supervisor"
-              || role == "Head_Department"
-              || role == "Benefits_Coordinator") {
-              redirect("dashboard.html");
-         }
-         if (role == "Associate") {
-              redirect("dashboardEmp.html");
-         }
-    }
+function renderReqInfoList(reqInfoList) {
+	 reqInfCounter = reqInfoList.length;
+	 
+	 $("#reqInfoCounter").text(reqInfCounter);
+	 
+	 let tableBody = $("#inf-req-table > tbody");
+	 tableBody.html('');
+	 
+	 for (let infReq of reqInfoList) {
+		 let role = "";
+		 
+		 if(infReq.requireBy.employeeTypes.includes("Benefits_Coordinator")) {
+			 role = "BenCo";
+		 } else if(infReq.requireBy.employeeTypes.includes("Head_Department")) {
+			 role = "Department Head";
+		 } else if(infReq.requireBy.employeeTypes.includes("Direct_Supervisor")) {
+			 role = "Direct Supervisor";
+		 } 
+		 
+		 tableBody.html(
+		`<tr>
+		 	<td>${infReq.eventId}</td>
+			<td>${infReq.information}</td>
+			<td>${infReq.requireBy.firstName} ${infReq.requireBy.lastName} (${role})</td>
+			<td><input class="chk_provide" id="chk_provide_${infReq.eventId}" type="checkbox" value="${infReq.eventId}"></td>
+		</tr>`);
+	}
+	 
+	 $(".chk_provide").change(function (e) {
+	   	 let eventId = $(this).val();
+	   	 let tr = $(this).closest("tr");
+	   	 
+	   	 let objParam = {
+	   			 eventId: eventId
+	   	 };
+	   	 
+	   	 ajaxPutRequest("./inforeq", JSON.stringify(objParam), function() {
+	   		 tr.parent().remove();
+	       	 
+	   		 reqInfCounter--;
+	   		 $("#reqInfoCounter").text(reqInfCounter);
+	   	 });
+	 });
+	 
 }
 
-function makeEventForSubmit(event_date, event_time, event_location, event_description,
-     event_cost, event_workJustification, event_requiredPresentation, event_eventTypeId,
-     event_gradingFormatId, event_workTimeMissed, event_gradeCutoff, grade_from, grade_to) {
-
-     return {
-          dateOfEvent: event_date,
-          timeOfEvent: event_time,
-          location: event_location,
-          description: event_description,
-          cost:  event_cost,
-          workJustification: event_workJustification,
-          requiredPresentation: event_requiredPresentation,
-          eventTypeId: event_eventTypeId,
-          gradingFormatId: event_gradingFormatId,
-          workTimeMissed: event_workTimeMissed,
-          gradeCutoff: event_gradeCutoff,
-          from: grade_from,
-          to: grade_to
-     };
+function redirectEmployee(employee) {
+	if (employee.employeeTypes.includes("Direct_Supervisor")
+			|| employee.employeeTypes.includes("Head_Department")
+			|| employee.employeeTypes.includes("Benefits_Coordinator")) {
+		
+		redirect("dashboard.html");
+	} else if (employee.employeeTypes.includes("Associate")) {
+		redirect("dashboardEmp.html");
+	}
 }

@@ -479,6 +479,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 	public void confirmSentOfInformationRequired(Integer eventId, Integer employeeId)
 			throws NotFoundRecordException, IllegalParameterException, PojoValidationException {
 		LogUtilities.trace("confirmSentOfInformationRequired");
+		LogUtilities.debug("Emp id: " + employeeId);
 
 		InformationRequired informationRequired = informationRequiredService
 				.getInformationRequiredByEmployeeIdAndEventId(employeeId, eventId);
@@ -499,7 +500,7 @@ public class EventServiceImpl extends BaseService implements EventService {
 
 	@Override
 	public void autoApproveEvents() {
-		LogUtilities.trace("autoApproveEvents");
+		LogUtilities.debug("autoApproveEvents");
 
 		// TODO Make this automatic every night
 		// Approving events not approved by a direct supervisor in a timely matter

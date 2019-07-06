@@ -14,6 +14,7 @@ import com.revature.trms.exceptions.PreexistingRecordException;
 import com.revature.trms.pojos.Employee;
 import com.revature.trms.pojos.EmployeeType;
 import com.revature.trms.pojos.InformationRequired;
+import com.revature.trms.services.EmployeeService;
 import com.revature.trms.services.EventService;
 import com.revature.trms.services.InformationRequiredService;
 import com.revature.trms.utilities.LogUtilities;
@@ -46,12 +47,26 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 
 		try {
 			infoRequiredList = infoReqService.getInformationRequiredByEmployeeId(employee.getEmployeeId());
+			
+			if (infoRequiredList.size() > 0) {
+				EmployeeService empServ = ServiceUtilities.getEmployeeService();
+				
+				for (InformationRequired infReq : infoRequiredList) {
+					Employee emp =empServ.getEmployeeById(infReq.getRequiredBy());
+					emp.setPassword("**********");
+					infReq.setRequireBy(emp);
+				}
+			}
 
 			response.getWriter().append(objectMapper.writeValueAsString(infoRequiredList));
 		} catch (IllegalParameterException e) {
-			LogUtilities.error("Error. InfoRequiredServlet. " + e.getMessage());
+			LogUtilities.error("Error GET. InfoRequiredServlet. " + e.getMessage());
 
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} catch (NotFoundRecordException e) {
+			LogUtilities.trace("Employee Reqby not found");
+			
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 
@@ -59,7 +74,6 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 	public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LogUtilities.trace("InfoRequiredServlet - post");
 
-		infoReqService = ServiceUtilities.getInformationRequiredService();
 		eventService = ServiceUtilities.getEventService();
 
 		// Get employee from session
@@ -96,7 +110,7 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getMessage()));
 		} catch (IllegalParameterException e) {
-			LogUtilities.error("Error. InfoRequiredServlet. " + e.getMessage());
+			LogUtilities.error("Error POST. InfoRequiredServlet. " + e.getMessage());
 
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
@@ -115,9 +129,8 @@ public class InfoRequiredServlet extends BaseServlet implements DoGetMethod, DoP
 
 		try {
 			eventService.confirmSentOfInformationRequired(informationRequired.getEventId(), employee.getEmployeeId());
-			response.getWriter().append(objectMapper.writeValueAsString(informationRequired));
 		} catch (IllegalParameterException e) {
-			LogUtilities.error("Error. InfoRequiredServlet. " + e.getMessage());
+			LogUtilities.error("Error PUT. InfoRequiredServlet. " + e.getMessage());
 		} catch (PojoValidationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().append(objectMapper.writeValueAsString(e.getErrors()));
