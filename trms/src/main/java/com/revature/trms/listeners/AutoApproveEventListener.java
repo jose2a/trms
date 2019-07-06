@@ -25,7 +25,7 @@ public class AutoApproveEventListener implements ServletContextListener {
 		date.set(Calendar.MINUTE, 0);
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
-		// Schedule to run every day in midnight
+		// Schedule to run every day at midnight
 		timer.schedule(new TimerTask() {
 
 			@Override
