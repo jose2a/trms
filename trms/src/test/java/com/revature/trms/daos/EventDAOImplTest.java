@@ -36,7 +36,7 @@ public class EventDAOImplTest {
 		gradingFDao = new GradingFormatDAOImpl();
 	}
 
-	@Test
+//	@Test
 	public void testAddEvent() {
 		GradingFormat gradingFmt = gradingFDao.getGradingFormatById(2);
 		EventType eventT = eventTypeDao.getEventTypeById(2);
@@ -66,7 +66,7 @@ public class EventDAOImplTest {
 //		eventDao.deleteEvent(event.getEventTypeId());
 	}
 
-	@Test
+//	@Test
 	public void testUpdateEvent() {
 		Event event = eventDao.getEventById(1);
 
@@ -76,14 +76,14 @@ public class EventDAOImplTest {
 		eventDao.updateEvent(event);
 	}
 
-	@Test
+//	@Test
 	public void testDeleteEvent() {
 		boolean deleted = eventDao.deleteEvent(5);
 
 		assertTrue(deleted);
 	}
 
-	@Test
+//	@Test
 	public void getEventsNotDeniedByEmployeeAndYear() {
 		List<Event> events = eventDao.getEventsNotDeniedByEmployeeAndYear(25, 2019);
 
@@ -94,7 +94,7 @@ public class EventDAOImplTest {
 		assertEquals(2, events.size());
 	}
 
-	@Test
+//	@Test
 	public void testGetEventsPendingOfDirectSupervisorApproval() {
 		List<Event> events = eventDao.getEventsPendingOfDirectSupervisorApproval();
 
@@ -106,7 +106,7 @@ public class EventDAOImplTest {
 		assertEquals(1, events.size());
 	}
 
-	@Test
+//	@Test
 	public void testGetEventsPendingOfHeadDepartmentApproval() {
 		List<Event> events = eventDao.getEventsPendingOfHeadDepartmentApproval();
 
@@ -117,7 +117,7 @@ public class EventDAOImplTest {
 		assertEquals(1, events.size());
 	}
 
-	@Test
+//	@Test
 	public void testGetEventsPendingOfBenefitsCoordinatorApproval() {
 		List<Event> events = eventDao.getEventsPendingOfBenefitsCoordinatorApproval();
 
