@@ -119,6 +119,7 @@ public class EventDAOImplTest {
 
 //	@Test
 	public void testGetEventsPendingOfBenefitsCoordinatorApproval() {
+		LogUtilities.trace("Testing Get event DAO");
 		List<Event> events = eventDao.getEventsPendingOfBenefitsCoordinatorApproval();
 
 		for (Event event : events) {
