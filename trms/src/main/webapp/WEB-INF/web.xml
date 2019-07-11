@@ -13,6 +13,11 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 
+	<resource-env-ref>
+		<resource-env-ref-name>jdbc/trms</resource-env-ref-name>
+		<resource-env-ref-type>javax.sql.DataSource</resource-env-ref-type>
+	</resource-env-ref>
+
 	<error-page>
 		<error-code>404</error-code>
 		<location>/404.html</location>
@@ -26,10 +31,10 @@
 		<error-code>500</error-code>
 		<location>/500.html</location>
 	</error-page>
-	
+
 	<listener>
-       <listener-class>com.revature.trms.listeners.AutoApproveEventListener</listener-class>
-    </listener>
+		<listener-class>com.revature.trms.listeners.AutoApproveEventListener</listener-class>
+	</listener>
 
 	<servlet>
 		<description></description>
@@ -195,7 +200,7 @@
 		<servlet-name>EventPendingServlet</servlet-name>
 		<url-pattern>/event/pending</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<description></description>
 		<display-name>EventProjectedAmtServlet</display-name>
