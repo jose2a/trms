@@ -63,7 +63,7 @@ hs_err_pid*
 **/*.iml
 
 #properties files
-**/*.properties
+#**/*.properties
 
 #node_modules directory
 node_modules/
