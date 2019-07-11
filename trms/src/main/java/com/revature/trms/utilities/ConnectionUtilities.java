@@ -3,6 +3,7 @@ package com.revature.trms.utilities;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -56,25 +57,31 @@ public class ConnectionUtilities {
 //			LogUtilities.error("Could not load connection properties file. " + e.getMessage());
 //		}
 //	}
-	
+
 	private static DataSource dataSource;
 
-	public ConnectionUtilities() {
-	    try {
-	        dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/trms");
-	    } catch (NamingException e) {
-	        // Handle error that it's not configured in JNDI.
-	        throw new IllegalStateException("jdbc/trms is missing in JNDI!", e);
-	    }
+	private static DataSource getDataSource() {
+		try {
+			Context initCtx = new InitialContext();
+			Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+			// Look up our data source
+			dataSource = (DataSource) envCtx.lookup("ds/trms");
+		} catch (NamingException e) {
+			// Handle error that it's not configured in JNDI.
+			throw new IllegalStateException("jdbc/trms is missing in JNDI!", e);
+		}
+
+		return dataSource;
 	}
 
 	public static synchronized Connection getConnection() {
-	    try {
-			connection = dataSource.getConnection();
+		try {
+			connection = getDataSource().getConnection();
 		} catch (SQLException e) {
 			LogUtilities.error("Could not connect to the database.");
 		}
-	    
-	    return connection;
+
+		return connection;
 	}
 }
