@@ -57,7 +57,7 @@ public class ConnectionUtilities {
 //		}
 //	}
 	
-	private DataSource dataSource;
+	private static DataSource dataSource;
 
 	public ConnectionUtilities() {
 	    try {
@@ -68,7 +68,7 @@ public class ConnectionUtilities {
 	    }
 	}
 
-	public Connection getConnection() {
+	public static synchronized Connection getConnection() {
 	    try {
 			connection = dataSource.getConnection();
 		} catch (SQLException e) {
