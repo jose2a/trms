@@ -75,7 +75,7 @@ public class ConnectionUtilities {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
 		try (InputStream fis = loader.getResourceAsStream(PROPERTIES_FILE);) {
-			prop.load(fis);
+//			prop.load(fis);
 
 			url = "jdbc:postgresql://" + System.getenv("TRMS_URL") + ":5432/jose_1905java";//prop.getProperty("url");
 			user = System.getenv("TRMS_USER");//prop.getProperty("user");
