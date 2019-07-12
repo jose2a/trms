@@ -70,22 +70,23 @@ public class ConnectionUtilities {
 
 	private static void loadConectionsParameters() {
 		LogUtilities.trace("Loading connection parameters from file.");
-		Properties prop = new Properties();
-
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-		try (InputStream fis = loader.getResourceAsStream(PROPERTIES_FILE);) {
+//		Properties prop = new Properties();
+//
+//		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+//
+//		try (InputStream fis = loader.getResourceAsStream(PROPERTIES_FILE);) {
 //			prop.load(fis);
 
 			url = "jdbc:postgresql://" + System.getenv("TRMS_URL") + ":5432/jose_1905java";//prop.getProperty("url");
 			user = System.getenv("TRMS_USER");//prop.getProperty("user");
 			password = System.getenv("TRMS_PASS"); //prop.getProperty("password");
 			
-			LogUtilities.trace("URL " + url);
-		} catch (FileNotFoundException e) {
-			LogUtilities.error("Connection file not loaded." + e.getMessage());
-		} catch (IOException e) {
-			LogUtilities.error("Could not load connection properties file. " + e.getMessage());
-		}
+			LogUtilities.info("URL " + url);
+			LogUtilities.info("USERNAME " + user);
+//		} catch (FileNotFoundException e) {
+//			LogUtilities.error("Connection file not loaded." + e.getMessage());
+//		} catch (IOException e) {
+//			LogUtilities.error("Could not load connection properties file. " + e.getMessage());
+//		}
 	}
 }
