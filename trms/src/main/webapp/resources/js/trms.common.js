@@ -128,8 +128,8 @@ function ajaxUploadFile(url, data, uploadFileSucc, uploadFileBadReq) {
 }
 
 function redirectIfNotLoginPage() {
-	if (!window.location.href.endsWith("trms/")) {
-		redirect("./");
+	if (!window.location.href.endsWith("index.html")) {
+		redirect("./index.html");
 	}
 	
 	console.log("Login page");
