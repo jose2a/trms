@@ -37,7 +37,7 @@ public class ConnectionUtilities {
 	private static void loadConectionsParameters() {
 		LogUtilities.trace("Loading connection parameters from enviroment.");
 
-		url = "jdbc:postgresql://" + System.getenv("TRMS_URL") + ":5432/jose_1905java";
+		url = System.getenv("TRMS_URL");
 		user = System.getenv("TRMS_USER");
 		password = System.getenv("TRMS_PASS");
 	}
